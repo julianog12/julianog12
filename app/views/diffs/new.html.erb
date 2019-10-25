@@ -1,0 +1,14 @@
+<%= form_for @diff, :url => {:action => :create}  do |f| %>
+  <div class="field">
+    <%= label_tag "Before" %>
+    <%= f.text_area :before, :class => "form-control", :rows => 10 %>
+  </div>
+  <div class="field">
+    <%= label_tag "After", nil %>
+    <%= f.text_area :after, :class => "form-control", :rows => 10 %>
+  </div>
+  <% logger.info "oi4" %>
+  <div class="actions">
+     <%= submit_tag "Diferença", class: "btn btn-secondary" %>
+  </div>
+<% end %>

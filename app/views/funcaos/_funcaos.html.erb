@@ -1,0 +1,98 @@
+<style>
+ .center {
+   margin: 20em auto;
+   width: 400px;
+ }
+
+ /*Change the size here*/
+ div.tolltip-inner {
+     max-width: 350px;
+ }
+</style>
+
+<hr>
+<% if !@funcaos.empty? %>
+  <table id="example" class="table">
+  <thead class="grey lighten-2"">
+     <tr>
+       <th>Componente</th>
+       <th>Nome Função</th>
+       <th>Tipo</th>
+       <th>Documentação</th>
+       <th>Data Alteração</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @funcaos.each do |funcao| %>
+         <tr>
+            <td><%= funcao.cd_componente %></td>
+            <td><%= link_to funcao.nm_funcao, funcao_path(funcao, mostrar: 'codigo'), {remote: true, 'id' => 'mostrar_codigo', 'data-toggle' =>  "modal", 'data-target' => '#show-codigo'} %> </td>
+            <td><%= funcao.tipo %></td>
+            <% if !funcao.documentacao.nil? && funcao.documentacao.length > 2 %>
+                 <td class="text-truncate" style="max-width: 100px">
+                    <%= link_to funcao.documentacao[0..60], funcao_path(funcao, mostrar: 'documentacao'), {remote: true, 'id' => 'mostrar_docto', 'data-toggle' =>  "modal", 'data-target' => '#show-documentacao'} %>
+                 </td>
+            <% else %>
+                 <td></td>
+            <% end %>
+            <td><%= funcao.updated_at.to_s(:data_brasil) %> </td>
+         </tr>
+     <% end %>
+  </tbody>
+  </table>
+<% end %>
+
+<div id="show-codigo" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content"></div>
+  </div>
+</div>
+
+<div id="show-documentacao" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content"></div>
+  </div>
+</div>
+
+<script>
+	$(document).ready(function() {
+	    var table = $('#example').dataTable( {
+          dom: 'lBfrtip',
+	        lengthChange: true,
+          "lengthMenu": [ [15, 30, 60, -1], [15, 30, 60, "All"] ],
+          pageLength: 15,
+	        buttons: [ 'copy', 'excel', 'csv', 'pdf', 'colvis' ],
+          language: {
+              "sEmptyTable": "Nenhum registro encontrado",
+              "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+              "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
+              "sInfoFiltered": "(Filtrados de _MAX_ registros)",
+              "sInfoPostFix": "",
+              "sInfoThousands": ".",
+              "sLengthMenu": "_MENU_ resultados por página",
+              "sLoadingRecords": "Carregando...",
+              "sProcessing": "Processando...",
+              "sZeroRecords": "Nenhum registro encontrado",
+              "sSearch": "Pesquisar",
+              "oPaginate": {
+                    "sNext": "Próximo",
+                    "sPrevious": "Anterior",
+                    "sFirst": "Primeiro",
+                    "sLast": "Último"
+               },
+               buttons: {
+                    colvis: 'Visibilidade Campos'
+               },
+              "oAria": {
+                   "sSortAscending": ": Ordenar colunas de forma ascendente",
+                    "sSortDescending": ": Ordenar colunas de forma descendente"
+              }
+          }
+	    });
+
+      //$('select').selectpicker();
+	 
+	    //table.buttons().container()
+	    //    .appendTo( '#example_wrapper .col-md-6:eq(0)' );
+	} );
+</script>

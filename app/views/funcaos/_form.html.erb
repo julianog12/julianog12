@@ -1,0 +1,42 @@
+<%= form_with(model: funcao, local: true) do |form| %>
+  <% if funcao.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(funcao.errors.count, "error") %> prohibited this funcao from being saved:</h2>
+
+      <ul>
+      <% funcao.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :cd_componente %>
+    <%= form.text_field :cd_componente %>
+  </div>
+
+  <div class="field">
+    <%= form.label :nm_funcao %>
+    <%= form.text_field :nm_funcao %>
+  </div>
+
+  <div class="field">
+    <%= form.label :tipo %>
+    <%= form.text_field :tipo %>
+  </div>
+
+  <div class="field">
+    <%= form.label :codigo %>
+    <%= form.text_area :codigo %>
+  </div>
+
+  <div class="field">
+    <%= form.label :cd_empresa %>
+    <%= form.text_field :cd_empresa %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

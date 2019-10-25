@@ -1,0 +1,46 @@
+<style>
+  @media (min-width: 780px){
+    .modal-xl{
+      width: 90%;
+      max-width:1200px;
+    }
+  }
+</style>
+<div class="container">
+  <form role="form" action="/">
+ 
+    <h2 class="">Encontrando Dados em Componentes</h2>
+    <%= select_tag "cd_empresa", options_for_select([ ['Coamo Desenv', 1], ['Coamo Prod', 2], ['Credi Desenv', 3], ['Credi Prod', 4]], selected: (params[:cd_empresa].present? ? params[:cd_empresa] : 1)), class: "form-control" %>
+    <br>
+      <input type="text" class="form-control" placeholder="Ex: activate " id="keywords" name="keywords">
+      <input type="hidden" id="nome" name="nome">
+      <input type="checkbox" class="form-check-input" id="considerar" onclick="atribui_valor();">
+      <label class="form-check-label" for="considerar">Considerar a busca somente pelo nome do componente?</label>
+    </br>
+
+    <br>
+    <button class="btn btn-primary btn-block" type="submit">Procurar</button>
+    <br>
+    
+
+  </form>
+  <section class="componentes">
+    <% v_cont = 0 %>
+    <% if @componentes.present? %>
+      <% @componentes.each do |comp| %>
+          <div class="col-md-12">
+            <%= sele_nome(@cd_empresa, comp.tipo, comp.nome) %>
+            <%#= "#{comp.linha.gsub("\n", "")} #{separa_activate(v_cont, comp.nome, comp.cd_empresa, comp.linha)}".html_safe %>
+            <%= "#{separa_activate2(v_cont, comp.nome, comp.cd_empresa, comp.linha)}".html_safe %>
+          </div>
+          <% v_cont += 1 %>
+      <% end %>
+    <% end %>
+  </selection>
+</div>
+<script>
+   function atribui_valor(){
+        document.getElementById("nome").value = document.getElementById("keywords").value;
+   }
+
+</script>

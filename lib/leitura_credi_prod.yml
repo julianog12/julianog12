@@ -1,0 +1,11 @@
+---
+ambiente:
+  diretorio_listener: "/var/coamo/unifacedes/r97_credi_pro/proclisting"
+  extensao_leitura: all
+  empresa: 4
+geral:
+  ultimo_diretorio: proclisting/
+  ultima_alteracao: 2019 09 20 14 38 38
+  nome_arq_result: credi_producao
+  servidor_http: http://localhost/componentes
+  servidor_http_funcao: http://localhost/funcaos

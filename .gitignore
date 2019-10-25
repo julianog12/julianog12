@@ -1,0 +1,14 @@
+/.bundle
+/vendor/bundle
+/vendor/ruby/
+/log/*
+/tmp/*
+/lib/arquivos_gerados/*
+
+/shared/*
+
+/config/database.yml
+/config/initializers/*
+
+/public/assets
+/storage/*

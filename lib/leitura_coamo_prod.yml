@@ -1,0 +1,11 @@
+---
+ambiente:
+  diretorio_listener: "/var/coamo/unifacedes/r96_coamo_pro/proclisting"
+  extensao_leitura: all
+  empresa: 2
+geral:
+  ultimo_diretorio: proclisting/
+  ultima_alteracao: 2019 09 20 14 39 08
+  nome_arq_result: coamo_producao
+  servidor_http: http://localhost/componentes
+  servidor_http_funcao: http://localhost/funcaos

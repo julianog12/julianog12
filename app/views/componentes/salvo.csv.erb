@@ -1,0 +1,5 @@
+<%- headers = ['Nome', 'Linha'] -%>
+<%= CSV.generate_line headers %>
+<%- @componentes.each do |comp| -%>
+  <%= CSV.generate_line([comp.nome, comp.linha]) -%>
+<%- end -%>

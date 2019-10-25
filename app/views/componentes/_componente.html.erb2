@@ -1,0 +1,8 @@
+<% v_cont = 0 %>
+<% @componentes.each do |comp| %>
+   <div class="col-md-12">
+       <%= sele_nome(@cd_empresa, comp.tipo, comp.nome, comp.updated_at) %>
+       <%= "#{separa_activate2(v_cont, comp.nome, comp.cd_empresa, comp.linha)}".html_safe %>
+   </div>
+   <% v_cont += 1 %>
+<% end %>

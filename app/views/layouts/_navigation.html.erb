@@ -1,0 +1,18 @@
+<nav class="navbar navbar-default">
+  <!--<div class="container-fluid">-->
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+          <a class="navbar-brand" href="#">
+              <%#= image_tag('utility.png', :width => 30, :height => 30) %> <!--, class: 'd-inline-block align-top'-->
+          </a>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Menu Buscas <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+               <%= render 'layouts/navigation_links' %> 
+            </ul>
+          </li>
+        </ul>
+    </div><!-- /.navbar-collapse -->
+  <!--</div><!-- /.container-fluid -->
+</nav>

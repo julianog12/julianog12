@@ -1,0 +1,102 @@
+<style>
+  @media (min-width: 780px){
+    .modal-xl{
+      width: 90%;
+      max-width:1200px;
+    }
+  }
+</style>
+<form role="form" action="/">
+  <h4 class="text-primary">Análise de Impacto</h4>
+  <%= select_tag "cd_empresa", options_for_select([ ['Coamo Desenv', 1], ['Coamo Prod', 2], ['Credi Desenv', 3], ['Credi Prod', 4]], selected: (params[:cd_empresa].present? ? params[:cd_empresa] : 1)), class: "form-control" %>
+  <br>
+    <div class="row">
+       <div class="col-sm-8">
+           <%= label_tag :keywords, "Texto para a busca:" %>
+       </div>
+       <div class="col-sm-2">
+           <%= label_tag :operator_field, "Operador:" %>
+       </div>
+       <div class="col-sm-2">
+           <%= label_tag :match_field, "Buscar Palavra:" %>
+       </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-8">    
+        <%= text_field_tag :keywords, (params[:keywords].present? ? params[:keywords] : nil), class: "form-control" %>
+      </div>
+      <div class="col-sm-2">
+         <%= select_tag :operator_field,
+                options_for_select([ ['OR', 'or'], ['AND', 'and'] ], 
+                selected: (params[:operator_field].present? ? params[:operator_field] : 'and')), 
+                class: "selectpicker form-control" %>
+      </div>
+      <div class="col-sm-2">
+           <%= select_tag :match_field,
+                  options_for_select([ ['Palava Inteira', 'word'], ['Inicio Palavra', 'word_start'], ['Meio Palavra', 'word_middle'], ['Final Palavra', 'word_end'] ], 
+                  selected: (params[:match_field].present? ? params[:match_field] : 'word_middle')), 
+                  class: "selectpicker form-control" %>
+      </div>
+    </div>
+    <%= label_tag :fields, "Considerar a busca somente pelo(s) campo(s):" %>
+
+    <%= select_tag "fields",
+                   options_for_select([ ['Linha Comando', :linha], ['Nome Componente', :nome], ['Todos', '*']], 
+                   selected: (params[:fields].present? ? params[:fields] : :linha)), 
+                   class: "selectpicker form-control",
+                   multiple: true %>
+
+    <!--<input type="hidden" id="nome" name="nome">
+    <input type="checkbox" class="form-check-input" id="considerar" onclick="atribui_valor();">
+    <label class="form-check-label" for="considerar">Considerar a busca somente pelo nome do componente?</label>-->
+  </br>
+
+  <br>
+  <button class="btn btn-primary btn-block" type="submit">Procurar</button>
+  <br>
+</form>
+<% if @componentes.present? %>
+  <ul class="nav nav-tabs" id="minhaTab" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" id="operations-tab" data-toggle="tab" href="#operations" role="tab" aria-controls="operations"><%= @componentes.count %> encontrados</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="localprocs-tab" data-toggle="tab" href="#localprocs" role="tab" aria-controls="localprocs">Local Procs - <%= params[:keywords].upcase %></a>
+    </li>
+  </ul>
+  <div class="tab-content" id="meusComponentes">
+    <div class="tab-pane fade active" id="operations" role="tabpanel" aria-labelledby="operations-tab">
+          <%#= link_to 'Download CSV list', componentes_path(format: "csv") %>
+
+          <% v_cont = 0 %>
+          <% @componentes.each do |comp| %>
+    <div class="col-md-12">
+        <%= sele_nome(@cd_empresa, comp.tipo, comp.nome, comp.updated_at) %>
+        <%= "#{separa_activate2(v_cont, comp.nome, comp.cd_empresa, comp.linha)}".html_safe %>
+    </div>
+    <% v_cont += 1 %>
+<% end %>
+
+    </div>
+    <div class="tab-pane fade" id="localprocs" role="tabpanel" aria-labelledby="localprocs-tab">
+
+        <% v_cont2 = 0 
+            v_componente = params[:keywords].downcase
+            v_cd_empresa = @componentes.first.cd_empresa
+            funcoes      = Funcao.where('tipo = ? and cd_componente = ? and cd_empresa = ?', "Local Proc", v_componente, v_cd_empresa)
+            funcoes.each do |func| %>
+              <div class="col-md-12">
+                <%= monta_funcao(v_componente, v_cd_empresa, func.nm_funcao, func.codigo, func.updated_at,  v_cont2) %>
+              </div>
+              <% v_cont2 += 1 %>
+            <% end %>
+    </div>
+  </div>
+<% end %>
+
+<script>
+   //$('select').selectpicker();
+   $(function () {
+    $('#minhaTab a[href="#operations"]').tab('show')
+   })
+</script>

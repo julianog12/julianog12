@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track' => 'reload' %>
+    <%= csrf_meta_tags %>
+    <style>
+      <%= Diffy::CSS %>
+    </style>
+  </head>
+  <body>
+    <header>
+        <%= render 'layouts/navigation' %>
+   </header>
+   <br/>
+   <br/>
+   <br/>
+   <div class="container">
+      <br/>
+      <%= yield %>
+    </div>
+  </body>
+</html>
+
