@@ -95,7 +95,8 @@ class GerarArquivo
       vTipo = ''
     end
     if !vTipo.nil? && !vTipo.empty?
-      if vCmd[0].to_s.split(' ').count == 2
+
+      if vCmd[0].to_s.split(' ').count <= 2
         begin
           vNmFuncao = "#{vCmd[0][(vCmd[0].index(/\s/)+1)..100].to_s}"
         rescue
@@ -121,9 +122,7 @@ class GerarArquivo
       begin
         vPostString = vPostString.to_json
       rescue
-        Rails.logger.info "BBBBUNDA"
-        Rails.logger.info vPostString
-        vPostString = vPostString.to_json.force_encoding('UTF-8')
+        vPostString = vPostString.to_jso.force_encoding('ISO-8859-1')
       end
       RestClient.post "#{@servidor_funcao}", JSON.parse(vPostString)
     end
@@ -272,7 +271,6 @@ class GerarArquivo
         vLinhaFuncao = vLinha
         vLinha = vLinha.lstrip unless vLinha.nil?
         if !vLinha.nil?
-          vLinha = vLinha.lstrip
           if vIndica
             vIndica = vLinha.match(/\%\\/) ? true : false
             vLinha = tratar_linha(vLinha)
@@ -288,7 +286,7 @@ class GerarArquivo
                 vIndicaNewInst = true
                 dadosNewInstance = pegaNomeInstanca(vLinha)
               end
-              if (!vLinha.match(/^;/) && vLinha.match(/^entry/i)) or vLinha.match(/^operation/i)
+              if (!vLinha.match(/^;/) && vLinha.match(/^entry/i)) or (vLinha.match(/^operation/i) or vLinha.match(/^partner operation/i))
                 vIndicaFuncao = true
               end
               if vLinha.match(/\;\|/)
@@ -306,7 +304,7 @@ class GerarArquivo
                 vCmdFuncao << vLinha
                 vCmdLinhaFuncao << vLinhaFuncao
                 if (!vLinha.match(/endw/i) && !vLinha.match(/endf/i) && !vLinha.match(/endi/i) && !vLinha.match(/endv/i) && !vLinha.match(/endp/i) && !vLinha.nil? && !vLinha.match(/^;/)) & (!!(vLinha.match(/^end\s/i)) or !!(vLinha.match(/^end\;/i)) or !!(vLinha.match(/^end/i)))
-                  post_funcao(vId, vCmdFuncao, vCmdLinhaFuncao,  vCmdDocto)
+                  post_funcao(vId, vCmdFuncao, vCmdLinhaFuncao, vCmdDocto)
                   vCmdFuncao = []
                   vCmdLinhaFuncao = []
                   vIndicaFuncao = false
@@ -317,16 +315,8 @@ class GerarArquivo
               if vCmdActivate.any?
                 vComando = ""
                 vComando = vCmdActivate.map { |i| i.to_s }.join("")
-                #if vId == "aalmf110"
-                #   @arq_importados.write vComando
-                #   @arq_importados.write "\n"
-                #end
                 vPostString = {'componentes': {'nome': vId, 'linha': vComando, 'cd_empresa': @cd_empresa, 'tipo': vTipo }}
                 vPostString = vPostString.to_json
-                #if vId == "aalmf110"
-                #  @arq_importados.write vPostString
-                #  @arq_importados.write "\n"
-                #end
                 RestClient.post "#{@servidor_http}", JSON.parse(vPostString)
                 vCmdActivate = []
                 vIndica = false
