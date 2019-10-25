@@ -5,7 +5,7 @@ ambiente:
   empresa: 2
 geral:
   ultimo_diretorio: proclisting/
-  ultima_alteracao: 2019 09 20 14 39 08
+  ultima_alteracao: 2019 10 25 14 30 32
   nome_arq_result: coamo_producao
   servidor_http: http://localhost/componentes
   servidor_http_funcao: http://localhost/funcaos

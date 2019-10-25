@@ -5,7 +5,7 @@ ambiente:
   empresa: 4
 geral:
   ultimo_diretorio: proclisting/
-  ultima_alteracao: 2019 09 20 14 38 38
+  ultima_alteracao: 2019 10 25 14 30 20
   nome_arq_result: credi_producao
   servidor_http: http://localhost/componentes
   servidor_http_funcao: http://localhost/funcaos
