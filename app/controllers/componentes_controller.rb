@@ -1,4 +1,4 @@
-lass ComponentesController < ApplicationController
+class ComponentesController < ApplicationController
   respond_to :json, :html
 
   def index
@@ -12,7 +12,7 @@ lass ComponentesController < ApplicationController
     end
     if params[:fields].present?
       @campos = params[:fields].map{|n| n.to_sym}
-   end
+    end
     if params[:keywords].present?
       # Diz ao elastickick para pesquisar as keyrwords nos campos name e description
       @keywords = params[:keywords]
