@@ -315,7 +315,7 @@ class GerarArquivo
               if vCmdActivate.any?
                 vComando = ""
                 vComando = vCmdActivate.map { |i| i.to_s }.join("")
-                vComando = vComando.dowdowncase.gsub("$componentname", "\"#{vId}\"")
+                vComando = vComando.downcase.gsub("$componentname", "\"#{vId}\"")
                 vComando = vComando.downcase.gsub("$instancename", "\"#{vId}\"")
                 vPostString = {'componentes': {'nome': vId, 'linha': vComando, 'cd_empresa': @cd_empresa, 'tipo': vTipo }}
                 vPostString = vPostString.to_json
