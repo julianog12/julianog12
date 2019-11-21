@@ -1,4 +1,4 @@
-class ComponentesController < ApplicationController
+lass ComponentesController < ApplicationController
   respond_to :json, :html
 
   def index
@@ -17,10 +17,15 @@ class ComponentesController < ApplicationController
       # Diz ao elastickick para pesquisar as keyrwords nos campos name e description
       @keywords = params[:keywords]
       if @campos.nil?
-        @componentes = Componente.search(params[:keywords], 
+        if !params[:nome].nil?
+          v_where = {nome: params[:nome], cd_empresa: params[:cd_empresa]}
+        else
+          v_where = { cd_empresa: params[:cd_empresa]}
+        end
+        @componentes = Componente.search(params[:keywords],
                                         aggs: {store_id: {limit: 15000}},
                                         operator: params[:operator_field],
-                                        where: { cd_empresa: params[:cd_empresa]},
+                                        where: v_where, #{ cd_empresa: params[:cd_empresa]},
                                         match: params[:match_field].to_sym,
                                         misspellings: false)
                                         #order: {"id" => "desc"},
