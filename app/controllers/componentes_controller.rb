@@ -39,7 +39,7 @@ class ComponentesController < ApplicationController
                                         fields: @campos, 
                                         aggs: {store_id: {limit: 15000}},
                                         operator: params[:operator_field],
-                                        where: {cd_empresa: params[:cd_empresa]}, 
+                                        where: v_where, #{cd_empresa: params[:cd_empresa]}, 
                                         misspellings: false,
                                         match: params[:match_field].to_sym)
                                         #order: {"id" => "desc"},
