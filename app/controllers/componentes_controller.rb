@@ -30,6 +30,11 @@ class ComponentesController < ApplicationController
                                         misspellings: false)
                                         #order: {"id" => "desc"},
       else
+        if !params[:nome].nil?
+          v_where = {nome: params[:nome], cd_empresa: params[:cd_empresa]}
+        else
+          v_where = { cd_empresa: params[:cd_empresa]}
+        end
         @componentes = Componente.search(params[:keywords], 
                                         fields: @campos, 
                                         aggs: {store_id: {limit: 15000}},
