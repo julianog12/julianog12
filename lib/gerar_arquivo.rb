@@ -194,7 +194,7 @@ class GerarArquivo
   def processar
     v_dia = Time.now.strftime("%d%m%Y")
 
-    File.open(@nm_arquivo, 'r').each_line.with_index do |li, v_count|
+    File.open(@nm_arquivo, 'r:UTF-8').each_line.with_index do |li, v_count|
       if v_count > 0
         begin
           v_dia_hora	= Time.new(li.split[5][4..7], li.split[5][2..3], li.split[5][0..1], li.split[6][0..1], li.split[6][2..3])
