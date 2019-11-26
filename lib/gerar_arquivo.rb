@@ -74,7 +74,7 @@ class GerarArquivo
       f = open("| ls -lt --time-style='+%d%m%Y %H%M' #{@diretorio_listener}/*.#{@extensao_arquivo}")
     end
     a = File.new(@nm_arquivo, "w")
-    a.write f.read
+    a.write f.read.force_encoding('UTF-8')
     a.close
     @arq_importados = File.new(@nm_arquivos_importados, "w")
   end
