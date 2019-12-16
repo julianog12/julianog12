@@ -122,7 +122,7 @@ class GerarArquivo
       begin
         vPostString = vPostString.to_json
       rescue
-        vPostString = vPostString.to_json.force_encoding('ISO-8859-1')
+        vPostString = vPostString.to_json.force_encoding("UTF-8").encode("ASCII-8BIT", invalid: :replace, undef: :replace)
       end
       RestClient.post "#{@servidor_funcao}", JSON.parse(vPostString)
     end
