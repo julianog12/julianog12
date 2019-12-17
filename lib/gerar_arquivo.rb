@@ -125,7 +125,7 @@ class GerarArquivo
         Rails.logger.info "AQUI123"
         Rails.logger.info vPostString
         Rails.logger.info "********"
-        vPostString = vPostString.to_json.force_encoding("UTF-8").encode("ASCII-8BIT", invalid: :replace, undef: :replace)
+        vPostString = vPostString.to_json.force_encoding("UTF-8") #.encode("ASCII-8BIT", invalid: :replace, undef: :replace)
       end
       RestClient.post "#{@servidor_funcao}", JSON.parse(vPostString)
     end
