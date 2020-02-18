@@ -332,7 +332,7 @@ class GerarArquivo
                     nomeInstancia = dadosNewInstance[2].gsub("\"", "").gsub(",","") unless dadosNewInstance[2].nil?
                     variavelInstancia = dadosNewInstance[1].gsub("\"", "").gsub(",","") unless dadosNewInstance[1].nil?
                     if !nomeInstancia.nil?
-                      if nomeInstancia != variavelInstancia and vLinha.include?(nomeInstancia)
+                      if nomeInstancia != variavelInstancia and vLinha.include?(nomeInstancia) and variavelInstancia != 'LOAD'
                         vLinha = vLinha.gsub(dadosNewInstance[2].gsub("\"", "").gsub(",",""), "\"#{dadosNewInstance[1].gsub("\"", "").gsub(",","")}\"") unless dadosNewInstance[2].nil?
                       end
                     end
