@@ -120,7 +120,7 @@ class GerarArquivo
         }
       }
       begin
-        vPostString = vPostString.to_json.force_encoding('ASCII-8BIT')
+        vPostString = vPostString.to_json.force_encoding('ISO-8859-1').encode('UTF-8')
       rescue StandardError => e
         Rails.logger.info "AQUI123"
         Rails.logger.info vPostString
@@ -333,7 +333,7 @@ class GerarArquivo
               if linhaContem(vLinha)
                 if linhaContemActivate(vLinha)
                   if !vLinha.match(/^activate.*/i) and !vLinha.match(/_activate.*/i)
-                    vLinha = vLinha[vLinha.index('activate')..300]
+                    vLinha = vLinha[vLinha.index('activate')..-1]
                   end
                   if vIndicaNewInst
                     nomeInstancia = dadosNewInstance[2].gsub("\"", "").gsub(",","") unless dadosNewInstance[2].nil?
