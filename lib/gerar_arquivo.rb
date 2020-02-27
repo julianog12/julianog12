@@ -123,7 +123,7 @@ class GerarArquivo
         vPostString = vPostString.to_json.force_encoding('UTF-8')
       rescue StandardError => e
         Rails.logger.info "AQUI123"
-        Rails.logger.info vPostString.encoding
+        Rails.logger.info vPostString.to_s.encoding
         Rails.logger.info vPostString
         Rails.logger.info '************************'
         Rails.logger.info e.inspect
