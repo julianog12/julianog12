@@ -334,7 +334,7 @@ class GerarArquivo
               if linhaContem(vLinha)
                 if linhaContemActivate(vLinha)
                   if !vLinha.match(/^activate.*/i) and !vLinha.match(/_activate.*/i)
-                    vLinha = vLinha[vLinha.index('activate')..-1]
+                    vLinha = vLinha[vLinha.index('activate')..-1]  unless vLinha.index('activate')
                   end
                   if vIndicaNewInst
                     nomeInstancia = dadosNewInstance[2].gsub("\"", "").gsub(",","") unless dadosNewInstance[2].nil?
