@@ -335,6 +335,7 @@ class GerarArquivo
                 if linhaContemActivate(vLinha)
                   if !vLinha.match(/^activate.*/i) and !vLinha.match(/_activate.*/i)
                     begin
+                      vLinha = vLinha.downcase
                       vLinha = vLinha[vLinha.index('activate')..-1]  unless vLinha.index('activate')
                     rescue
                       Rails.logger.info "AQUI234"
