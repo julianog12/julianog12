@@ -59,7 +59,7 @@ class GerarArquivo
   end
 
   def linhaContemActivate(vLinha)
-    (vLinha.match(/^activate\s.*\".*\"/i) or vLinha.match(/^activate\s.*/i) or vLinha.match(/^activate\/.*/i))
+    (vLinha.match(/^activate\s.*\".*\"/i) or vLinha.match(/^activate\s.*/i) or vLinha.match(/^activate\/.*/i) or vLinha.match(/activate\/.*/i) or vLinha.match(/activate\s.*/i))
   end
 
   def pegaNomeInstanca(vLinha)
@@ -136,7 +136,9 @@ class GerarArquivo
   def linhaContem(vLinha)
     ((vLinha.match(/^activate\s.*\".*\"/i) or 
       vLinha.match(/^activate\s.*/i) or
-      vLinha.match(/^activate\/.*/i) or
+      vLinha.match(/^activate\/.*/i)  or 
+      vLinha.match(/activate\/.*/i) or 
+      vLinha.match(/activate\s.*/i) or
       vLinha.match(/^newinstance\s.*\".*\"\,/i) or 
       vLinha.match(/^new_instance\s.*\".*\"\,/i) or
       vLinha.match(/^newinstance\/.*\".*\"\,/i) or
@@ -330,12 +332,16 @@ class GerarArquivo
               end
               if linhaContem(vLinha)
                 if linhaContemActivate(vLinha)
+                  if !vLinha.match(/^activate.*/i) and !vLinha.match(/_activate.*/i)
+                    vLinha = vLinha[vLinha.index('activate')..300]
+                  end
                   if vIndicaNewInst
                     nomeInstancia = dadosNewInstance[2].gsub("\"", "").gsub(",","") unless dadosNewInstance[2].nil?
                     variavelInstancia = dadosNewInstance[1].gsub("\"", "").gsub(",","") unless dadosNewInstance[1].nil?
                     if !nomeInstancia.nil?
                       if nomeInstancia != variavelInstancia and vLinha.include?(nomeInstancia) and variavelInstancia != 'LOAD'
                         vLinha = vLinha.gsub(dadosNewInstance[2].gsub("\"", "").gsub(",",""), "\"#{dadosNewInstance[1].gsub("\"", "").gsub(",","")}\"") unless dadosNewInstance[2].nil?
+                        vLinha = vLinha.gsub("\"\"", "\"")
                       end
                     end
                   end
