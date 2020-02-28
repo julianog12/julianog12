@@ -89,6 +89,8 @@ class GerarArquivo
       vTipo = 'Local Proc'
     elsif vTipo.match(/partner operation/i)
       vTipo = 'Partner Operation'
+    elsif vTipo.match(/public operation/i)
+      vTipo = 'Public Operation'
     elsif vTipo.match(/operation/i)
       vTipo = 'Operation'
     else
@@ -296,7 +298,7 @@ class GerarArquivo
                 vIndicaNewInst = true
                 dadosNewInstance = pegaNomeInstanca(vLinha)
               end
-              if (!vLinha.match(/^;/) && vLinha.match(/^entry/i)) or (vLinha.match(/^operation/i) or vLinha.match(/^partner operation/i))
+              if (!vLinha.match(/^;/) && vLinha.match(/^entry/i)) or (vLinha.match(/^operation/i) or vLinha.match(/^partner operation/i)  or vLinha.match(/^public operation/i))
                 vIndicaFuncao = true
               end
               if vLinha.match(/\;\|/)
