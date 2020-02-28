@@ -120,10 +120,12 @@ class GerarArquivo
         }
       }
       begin
-        vPostString = vPostString.to_json.force_encoding('UTF-8')
+        if vPostString.to_s.encoding == "US-ASCII"
+          vPostString = vPostString.encode("UTF-8", "US-ASCII", invalid: :replace, undef: :replace, replace: "")
+        end
+        vPostString = vPostString.to_json
       rescue StandardError => e
         Rails.logger.info "AQUI123"
-        Rails.logger.info vPostString.to_s.encoding
         Rails.logger.info vPostString
         Rails.logger.info '************************'
         Rails.logger.info e.inspect
@@ -334,14 +336,8 @@ class GerarArquivo
               if linhaContem(vLinha)
                 if linhaContemActivate(vLinha)
                   if !vLinha.match(/^activate.*/i) and !vLinha.match(/_activate.*/i)
-                    begin
-                      vLinha = vLinha.downcase
-                      vLinha = vLinha[vLinha.index('activate')..-1]  unless vLinha.index('activate')
-                    rescue
-                      Rails.logger.info "AQUI234"
-                      Rails.logger.info vLinha
-                      nill
-                    end
+                    vLinha = vLinha.downcase
+                    vLinha = vLinha[vLinha.index('activate')..-1]  unless vLinha.index('activate')
                   end
                   if vIndicaNewInst
                     nomeInstancia = dadosNewInstance[2].gsub("\"", "").gsub(",","") unless dadosNewInstance[2].nil?
