@@ -125,7 +125,7 @@ class GerarArquivo
         #if vPostString.to_s.encoding == "ASCII-8BIT"
           vPostString = vPostString.force_encoding("UTF-8").encode("ASCII-8BIT", invalid: :replace, undef: :replace) #.encode("UTF-8", "ASCII-8BIT", invalid: :replace, undef: :replace, replace: "")
         #end
-        vPostString = vPostString.to_json.force_encoding("UTF-8").encode("ASCII-8BIT", invalid: :replace, undef: :replace)
+        vPostString = vPostString.to_json #.force_encoding("UTF-8").encode("ASCII-8BIT", invalid: :replace, undef: :replace)
       rescue StandardError => e
         Rails.logger.info "AQUI123"
         Rails.logger.info vPostString
