@@ -45,6 +45,9 @@ end
 
 def tratar_linha(linha)
   linha = linha.strip unless linha.nil?
+  if linha == "activate"
+    linha = ""
+  end
   if linha.match(/.*\;.*activate.*\".*\"/i) or 
     linha.match(/.*\;.*new_instance.*\".*\".*\,/i) or 
     linha.match(/.*\;.*newinstance.*\".*\".*\,/i) or
