@@ -122,7 +122,7 @@ class GerarArquivo
         }
       }
       begin
-        vPostString = vPostString.to_json.force_encoding("UTF-8").encode("ASCII-8BIT", invalid: :replace, undef: :replace)
+        vPostString = vPostString.to_json.force_encoding("UTF-8") #.encode("ASCII-8BIT", invalid: :replace, undef: :replace)
         RestClient.post "#{@servidor_funcao}", JSON.parse(vPostString)
       rescue StandardError => e
         Rails.logger.info "AQUI123"
