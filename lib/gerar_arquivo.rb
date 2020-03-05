@@ -1,10 +1,14 @@
+# Classe para gerar arquivo
+# Autor: Juliano Garcia
+# frozen_string_literal: true
+
 class GerarArquivo
   require 'open3'
   require "#{Rails.root}/lib/canivete.rb"
 
   def initialize(caminho_config)
     @caminho = caminho_config
-    @arq_yml = YAML::load(File.open(@caminho))
+    @arq_yml = YAML.safe_load(File.open(@caminho))
     @cd_empresa = @arq_yml['ambiente']['empresa']
 
     @nm_arquivo = "#{Rails.root}/lib/arquivos_gerados/" + @arq_yml['geral']['nome_arq_result'] + "_#{Time.now.strftime('%d%m%Y%H%M%S')}"
@@ -28,8 +32,8 @@ class GerarArquivo
 
     begin
       File.delete(@nm_arquivo)
-    rescue Exception => e
-      nil
+    rescue StandardError => e
+      Rails.logger.info e
     end
     gravar_arquivo_ultima_alteracao
   end
@@ -80,7 +84,6 @@ class GerarArquivo
   end
 
   def post_funcao(vComponente, vCmd, vCmdReal, vCmdDocto)
-    vComando = vCmd.map { |i| i.to_s.gsub("\t", "  ") }.join("\n")
     vComandoReal = vCmdReal.map { |i| i.to_s.gsub("\t", "  ") }.join("\n")
     vComandoDocto = vCmdDocto.map { |i| i.to_s.gsub("\t", "  ") }.join("\n")
 
@@ -100,13 +103,13 @@ class GerarArquivo
 
       if vCmd[0].to_s.split(' ').count <= 2
         begin
-          vNmFuncao = "#{vCmd[0][(vCmd[0].index(/\s/)+1)..100].to_s}"
+          vNmFuncao = "#{vCmd[0][(vCmd[0].index(/\s/)+1)..100]}"
         rescue
-          vNmFuncao = "#{vCmd[0][(vCmd[0].index(/\s/)+1)..100].to_s}"
+          vNmFuncao = "#{vCmd[0][(vCmd[0].index(/\s/)+1)..100]}"
         end
       else
-        vNmFuncao = "#{vCmd[0][(vCmd[0].index(/\s/)+1)..100].to_s}"
-        vNmFuncao = "#{vNmFuncao[(vNmFuncao.index(/\s/)+1)..100].to_s}"
+        vNmFuncao = "#{vCmd[0][(vCmd[0].index(/\s/)+1)..100]}"
+        vNmFuncao = "#{vNmFuncao[(vNmFuncao.index(/\s/)+1)..100]}"
       end
       vNmFuncao = vNmFuncao[0..(vNmFuncao.index(/\s/))] unless vNmFuncao.index(/\s/).nil?
       vNmFuncao = vNmFuncao.gsub('\n', '')
@@ -151,35 +154,29 @@ class GerarArquivo
 
 
   def trata_linha_comentario(vLinha, endPosLine)
-    vLinha2 = ''
     v2 = vLinha.index(";")
     vLinha2 = vLinha[(v2+1)..endPosLine]
 
-    v2 = 0
     v2 = vLinha2.index("|")
     if !v2.nil?
       vLinha2 = vLinha2[(v2+1)..endPosLine]
     end
 
-    v2 = 0
     v2 = vLinha2.index(/\S/)
     if !v2.nil?
       vLinha2 = vLinha2[v2..endPosLine]
     end
 
-    v2 = 0
     v2 = vLinha2.index('*****')
     if !v2.nil?
       vLinha2 = ''
     end
 
-    v2 = 0
     v2 = vLinha2.index('=====')
     if !v2.nil?
       vLinha2 = ''
     end
 
-    v2 = 0
     v2 = vLinha2.index('---')
     if !v2.nil?
       vLinha2 = ''
@@ -255,7 +252,7 @@ class GerarArquivo
                       cd_empresa: @cd_empresa
                      }
          }
-    rescue Exception => e
+    rescue StandardError => e
       m = File.new("#{Rails.root}/lib/erro_delete_gerado.log", "w")
       m.write "RestClient.delete Funcao\n"
       m.write e.inspect
@@ -274,7 +271,7 @@ class GerarArquivo
     vIndicaNewInst = false
     dadosNewInstance= []
 
-    f = File.read(vArquivoLer).each_line do |linha|
+    File.read(vArquivoLer).each_line do |linha|
       if linha[0..0] == '['
         vLinha, posFinalLinha = inicio_fim_linha(linha)
         vLinhaFuncao = vLinha
@@ -322,7 +319,6 @@ class GerarArquivo
                 end
               end
               if vCmdActivate.any?
-                vComando = ""
                 vComando = vCmdActivate.map { |i| i.to_s }.join("")
                 vComando = vComando.downcase.gsub("$componentname.", "\"#{vId}\".")
                 vComando = vComando.downcase.gsub("$instancename.", "\"#{vId}\".")
