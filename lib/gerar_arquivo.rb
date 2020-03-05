@@ -121,6 +121,9 @@ class GerarArquivo
         'cd_empresa': @cd_empresa
         }
       }
+      Rails.logger.info "AQUI345"
+      Rails.looger.info vPostString.class
+
       begin
         #if vPostString.to_s.encoding == "ASCII-8BIT"
         #vPostString = vPostString.to_s.force_encoding("UTF-8").encode("ASCII-8BIT", invalid: :replace, undef: :replace) #.encode("UTF-8", "ASCII-8BIT", invalid: :replace, undef: :replace, replace: "")
