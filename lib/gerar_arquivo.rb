@@ -112,23 +112,10 @@ class GerarArquivo
       vNmFuncao = vNmFuncao.gsub('\n', '')
       vNmFuncao = vNmFuncao.gsub('\r', '')
 
-      vPostString = { 'funcaos': {
-        'nm_funcao': vNmFuncao.downcase,
-        'cd_componente': vComponente.downcase,
-        'tipo': vTipo,
-        'codigo': vComandoReal,
-        'documentacao': vComandoDocto,
-        'cd_empresa': @cd_empresa
-        }
-      }
-      Rails.logger.info "AQUI345"
-      Rails.looger.info vPostString.class
-
+      vPostString = "{'funcaos': {'nm_funcao': #{vNmFuncao.downcase}, 'cd_componente': #{vComponente.downcase}, 'tipo': #{vTipo}, 'codigo': #{vComandoReal}, 'documentacao': #{vComandoDocto}, 'cd_empresa': #{@cd_empresa}}}"
       begin
-        #if vPostString.to_s.encoding == "ASCII-8BIT"
-        #vPostString = vPostString.to_s.force_encoding("UTF-8").encode("ASCII-8BIT", invalid: :replace, undef: :replace) #.encode("UTF-8", "ASCII-8BIT", invalid: :replace, undef: :replace, replace: "")
-        #end
-        vPostString = vPostString.to_json.force_encoding("UTF-8").encode("ASCII-8BIT", invalid: :replace, undef: :replace)
+        vPostString = vPostString.force_encoding("UTF-8").encode("ASCII-8BIT", invalid: :replace, undef: :replace)
+        RestClient.post "#{@servidor_funcao}", JSON.parse(vPostString)
       rescue StandardError => e
         Rails.logger.info "AQUI123"
         Rails.logger.info vPostString
@@ -137,7 +124,6 @@ class GerarArquivo
         Rails.logger.info "********"
         #vPostString = vPostString.to_json.force_encoding('UTF-8') #.encode("ASCII-8BIT", invalid: :replace, undef: :replace)
       end
-      RestClient.post "#{@servidor_funcao}", JSON.parse(vPostString)
     end
   end
  
