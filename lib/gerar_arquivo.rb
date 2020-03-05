@@ -112,7 +112,15 @@ class GerarArquivo
       vNmFuncao = vNmFuncao.gsub('\n', '')
       vNmFuncao = vNmFuncao.gsub('\r', '')
 
-      vPostString = "{'funcaos': {'nm_funcao': #{vNmFuncao.downcase}, 'cd_componente': #{vComponente.downcase}, 'tipo': #{vTipo}, 'codigo': #{vComandoReal}, 'documentacao': #{vComandoDocto}, 'cd_empresa': #{@cd_empresa}}}"
+      vPostString = { 'funcaos': {
+        'nm_funcao': vNmFuncao.downcase,
+        'cd_componente': vComponente.downcase,
+        'tipo': vTipo,
+        'codigo': vComandoReal,
+        'documentacao': vComandoDocto,
+        'cd_empresa': @cd_empresa
+        }
+      }
       begin
         vPostString = vPostString.to_json.force_encoding("UTF-8").encode("ASCII-8BIT", invalid: :replace, undef: :replace)
         RestClient.post "#{@servidor_funcao}", JSON.parse(vPostString)
