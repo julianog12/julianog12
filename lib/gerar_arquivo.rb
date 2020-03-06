@@ -12,20 +12,21 @@ class GerarArquivo
     @cd_empresa = @arq_yml['ambiente']['empresa']
 
     @nm_arquivo = "#{Rails.root}/lib/arquivos_gerados/" + @arq_yml['geral']['nome_arq_result'] + "_#{Time.now.strftime('%d%m%Y%H%M%S')}"
-    @nm_arquivos_importados = "#{Rails.root}/lib/arquivos_gerados/" + "#{@cd_empresa}_importados"  + "_#{Time.now.strftime('%d_%m_%Y_%H_%M_%S')}" 
+    @nm_arquivos_importados = "#{Rails.root}/lib/arquivos_gerados/" + "#{@cd_empresa}_importados" + "_#{Time.now.strftime('%d_%m_%Y_%H_%M_%S')}"
 
     begin
       File.delete("#{Rails.root}/lib/arquivos_gerados/" + "#{@cd_empresa}_importados_*")
-    rescue
+    rescue StandardError => e
+      Rails.logger.info e.inspect
       nil
     end
 
-    @extensao_arquivo = (@arq_yml['ambiente']['extensao_leitura'] == 'all' ? "*" : @arq_yml['ambiente']['extensao_leitura'])
+    @extensao_arquivo = (@arq_yml['ambiente']['extensao_leitura'] == 'all' ? '*' : @arq_yml['ambiente']['extensao_leitura'])
     @servidor_funcao = @arq_yml['geral']['servidor_http_funcao']
     @servidor_http = @arq_yml['geral']['servidor_http']
     @diretorio_listener = @arq_yml['ambiente']['diretorio_listener']
-    @ultimo_diretorio = @arq_yml['geral']['ultimo_diretorio'] 
-    @data_ultima_alteracao= ler_arquivo_ultima_alteracao(@arq_yml['geral']['ultima_alteracao'].split(" "))
+    @ultimo_diretorio = @arq_yml['geral']['ultimo_diretorio']
+    @data_ultima_alteracao = ler_arquivo_ultima_alteracao(@arq_yml['geral']['ultima_alteracao'].split(' '))
 
     gerar_arquivo
     processar
@@ -43,157 +44,156 @@ class GerarArquivo
   end
 
   def gravar_arquivo_ultima_alteracao
-    data = Time.now.strftime("%Y %m %d %H %M %S").to_s
+    data = Time.now.strftime('%Y %m %d %H %M %S').to_s
     @arq_yml['geral']['ultima_alteracao'] = data
-    File.open(@caminho, "w") {|f| f.write @arq_yml.to_yaml}
+    File.open(@caminho, 'w') { |f| f.write @arq_yml.to_yaml }
   end
 
-  def linhaContemNewInstance(vLinha)
-    v= (vLinha.match(/^newinstance\s.*\".*\"\,/i) or vLinha.match(/^new_instance\s.*\".*\"\,/i) or vLinha.match(/^newinstance\/.*\".*\"\,/i))
+  def linhaContemNewInstance(v_linha)
+    v = (v_linha.match(/^newinstance\s.*\".*\"\,/i) || v_linha.match(/^new_instance\s.*\".*\"\,/i) || v_linha.match(/^newinstance\/.*\".*\"\,/i))
     if v
       begin
-        dados = vLinha.scan(/\S+/)
-        v = dados[1].downcase != dados[2].downcase unless dados[1].nil? and dados[2].nil?
-      rescue
-        Rails.logger.info "AAAEEEE"
+        dados = v_linha.scan(/\S+/)
+        v = dados[1].downcase != dados[2].downcase unless dados[1].nil? && dados[2].nil?
+      rescue StandardError => e
+        Rails.logger.info 'AAAEEEE'
         Rails.logger.info dados.inspect
+        Rails.logger.info e
       end
     end
     v
   end
 
-  def linhaContemActivate(vLinha)
-    (vLinha.match(/^activate\s.*\".*\"/i) or vLinha.match(/^activate\s.*/i) or vLinha.match(/^activate\/.*/i) or vLinha.match(/activate\/.*/i) or vLinha.match(/activate\s.*/i))
+  def linhaContemActivate(v_linha)
+    (v_linha.match(/^activate\s.*\".*\"/i) || v_linha.match(/^activate\s.*/i) || v_linha.match(/^activate\/.*/i) || v_linha.match(/activate\/.*/i) || v_linha.match(/activate\s.*/i))
   end
 
-  def pegaNomeInstanca(vLinha)
-    vLinha.scan(/\S+/)
+  def pegaNomeInstanca(v_linha)
+    v_linha.scan(/\S+/)
   end
 
   def gerar_arquivo
     f = nil
-    if @extensao_arquivo == "*"
+    if @extensao_arquivo == '*'
       f = open("| ls -lt --time-style='+%d%m%Y %H%M' #{@diretorio_listener}/")
     else
       f = open("| ls -lt --time-style='+%d%m%Y %H%M' #{@diretorio_listener}/*.#{@extensao_arquivo}")
     end
-    a = File.new(@nm_arquivo, "w")
+    a = File.new(@nm_arquivo, 'w')
     a.write f.read.force_encoding('UTF-8')
     a.close
-    @arq_importados = File.new(@nm_arquivos_importados, "w")
+    @arq_importados = File.new(@nm_arquivos_importados, 'w')
   end
 
-  def post_funcao(vComponente, vCmd, vCmdReal, vCmdDocto)
-    vComandoReal = vCmdReal.map { |i| i.to_s.gsub("\t", "  ") }.join("\n")
-    vComandoDocto = vCmdDocto.map { |i| i.to_s.gsub("\t", "  ") }.join("\n")
+  def post_funcao(v_componente, v_cmd, v_cmd_real, v_cmd_docto)
+    v_comando_real = v_cmd_real.map { |i| i.to_s.gsub("\t", '  ') }.join("\n")
+    v_comando_docto = v_cmd_docto.map { |i| i.to_s.gsub("\t", '  ') }.join("\n")
 
-    vTipo = vCmd[0][0..(vCmd[0].index(/\s/)-1)].to_s
-    if vTipo.match(/entry/i)
-      vTipo = 'Local Proc'
-    elsif vTipo.match(/partner operation/i)
-      vTipo = 'Partner Operation'
-    elsif vTipo.match(/public operation/i)
-      vTipo = 'Public Operation'
-    elsif vTipo.match(/operation/i)
-      vTipo = 'Operation'
+    v_tipo = v_cmd[0][0..(v_cmd[0].index(/\s/) -1)].to_s
+    if v_tipo.match(/entry/i)
+      v_tipo = 'Local Proc'
+    elsif v_tipo.match(/partner operation/i)
+      v_tipo = 'Partner Operation'
+    elsif v_tipo.match(/public operation/i)
+      v_tipo = 'Public Operation'
+    elsif v_tipo.match(/operation/i)
+      v_tipo = 'Operation'
     else
-      vTipo = ''
+      v_tipo = ''
     end
-    if !vTipo.nil? && !vTipo.empty?
-
-      if vCmd[0].to_s.split(' ').count <= 2
+    if !v_tipo.nil? && !v_tipo.empty?
+      if v_cmd[0].to_s.split(' ').count <= 2
         begin
-          vNmFuncao = "#{vCmd[0][(vCmd[0].index(/\s/)+1)..100]}"
-        rescue
-          vNmFuncao = "#{vCmd[0][(vCmd[0].index(/\s/)+1)..100]}"
+          v_nm_funcao = "#{v_cmd[0][(v_cmd[0].index(/\s/)+1)..100]}"
+        rescue StandardError => e
+          puts e.inspet
+          v_nm_funcao = "#{v_cmd[0][(v_cmd[0].index(/\s/)+1)..100]}"
         end
       else
-        vNmFuncao = "#{vCmd[0][(vCmd[0].index(/\s/)+1)..100]}"
-        vNmFuncao = "#{vNmFuncao[(vNmFuncao.index(/\s/)+1)..100]}"
+        v_nm_funcao = "#{v_cmd[0][(v_cmd[0].index(/\s/)+1)..100]}"
+        v_nm_funcao = "#{v_nm_funcao[(v_nm_funcao.index(/\s/)+1)..100]}"
       end
-      vNmFuncao = vNmFuncao[0..(vNmFuncao.index(/\s/))] unless vNmFuncao.index(/\s/).nil?
-      vNmFuncao = vNmFuncao.gsub('\n', '')
-      vNmFuncao = vNmFuncao.gsub('\r', '')
+      v_nm_funcao = v_nm_funcao[0..(v_nm_funcao.index(/\s/))] unless v_nm_funcao.index(/\s/).nil?
+      v_nm_funcao = v_nm_funcao.gsub('\n', '')
+      v_nm_funcao = v_nm_funcao.gsub('\r', '')
 
-      vPostString = { 'funcaos': {
-        'nm_funcao': vNmFuncao.downcase,
-        'cd_componente': vComponente.downcase,
-        'tipo': vTipo,
-        'codigo': vComandoReal,
-        'documentacao': vComandoDocto,
+      v_post_string = { 'funcaos': {
+        'nm_funcao': v_nm_funcao.downcase,
+        'cd_componente': v_componente.downcase,
+        'tipo': v_tipo,
+        'codigo': v_comando_real,
+        'documentacao': v_comando_docto,
         'cd_empresa': @cd_empresa
         }
       }
       begin
-        vPostString = vPostString.to_json.force_encoding("UTF-8") #.encode("ASCII-8BIT", invalid: :replace, undef: :replace)
-        RestClient.post "#{@servidor_funcao}", JSON.parse(vPostString)
+        v_post_string = v_post_string.to_json.force_encoding('ISO-8859-1')
+        RestClient.post "#{@servidor_funcao}", JSON.parse(v_post_string)
       rescue StandardError => e
-        Rails.logger.info "AQUI123"
-        Rails.logger.info vPostString
+        Rails.logger.info 'AQUI123'
+        Rails.logger.info v_post_string
         Rails.logger.info '************************'
         Rails.logger.info e.inspect
-        Rails.logger.info "********"
-        #vPostString = vPostString.to_json.force_encoding('UTF-8') #.encode("ASCII-8BIT", invalid: :replace, undef: :replace)
+        Rails.logger.info '********'
+        #v_post_string = v_post_string.to_json.force_encoding('UTF-8') #.encode("ASCII-8BIT", invalid: :replace, undef: :replace)
       end
     end
   end
  
-  def linhaContem(vLinha)
-    ((vLinha.match(/^activate\s.*\".*\"/i) or 
-      vLinha.match(/^activate\s.*/i) or
-      vLinha.match(/^activate\/.*/i)  or 
-      vLinha.match(/activate\/.*/i) or 
-      vLinha.match(/activate\s.*/i) or
-      vLinha.match(/^newinstance\s.*\".*\"\,/i) or 
-      vLinha.match(/^new_instance\s.*\".*\"\,/i) or
-      vLinha.match(/^newinstance\/.*\".*\"\,/i) or
-      vLinha.match(/^new_instance\/.*\".*\"\,/i) or
-      vLinha.match(/^selectdb\s/i) or
-      vLinha.match(/^sql.*\,.*\"([a-z]{3})\"/i)))
+  def linhaContem(v_linha)
+    ((v_linha.match(/^activate\s.*\".*\"/i) ||
+      v_linha.match(/^activate\s.*/i) ||
+      v_linha.match(/^activate\/.*/i) ||
+      v_linha.match(/activate\/.*/i) ||
+      v_linha.match(/activate\s.*/i) ||
+      v_linha.match(/^newinstance\s.*\".*\"\,/i) ||
+      v_linha.match(/^new_instance\s.*\".*\"\,/i) ||
+      v_linha.match(/^newinstance\/.*\".*\"\,/i) ||
+      v_linha.match(/^new_instance\/.*\".*\"\,/i) ||
+      v_linha.match(/^selectdb\s/i) ||
+      v_linha.match(/^sql.*\,.*\"([a-z]{3})\"/i)))
   end
 
+  def trata_linha_comentario(v_linha, endPosLine)
+    v2 = v_linha.index(";")
+    v_linha2 = v_linha[(v2+1)..endPosLine]
 
-  def trata_linha_comentario(vLinha, endPosLine)
-    v2 = vLinha.index(";")
-    vLinha2 = vLinha[(v2+1)..endPosLine]
-
-    v2 = vLinha2.index("|")
+    v2 = v_linha2.index("|")
     if !v2.nil?
-      vLinha2 = vLinha2[(v2+1)..endPosLine]
+      v_linha2 = v_linha2[(v2+1)..endPosLine]
     end
 
-    v2 = vLinha2.index(/\S/)
+    v2 = v_linha2.index(/\S/)
     if !v2.nil?
-      vLinha2 = vLinha2[v2..endPosLine]
+      v_linha2 = v_linha2[v2..endPosLine]
     end
 
-    v2 = vLinha2.index('*****')
+    v2 = v_linha2.index('*****')
     if !v2.nil?
-      vLinha2 = ''
+      v_linha2 = ''
     end
 
-    v2 = vLinha2.index('=====')
+    v2 = v_linha2.index('=====')
     if !v2.nil?
-      vLinha2 = ''
+      v_linha2 = ''
     end
 
-    v2 = vLinha2.index('---')
+    v2 = v_linha2.index('---')
     if !v2.nil?
-      vLinha2 = ''
+      v_linha2 = ''
     end
-    vLinha2[0..endPosLine]
+    v_linha2[0..endPosLine]
   end
 
-  
   def inicio_fim_linha(linha)
     v1 = linha.index("\n")
     if v1.nil?
-      vLinha = linha[26..300]
+      v_linha = linha[26..300]
     else
       v1 -= 1
-      vLinha= linha[26..v1]
+      v_linha= linha[26..v1]
     end
-    [vLinha, v1]
+    [v_linha, v1]
   end
 
 
@@ -210,11 +210,11 @@ class GerarArquivo
 
         if v_dia_hora > @data_ultima_alteracao
           #if li.split[7].include?("aalmf110")
-           if v_dia == li.split[5]
-             post_arquivo(li.split[7])
-           else
-             break
-           end
+          break if v_dia != li.split[5]
+          post_arquivo(li.split[7])
+          #else
+          #  break
+          #end
           #end
         end
       end
@@ -222,144 +222,138 @@ class GerarArquivo
     @arq_importados.close
   end
 
-  def post_arquivo(vArquivo)
-    vTipo = ''
-    if vArquivo.include?('.cptlst')
-      vTipo = 'Componente'
-    elsif vArquivo.include?('.menlst')
-      vTipo = 'Menu'
-    elsif vArquivo.include?('.apslst')
-      vTipo = 'StartUpShel'
+  def post_arquivo(v_arquivo)
+    v_tipo = ''
+    if v_arquivo.include?('.cptlst')
+      v_tipo = 'Componente'
+    elsif v_arquivo.include?('.menlst')
+      v_tipo = 'Menu'
+    elsif v_arquivo.include?('.apslst')
+      v_tipo = 'StartUpShel'
     end
-    if vTipo.empty?
-      return nil
-    end
+    return nill if v_tipo.empty?
+    v_arquivo_ler = "#{@diretorio_listener}/#{v_arquivo}"
+    v_id = nome_arquivo(v_arquivo_ler)
 
-    vArquivoLer = "#{@diretorio_listener}/#{vArquivo}"
-    vId = nome_arquivo(vArquivoLer)
-
-    RestClient.delete "#{@servidor_http}/#{vId}", {params: 
+    RestClient.delete "#{@servidor_http}/#{v_id}", {params: 
                       {
-                       nome: vId, 
+                       nome: v_id, 
                        cd_empresa: @cd_empresa
                       }
           }
 
     begin
-      RestClient.delete "#{@servidor_funcao}/#{vId}", {params: 
+      RestClient.delete "#{@servidor_funcao}/#{v_id}", {params: 
                      {
-                      cd_componente: vId,
+                      cd_componente: v_id,
                       cd_empresa: @cd_empresa
                      }
          }
     rescue StandardError => e
-      m = File.new("#{Rails.root}/lib/erro_delete_gerado.log", "w")
+      m = File.new("#{Rails.root}/lib/erro_delete_gerado.log", 'w')
       m.write "RestClient.delete Funcao\n"
       m.write e.inspect
       m.close
     end
-    @arq_importados.write vArquivoLer
+    @arq_importados.write v_arquivo_ler
     @arq_importados.write "\n"
 
-    vCmdActivate = []
-    vIndica = false
-    vIndicaFuncao = false
-    vCmdFuncao = []
-    vCmdLinhaFuncao = []
-    vIndicaDocto = false
-    vCmdDocto = []
-    vIndicaNewInst = false
-    dadosNewInstance= []
+    v_cmd_activate = []
+    v_indica = false
+    v_indica_funcao = false
+    v_cmd_funcao = []
+    v_cmd_linha_funcao = []
+    v_indica_docto = false
+    v_cmd_docto = []
+    v_indica_new_inst = false
+    dados_new_instance= []
 
-    File.read(vArquivoLer).each_line do |linha|
-      if linha[0..0] == '['
-        vLinha, posFinalLinha = inicio_fim_linha(linha)
-        vLinhaFuncao = vLinha
-        vLinha = vLinha.lstrip unless vLinha.nil?
-        if !vLinha.nil?
-          if vIndica
-            vIndica = vLinha.match(/\%\\/) ? true : false
-            vLinha = tratar_linha(vLinha)
-            if !vLinha.empty?
-              vCmdActivate << vLinha
-            else
-              vIndica = false
-              vCmdActivate = []
-            end
+    File.read(v_arquivo_ler).each_line do |linha|
+      next unless linha[0..0] == '['
+      v_linha, posFinalLinha = inicio_fim_linha(linha)
+      v_linha_funcao = v_linha
+      v_linha = v_linha.lstrip unless v_linha.nil?
+      unless v_linha.nil?
+        if v_indica
+          v_indica = v_linha.match(/\%\\/) ? true : false
+          v_linha = tratar_linha(v_linha)
+          if !v_linha.empty?
+            v_cmd_activate << v_linha
           else
-            if !vLinha.nil?
-              if linhaContemNewInstance(vLinha)
-                vIndicaNewInst = true
-                dadosNewInstance = pegaNomeInstanca(vLinha)
+            v_indica = false
+            v_cmd_activate = []
+          end
+        else
+          unless v_linha.nil?
+            if linhaContemNewInstance(v_linha)
+              v_indica_new_inst = true
+              dados_new_instance = pegaNomeInstanca(v_linha)
+            end
+            if (!v_linha.match(/^;/) && v_linha.match(/^entry/i)) || (v_linha.match(/^operation/i) || v_linha.match(/^partner operation/i) || v_linha.match(/^public operation/i))
+              v_indica_funcao = true
+            end
+            v_indica_docto = true if v_linha.match(/\;\|/)
+            if v_indica_docto
+              if v_linha.match(/\;\|/) || v_linha.match(/\;/)
+                v_linha = trata_linha_comentario(v_linha, posFinalLinha)
+                v_cmd_docto << v_linha unless v_linha.nil?
+              else
+                v_indica_docto = false
               end
-              if (!vLinha.match(/^;/) && vLinha.match(/^entry/i)) or (vLinha.match(/^operation/i) or vLinha.match(/^partner operation/i)  or vLinha.match(/^public operation/i))
-                vIndicaFuncao = true
+            end
+            if v_indica_funcao
+              v_cmd_funcao << v_linha
+              v_cmd_linha_funcao << v_linha_funcao
+              if (!v_linha.match(/endw/i) && !v_linha.match(/endf/i) && !v_linha.match(/endi/i) && !v_linha.match(/endv/i) && !v_linha.match(/endp/i) && !v_linha.nil? && !v_linha.match(/^;/)) & (!!(v_linha.match(/^end\s/i)) || !!(v_linha.match(/^end\;/i)) || !!(v_linha.match(/^end/i)))
+                post_funcao(v_id, v_cmd_funcao, v_cmd_linha_funcao, v_cmd_docto)
+                v_cmd_funcao = []
+                v_cmd_linha_funcao = []
+                v_indica_funcao = false
+                v_indica_docto = false
+                v_cmd_docto = []
               end
-              if vLinha.match(/\;\|/)
-                vIndicaDocto = true
-              end
-              if vIndicaDocto
-                if vLinha.match(/\;\|/) or vLinha.match(/\;/)
-                  vLinha = trata_linha_comentario(vLinha, posFinalLinha)
-                  vCmdDocto << vLinha unless vLinha.nil?
-                else
-                  vIndicaDocto = false
+            end
+            if v_cmd_activate.any?
+              v_comando = v_cmd_activate.map(&:to_s).join('')
+              v_comando = v_comando.downcase.gsub('$componentname.', "\"#{v_id}\".")
+              v_comando = v_comando.downcase.gsub('"$instancename.', "\"#{v_id}\".")
+              v_comando = v_comando.downcase.gsub('%%$componentname', "#{v_id}")
+              v_comando = v_comando.downcase.gsub('%%$instancename', "#{v_id}")
+              v_post_string = {'componentes': {'nome': v_id, 'linha': v_comando, 'cd_empresa': @cd_empresa, 'tipo': v_tipo }}
+              v_post_string = v_post_string.to_json
+              RestClient.post "#{@servidor_http}", JSON.parse(v_post_string)
+              v_cmd_activate = []
+              v_indica = false
+            end
+            if linhaContem(v_linha)
+              if linhaContemActivate(v_linha)
+                if !v_linha.match(/^activate.*/i) && !v_linha.match(/_activate.*/i)
+                  v_linha = v_linha.downcase
+                  v_linha = v_linha[v_linha.index('activate')..-1]  unless v_linha.index('activate')
                 end
-              end
-              if vIndicaFuncao
-                vCmdFuncao << vLinha
-                vCmdLinhaFuncao << vLinhaFuncao
-                if (!vLinha.match(/endw/i) && !vLinha.match(/endf/i) && !vLinha.match(/endi/i) && !vLinha.match(/endv/i) && !vLinha.match(/endp/i) && !vLinha.nil? && !vLinha.match(/^;/)) & (!!(vLinha.match(/^end\s/i)) or !!(vLinha.match(/^end\;/i)) or !!(vLinha.match(/^end/i)))
-                  post_funcao(vId, vCmdFuncao, vCmdLinhaFuncao, vCmdDocto)
-                  vCmdFuncao = []
-                  vCmdLinhaFuncao = []
-                  vIndicaFuncao = false
-                  vIndicaDocto = false
-                  vCmdDocto = []
-                end
-              end
-              if vCmdActivate.any?
-                vComando = vCmdActivate.map { |i| i.to_s }.join("")
-                vComando = vComando.downcase.gsub("$componentname.", "\"#{vId}\".")
-                vComando = vComando.downcase.gsub("$instancename.", "\"#{vId}\".")
-                vComando = vComando.downcase.gsub("%%$componentname", "#{vId}")
-                vComando = vComando.downcase.gsub("%%$instancename", "#{vId}")
-                vPostString = {'componentes': {'nome': vId, 'linha': vComando, 'cd_empresa': @cd_empresa, 'tipo': vTipo }}
-                vPostString = vPostString.to_json
-                RestClient.post "#{@servidor_http}", JSON.parse(vPostString)
-                vCmdActivate = []
-                vIndica = false
-              end
-              if linhaContem(vLinha)
-                if linhaContemActivate(vLinha)
-                  if !vLinha.match(/^activate.*/i) and !vLinha.match(/_activate.*/i)
-                    vLinha = vLinha.downcase
-                    vLinha = vLinha[vLinha.index('activate')..-1]  unless vLinha.index('activate')
-                  end
-                  if vIndicaNewInst
-                    nomeInstancia = dadosNewInstance[2].gsub("\"", "").gsub(",","") unless dadosNewInstance[2].nil?
-                    variavelInstancia = dadosNewInstance[1].gsub("\"", "").gsub(",","") unless dadosNewInstance[1].nil?
-                    if !nomeInstancia.nil?
-                      if nomeInstancia != variavelInstancia and vLinha.include?(nomeInstancia) and variavelInstancia != 'LOAD'
-                        vLinha = vLinha.gsub(dadosNewInstance[2].gsub("\"", "").gsub(",",""), "\"#{dadosNewInstance[1].gsub("\"", "").gsub(",","")}\"") unless dadosNewInstance[2].nil?
-                        vLinha = vLinha.gsub("\"\"", "\"")
-                      end
+                if v_indica_new_inst
+                  v_nome_instancia = dados_new_instance[2].gsub("\"", "").gsub(",","") unless dados_new_instance[2].nil?
+                  v_variavel_instancia = dados_new_instance[1].gsub("\"", "").gsub(",","") unless dados_new_instance[1].nil?
+                  unless v_nome_instancia.nil?
+                    if v_nome_instancia != v_variavel_instancia and v_linha.include?(v_nome_instancia) and v_variavel_instancia != 'LOAD'
+                      v_linha = v_linha.gsub(dados_new_instance[2].gsub("\"", "").gsub(",",""), "\"#{dados_new_instance[1].gsub("\"", '').gsub(",",'')}\"") unless dados_new_instance[2].nil?
+                      v_linha = v_linha.gsub("\"\"", "\"")
                     end
                   end
                 end
-                vIndica = vLinha.match(/\%\\/) ? true : false
-                if !vIndica 
-                  if (!vLinha[-1, 1].empty? and vLinha[-1, 1] != ")" and vLinha.length >= 248)
-                    vIndica = true
-                  end
+              end
+              v_indica = v_linha.match(/\%\\/) ? true : false
+              if !v_indica 
+                if (!v_linha[-1, 1].empty? and v_linha[-1, 1] != ")" and v_linha.length >= 248)
+                  v_indica = true
                 end
-                vLinha = tratar_linha(vLinha)
-                if !vLinha.empty?
-                  vCmdActivate << vLinha
-                else
-                  vIndica = false
-                  vCmdActivate = []
-                end
+              end
+              v_linha = tratar_linha(v_linha)
+              if !v_linha.empty?
+                v_cmd_activate << v_linha
+              else
+                v_indica = false
+                v_cmd_activate = []
               end
             end
           end
