@@ -127,10 +127,13 @@ class GerarArquivo
         }
       }
       begin
-        v_post_string = v_post_string.to_json.force_encoding('ISO-8859-1')
+
+        v_post_string = v_post_string.to_json.force_encoding('UTF-8')
         RestClient.post "#{@servidor_funcao}", JSON.parse(v_post_string)
       rescue StandardError => e
         Rails.logger.info 'AQUI123'
+        Rails.logger.info Encoding.default_internal
+        Rails.logger.info Encoding.default_external
         Rails.logger.info v_post_string
         Rails.logger.info '************************'
         Rails.logger.info e.inspect
