@@ -1,3 +1,4 @@
+# encoding: UTF-8
 # Classe para gerar arquivo
 # Autor: Juliano Garcia
 # frozen_string_literal: true
