@@ -34,26 +34,33 @@ class FuncaosController < ApplicationController
                                   match: params[:match_field].to_sym,
                                   misspellings: eval(@erro_ortografia))
        else
-        #@funcaos = Funcao.search(params[:keywords],
-        #                         fields: @campos,
-        #                         where: {cd_empresa: @cd_empresa},
-        #                         operator: params[:operator_field],
-        #                         match: params[:match_field].to_sym,
-        #                         order: {sort_column => sort_direction},
-        #                         misspellings: eval(@erro_ortografia))
-        if @campos.size > 1
-          v_where = { cd_empresa: @cd_empresa}
-        else
-          v_where = { cd_empresa: @cd_empresa, "#{params[:fields].join("")}": {like: "%#{params[:keywords]}%"}}
-        end
-        @funcaos = Funcao.search(params[:keywords],
-                                 fields: @campos,
-                                 where: v_where, #{cd_empresa: @cd_empresa},
-                                 operator: params[:operator_field],
-                                 match: params[:match_field].to_sym,
-                                 order: {sort_column => sort_direction},
-                                 misspellings: eval(@erro_ortografia))
- 
+         #@funcaos = Funcao.search(params[:keywords],
+         #                         fields: @campos,
+         #                         where: {cd_empresa: @cd_empresa},
+         #                         operator: params[:operator_field],
+         #                         match: params[:match_field].to_sym,
+         #                         order: {sort_column => sort_direction},
+         #                         misspellings: eval(@erro_ortografia))
+         if params[:operator_field] == "like"
+           if @campos.size > 1
+             v_where = { cd_empresa: @cd_empresa}
+           else
+             v_where = { cd_empresa: @cd_empresa, "#{params[:fields].join("")}": {like: "%#{params[:keywords]}%"}}
+           end
+           @funcaos = Funcao.search(params[:keywords],
+                                    fields: @campos,
+                                    where: v_where, #{cd_empresa: @cd_empresa},
+                                    order: {sort_column => sort_direction})
+         else
+           v_where = { cd_empresa: @cd_empresa}
+           @funcaos = Funcao.search(params[:keywords],
+                                    fields: @campos,
+                                    where: v_where,
+                                    operator: params[:operator_field],
+                                    match: params[:match_field].to_sym,
+                                    order: {sort_column => sort_direction},
+                                    misspellings: eval(@erro_ortografia))
+         end
        end
     end
     respond_with(@funcaos)

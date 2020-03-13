@@ -43,7 +43,7 @@
      </div>
      <div class="col-sm-2">
           <%= select_tag :operator_field,
-                 options_for_select([ ['OR', 'or'], ['AND', 'and'] ], 
+                 options_for_select([ ['OR', 'or'], ['AND', 'and'], ['LIKE', 'like'] ], 
                  selected: (params[:operator_field].present? ? params[:operator_field] : 'and')), 
                  class: "selectpicker form-control" %>
      </div>
