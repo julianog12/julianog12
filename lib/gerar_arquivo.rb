@@ -127,6 +127,11 @@ class GerarArquivo
         'cd_empresa': @cd_empresa
         }
       }
+
+      vEncodeSalvo = Encoding.default_external
+
+      Encoding.default_external = eval("Encoding::#{v_post_string.encoding.name.gsub('-','_')}")
+
       begin
 
         v_post_string = v_post_string.to_json.force_encoding('UTF-8')
@@ -139,8 +144,8 @@ class GerarArquivo
         Rails.logger.info '************************'
         Rails.logger.info e.inspect
         Rails.logger.info '********'
-        #v_post_string = v_post_string.to_json.force_encoding('UTF-8') #.encode("ASCII-8BIT", invalid: :replace, undef: :replace)
       end
+      Encoding.default_external = vEncodeSalvo
     end
   end
  
