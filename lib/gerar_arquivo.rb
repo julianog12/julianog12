@@ -66,7 +66,7 @@ class GerarArquivo
   end
 
   def linhaContemActivate(v_linha)
-    (v_linha.match(/^activate\s.*\".*\"/i) || v_linha.match(/^activate\s.*/i) || v_linha.match(/^activate\/.*/i) || v_linha.match(/activate\/.*/i) || v_linha.match(/activate\s.*/i))
+    (!v_linha.match(/#include lib_coamo:g_vld_activate/) & (v_linha.match(/^activate\s.*\".*\"/i) || v_linha.match(/^activate\s.*/i) || v_linha.match(/^activate\/.*/i) || v_linha.match(/activate\/.*/i) || v_linha.match(/activate\s.*/i)))
   end
 
   def pegaNomeInstanca(v_linha)
@@ -86,22 +86,28 @@ class GerarArquivo
     @arq_importados = File.new(@nm_arquivos_importados, 'w')
   end
 
+
+  def tipo_funcao(v_cmd)
+    case v_cmd
+    when /entry/i
+      'Local Proc'
+    when /partner operation/i
+      'Partner Operation'
+    when /public operation/i
+      'Public Operation'
+    when /operation/i
+      'Operation'
+    else
+      ''
+    end
+  end
+
   def post_funcao(v_componente, v_cmd, v_cmd_real, v_cmd_docto)
     v_comando_real = v_cmd_real.map { |i| i.to_s.gsub("\t", '  ') }.join("\n")
     v_comando_docto = v_cmd_docto.map { |i| i.to_s.gsub("\t", '  ') }.join("\n")
 
-    v_tipo = v_cmd[0][0..(v_cmd[0].index(/\s/) -1)].to_s
-    if v_tipo.match(/entry/i)
-      v_tipo = 'Local Proc'
-    elsif v_tipo.match(/partner operation/i)
-      v_tipo = 'Partner Operation'
-    elsif v_tipo.match(/public operation/i)
-      v_tipo = 'Public Operation'
-    elsif v_tipo.match(/operation/i)
-      v_tipo = 'Operation'
-    else
-      v_tipo = ''
-    end
+    v_tipo = tipo_funcao(v_cmd[0][0..(v_cmd[0].index(/\s/) -1)].to_s)
+    
     if !v_tipo.nil? && !v_tipo.empty?
       if v_cmd[0].to_s.split(' ').count <= 2
         begin
@@ -207,7 +213,7 @@ class GerarArquivo
     v_dia = Time.now.strftime("%d%m%Y")
 
     File.open(@nm_arquivo, 'r:UTF-8').each_line.with_index do |li, v_count|
-      if v_count > 0
+      if v_count.positive?
         begin
           v_dia_hora	= Time.new(li.split[5][4..7], li.split[5][2..3], li.split[5][0..1], li.split[6][0..1], li.split[6][2..3])
         rescue
@@ -215,52 +221,55 @@ class GerarArquivo
         end
 
         if v_dia_hora > @data_ultima_alteracao
-          #if li.split[7].include?("aalmf110")
           break if v_dia != li.split[5]
           post_arquivo(li.split[7])
-          #else
-          #  break
-          #end
-          #end
         end
       end
     end
     @arq_importados.close
   end
 
-  def post_arquivo(v_arquivo)
-    v_tipo = ''
-    if v_arquivo.include?('.cptlst')
-      v_tipo = 'Componente'
-    elsif v_arquivo.include?('.menlst')
-      v_tipo = 'Menu'
-    elsif v_arquivo.include?('.apslst')
-      v_tipo = 'StartUpShel'
+  def tipo_arquivo(v_arquivo)
+    case v_arquivo
+    when /.cptlst/i
+      return 'Componente'
+    when /.menlst/i
+      return 'Menu'
+    when /.apslst/i
+      return 'StartUpShel'
     end
-    return nill if v_tipo.empty?
+  end
+
+  def deletar_dados(v_id)
+    RestClient.delete "#{@servidor_http}/#{v_id}", {params: 
+      {
+       nome: v_id, 
+       cd_empresa: @cd_empresa
+      }
+    }
+    RestClient.delete "#{@servidor_funcao}/#{v_id}", {params: 
+      {
+       cd_componente: v_id,
+       cd_empresa: @cd_empresa
+      }
+    }
+  end
+
+
+  def post_arquivo(v_arquivo)
+
+    return nil if tipo_arquivo(v_arquivo).nil?
     v_arquivo_ler = "#{@diretorio_listener}/#{v_arquivo}"
     v_id = nome_arquivo(v_arquivo_ler)
 
-    RestClient.delete "#{@servidor_http}/#{v_id}", {params: 
-                      {
-                       nome: v_id, 
-                       cd_empresa: @cd_empresa
-                      }
-          }
-
     begin
-      RestClient.delete "#{@servidor_funcao}/#{v_id}", {params: 
-                     {
-                      cd_componente: v_id,
-                      cd_empresa: @cd_empresa
-                     }
-         }
+      deletar_dados(v_id)
     rescue StandardError => e
-      m = File.new("#{Rails.root}/lib/erro_delete_gerado.log", 'w')
-      m.write "RestClient.delete Funcao\n"
-      m.write e.inspect
-      m.close
+      Rails.logger.info 'Erro deletar funcao deletar_dados'
+      Rails.logger.info e
+      return nil
     end
+
     @arq_importados.write v_arquivo_ler
     @arq_importados.write "\n"
 
@@ -325,7 +334,7 @@ class GerarArquivo
               v_comando = v_comando.downcase.gsub('"$instancename.', "\"#{v_id}\".")
               v_comando = v_comando.downcase.gsub('%%$componentname', "#{v_id}")
               v_comando = v_comando.downcase.gsub('%%$instancename', "#{v_id}")
-              v_post_string = {'componentes': {'nome': v_id, 'linha': v_comando, 'cd_empresa': @cd_empresa, 'tipo': v_tipo }}
+              v_post_string = {'componentes': {'nome': v_id, 'linha': v_comando, 'cd_empresa': @cd_empresa, 'tipo': tipo_arquivo(v_arquivo) }}
               v_post_string = v_post_string.to_json
               RestClient.post "#{@servidor_http}", JSON.parse(v_post_string)
               v_cmd_activate = []
