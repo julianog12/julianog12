@@ -52,7 +52,8 @@ def tratar_linha(linha)
     linha.match(/.*\;.*new_instance.*\".*\".*\,/i) or 
     linha.match(/.*\;.*newinstance.*\".*\".*\,/i) or
     linha.match(/.*\;.*selectdb.*from.*\".*\"/i) or
-    linha.match(/.*\;.*sql/i)
+    linha.match(/.*\;.*sql/i) or
+    linha.match(/include lib_coamo:g_vld_activate/i)
     linha = ""
   else
     linha = linha.gsub("\%\\", "")
