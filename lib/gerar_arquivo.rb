@@ -139,7 +139,11 @@ class GerarArquivo
       }
 
       begin
-        v_post_string = v_post_string.to_json.force_encoding('UTF-8')
+        #v_post_string = v_post_string.to_json.force_encoding('UTF-8')
+		
+		v_post_string = v_post_string.to_json.force_encoding('UTF-8')
+		Encoding.default_external = eval("Encoding::#{v_post_string.encoding.name.gsub('-','_')}")
+		
         RestClient.post "#{@servidor_funcao}", JSON.parse(v_post_string)
         Encoding.default_external = v_encode_salvo
       rescue StandardError => e
