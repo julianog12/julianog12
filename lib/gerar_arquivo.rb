@@ -124,6 +124,10 @@ class GerarArquivo
       v_nm_funcao = v_nm_funcao.gsub('\n', '')
       v_nm_funcao = v_nm_funcao.gsub('\r', '')
 
+      v_encode_salvo = Encoding.default_external
+
+      Encoding.default_internal = Encoding::UTF_8
+
       v_post_string = { 'funcaos': {
         'nm_funcao': v_nm_funcao.downcase,
         'cd_componente': v_componente.downcase,
@@ -135,11 +139,9 @@ class GerarArquivo
       }
 
       begin
-        #v_encode_salvo = Encoding.default_external
         v_post_string = v_post_string.to_json.force_encoding('UTF-8')
-        #Encoding.default_external = eval("Encoding::#{v_post_string.encoding.name.gsub('-','_')}")
         RestClient.post "#{@servidor_funcao}", JSON.parse(v_post_string)
-        #Encoding.default_external = v_encode_salvo
+        Encoding.default_external = v_encode_salvo
       rescue StandardError => e
         Rails.logger.info 'AQUI123'
         Rails.logger.info Encoding.default_internal
