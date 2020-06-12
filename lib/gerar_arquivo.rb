@@ -146,7 +146,7 @@ class GerarArquivo
         Rails.logger.info 'AQUI123'
         Rails.logger.info Encoding.default_internal
         Rails.logger.info Encoding.default_external
-        Rails.logger.info v_post_string
+        Rails.logger.info "Encoding do arquivo #{v_post_string.encoding}"
         Rails.logger.info '************************'
         Rails.logger.info e.inspect
         Rails.logger.info '********'
