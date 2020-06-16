@@ -148,8 +148,8 @@ class GerarArquivo
         Encoding.default_external = v_encode_salvo
       rescue StandardError => e
         Rails.logger.info 'AQUI123'
-		Rails.logger v_comando_real.encoding
-		Rails.logger v_comando_docto.encoding
+		Rails.logger.info v_comando_real.encoding
+		Rails.logger.info v_comando_docto.encoding
 		Encoding.default_external = v_encode_salvo
         Rails.logger.info Encoding.default_internal
         Rails.logger.info Encoding.default_external
