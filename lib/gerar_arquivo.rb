@@ -127,7 +127,7 @@ class GerarArquivo
       v_encode_salvo = Encoding.default_external
 
       Encoding.default_internal = Encoding::UTF_8
-
+	  
       v_post_string = { 'funcaos': {
         'nm_funcao': v_nm_funcao.downcase,
         'cd_componente': v_componente.downcase,
@@ -148,6 +148,8 @@ class GerarArquivo
         Encoding.default_external = v_encode_salvo
       rescue StandardError => e
         Rails.logger.info 'AQUI123'
+		Rails.logger v_comando_real.encoding
+		Rails.logger v_comando_docto.encoding
 		Encoding.default_external = v_encode_salvo
         Rails.logger.info Encoding.default_internal
         Rails.logger.info Encoding.default_external
