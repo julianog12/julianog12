@@ -104,9 +104,11 @@ class GerarArquivo
 
   def post_funcao(v_componente, v_cmd, v_cmd_real, v_cmd_docto)
     v_comando_real = v_cmd_real.map { |i| i.to_s.gsub("\t", '  ') }.join("\n")
-    v_comando_real = v_comando_real.force_encoding('UTF-8')
+    #v_comando_real = v_comando_real.force_encoding('UTF-8')
+    v_comando_real = v_comando_real.encode("UTF-8", :invalid => :replace, :undef => :replace, :replace => "?")
     v_comando_docto = v_cmd_docto.map { |i| i.to_s.gsub("\t", '  ') }.join("\n")
-    v_comando_docto = v_comando_docto.force_encoding('UTF-8')
+    #v_comando_docto = v_comando_docto.force_encoding('UTF-8')
+    v_comando_docto = v_comando_docto.encode("UTF-8", :invalid => :replace, :undef => :replace, :replace => "?")
     v_tipo = tipo_funcao(v_cmd[0][0..(v_cmd[0].index(/\s/) -1)].to_s)
     
     if !v_tipo.nil? && !v_tipo.empty?
