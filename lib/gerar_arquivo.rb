@@ -353,11 +353,13 @@ class GerarArquivo
                 if v_indica_new_inst
                   v_nome_instancia = dados_new_instance[2].gsub("\"", "").gsub(",","") unless dados_new_instance[2].nil?
                   v_variavel_instancia = dados_new_instance[1].gsub("\"", "").gsub(",","") unless dados_new_instance[1].nil?
-                  vTrocar = "\"#{dados_new_instance[2].gsub("\"", "").gsub(",","")}\""
                   unless v_nome_instancia.nil?
                     if v_nome_instancia != v_variavel_instancia and v_linha.include?(v_nome_instancia) and v_variavel_instancia != 'LOAD'
-                      v_linha = v_linha.gsub(vTrocar, "\"#{dados_new_instance[1].gsub("\"", '').gsub(",",'')}\"") unless dados_new_instance[2].nil?
-                      v_linha = v_linha.gsub("\"\"", "\"")
+                      unless dados_new_instance[2].nil?
+                        vTrocar = "\"#{dados_new_instance[2].gsub("\"", "").gsub(",","")}\"" unless dados_new_instance[2].nil?
+                        v_linha = v_linha.gsub(vTrocar, "\"#{dados_new_instance[1].gsub("\"", '').gsub(",",'')}\"")
+                        v_linha = v_linha.gsub("\"\"", "\"")
+                      end
                     end
                   end
                 end
