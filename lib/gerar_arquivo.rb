@@ -103,16 +103,10 @@ class GerarArquivo
   end
 
   def post_funcao(v_componente, v_cmd, v_cmd_real, v_cmd_docto)
-
-    v_encode_salvo = Encoding.default_external    
-	
-	v_comando_real = v_cmd_real.map { |i| i.to_s.gsub("\t", '  ') }.join("\n")
-	
-	Encoding.default_external = eval("Encoding::#{v_comando_real.encoding.name.gsub('-','_')}")
-	
-	
+    v_comando_real = v_cmd_real.map { |i| i.to_s.gsub("\t", '  ') }.join("\n")
+    v_comando_real = v_comando_real.force_encoding('UTF-8')
     v_comando_docto = v_cmd_docto.map { |i| i.to_s.gsub("\t", '  ') }.join("\n")
-
+    v_comando_docto = v_comando_docto.force_encoding('UTF-8')
     v_tipo = tipo_funcao(v_cmd[0][0..(v_cmd[0].index(/\s/) -1)].to_s)
     
     if !v_tipo.nil? && !v_tipo.empty?
@@ -143,20 +137,12 @@ class GerarArquivo
       }
 
       begin
-        		
-		#v_post_string = v_post_string.to_json.force_encoding('UTF-8')
-		
-		v_post_string = v_post_string.to_json
-		
-		
+        v_post_string = v_post_string.to_json
         RestClient.post "#{@servidor_funcao}", JSON.parse(v_post_string)
-
-        Encoding.default_external = v_encode_salvo
       rescue StandardError => e
         Rails.logger.info 'AQUI123'
-		Rails.logger.info v_comando_real.encoding
-		Rails.logger.info v_comando_docto.encoding
-		Encoding.default_external = v_encode_salvo
+        Rails.logger.info v_comando_real.encoding
+        Rails.logger.info v_comando_docto.encoding
         Rails.logger.info Encoding.default_internal
         Rails.logger.info Encoding.default_external
         Rails.logger.info "Encoding do arquivo #{v_post_string.to_s.encoding}"
