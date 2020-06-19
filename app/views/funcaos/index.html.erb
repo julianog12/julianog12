@@ -8,20 +8,24 @@
 </style>
 
 <%= form_tag funcaos_path, method: :get, id: "funcaos_search", role: "form" do %>
-  <h4 class="text-primary">Funções</h4>
-  <!--<h3 class="">Encontrando Dados em Operations/Local Procs</h3>-->
+  <h4 class="text-primary"><center>Funções</center></h4>
   <%= label_tag :cd_empresa, "Selecione a Empresa:" %>
   <%= select_tag "cd_empresa",
                  options_for_select([ ['Coamo Desenv', 1], ['Coamo Prod', 2], ['Credi Desenv', 3], ['Credi Prod', 4]], 
                  selected: (params[:cd_empresa].present? ? params[:cd_empresa] : 1)), 
                  class: "form-control" %>
+  <br>
   <div class="row">
      <div class="col-sm-5">
-         <%= label_tag :keywords, "Texto para a busca:" %>
+       <div class="input-group">
+           <%= label_tag :keywords, "Texto para a busca:" %>
+       </div>
      </div>
      <div id="mouseon-erro_ortografia">
      <div class="col-sm-3">
-         <%= label_tag :erro_ortografia, "Considerar erro ortográfico?" %>
+        <div class="input-group">
+           <%= label_tag :erro_ortografia, "Considerar erro ortográfico?" %>
+        </div>
      </div>
      </div>
      <div class="col-sm-2">
@@ -54,13 +58,18 @@
                  class: "selectpicker form-control" %>
      </div>
   </div>
-  <%= label_tag :fields, "Considerar a busca somente pelo(s) campo(s):" %>
-  <%= select_tag "fields",
-                 options_for_select([ ['Nome LocalProc/Operation', :nm_funcao], ['Nome Componente', :cd_componente], ['Conteúdo LocalProc/Operation', :codigo], ['Documentação', :documentacao], ['Todos', '*']], 
-                 selected: (params[:fields].present? ? params[:fields] : :nm_funcao)), 
-                 class: "selectpicker form-control",
-                 multiple: true %>
   </br>
+  <div class="row">
+     <div class="col-sm-12">    
+      <%= label_tag :fields, "Considerar a busca somente pelo(s) campo(s):" %>
+      <%= select_tag "fields",
+                    options_for_select([ ['Nome LocalProc/Operation', :nm_funcao], ['Nome Componente', :cd_componente], ['Conteúdo LocalProc/Operation', :codigo], ['Documentação', :documentacao], ['Todos', '*']], 
+                    selected: (params[:fields].present? ? params[:fields] : :nm_funcao)), 
+                    class: "selectpicker form-control",
+                    multiple: true %>
+    </div>
+  </div>
+      </br>
   </br>
   <center> <%= submit_tag "Procurar", :name => nil, class: "btn btn-primary btn-block" %></center>
   <div id="funcaos"><%= render 'funcaos' %> </div>
