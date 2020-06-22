@@ -1,6 +1,6 @@
 class DiffsController < ApplicationController
 
-  #layout "application_diffs"
+  layout "application_diffs"
 
   def index
     @diff = Diff.new
