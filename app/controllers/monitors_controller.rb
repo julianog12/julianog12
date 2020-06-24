@@ -8,7 +8,7 @@ class MonitorsController < ApplicationController
 
       datas = {  range: {timestamp: {  gte: "#{params[:data_inicial]}",  lte: "#{params[:data_inicial]}"}  }}
       usuario = {  match: {ouser_oracle: "#{params[:ouser_oracle]}",  }} if params[:ouser_oracle].present?
-      sid = {  match: {ouser_oracle: "#{params[:sid_oracle]}",  }} if params[:sid_oracle].present?
+      sid = {  match: {sid_oracle: "#{params[:sid_oracle]}",  }} if params[:sid_oracle].present?
 
       componente = {  match: {nm_componente: "#{params[:nm_componente]}",  }} if params[:nm_componente].present?
 
