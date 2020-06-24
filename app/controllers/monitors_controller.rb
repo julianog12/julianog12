@@ -2,7 +2,7 @@ class MonitorsController < ApplicationController
   
   def index
     if params[:data_inicial].present? && params[:data_final].present?
-      target_client = Elasticsearch::Client.new url: 'http://172.17.82.27:8080/prd-uniface-monitor-0620', log: true
+      target_client = Elasticsearch::Client.new url: "http://172.17.82.27:8080/prd-uniface-monitor-#{params[:mes_ano]}", log: true
 
       consulta = []
 

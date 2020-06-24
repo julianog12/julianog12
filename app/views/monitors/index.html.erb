@@ -11,6 +11,23 @@
   <h4 class="text-primary"><center>Monitor Uniface PRD</center></h4>
   <br>
   <div class="row">
+    <div id="mouseon-erro_ortografia">
+      <div class="col-sm-2">
+         <div class="input-group">
+            <%= label_tag :mes_ano, "Mês/Ano Cons:" %>
+         </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+     <div class="col-sm-1">
+        <div class="input-group">
+           <%= text_field_tag :mes_ano, (params[:mes_ano].present? ? params[:mes_ano] : Time.now.strftime("%m%y")),  class: "form-control" %>
+        </div>   
+     </div>
+  </div>
+  </br>
+  <div class="row">
      <div class="col-sm-2">
        <div class="input-group">
            <%= label_tag :ouser_oracle, "Usuário Oracle:" %>
@@ -28,12 +45,12 @@
      </div>
      <div class="col-sm-3">
        <div class="input-group">
-           <%= label_tag :ouser_oracle, "Data/Hora Inicial:" %>
+           <%= label_tag :ouser_oracle, "Data Inicial:" %>
        </div>
      </div>
      <div class="col-sm-3">
        <div class="input-group">
-           <%= label_tag :ouser_oracle, "Data/Hora Final:" %>
+           <%= label_tag :ouser_oracle, "Data Final:" %>
        </div>
      </div>
   </div>
@@ -75,4 +92,17 @@
   $(document).on('turbolinks:load', function() {
      $(window).trigger('load.bs.select.data-api');
   });
+  $(function() {
+			// mouse-on example
+			var mouseOnDiv = $('#mouseon-erro_ortografia div');
+			var tipContent = $(
+				'<p><b>Mês/Ano (com 2 decimais) da consulta".</b></p>' +
+				'<p><b>São mantidos apenas 4 meses, contando o mês atual. Exemplo: 0420, mês 04 de 2020.</b></p>' 
+			);
+			mouseOnDiv.data('powertipjq', tipContent);
+			mouseOnDiv.powerTip({
+				placement: 'e',
+				mouseOnToPopup: true
+			});
+		});
 </script>
