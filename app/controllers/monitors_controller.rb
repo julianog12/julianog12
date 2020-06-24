@@ -8,12 +8,14 @@ class MonitorsController < ApplicationController
 
       datas = {  range: {timestamp: {  gte: "#{params[:data_inicial]}",  lte: "#{params[:data_inicial]}"}  }}
       usuario = {  match: {ouser_oracle: "#{params[:ouser_oracle]}",  }} if params[:ouser_oracle].present?
+      sid = {  match: {ouser_oracle: "#{params[:sid_oracle]}",  }} if params[:sid_oracle].present?
 
       componente = {  match: {nm_componente: "#{params[:nm_componente]}",  }} if params[:nm_componente].present?
 
       consulta << datas
       consulta << usuario unless usuario.nil?
       consulta << componente unless componente.nil?
+      consulta << sid unless sid.nil?
 
       response = target_client.search body:
                       {from: 0, size: 10000,query:
