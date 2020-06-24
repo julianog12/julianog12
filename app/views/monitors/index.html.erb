@@ -1,0 +1,78 @@
+<style>
+  @media (min-width: 780px){
+    .modal-xl{
+      width: 90%;
+      max-width:1200px;
+    }
+  }
+</style>
+
+<%= form_tag monitors_index_path, method: :get, id: "monitors_search", role: "form" do %>
+  <h4 class="text-primary"><center>Monitor Uniface PRD</center></h4>
+  <br>
+  <div class="row">
+     <div class="col-sm-2">
+       <div class="input-group">
+           <%= label_tag :ouser_oracle, "Usuário Oracle:" %>
+       </div>
+     </div>
+     <div class="col-sm-2">
+       <div class="input-group">
+           <%= label_tag :nm_componente, "Nome Componente:" %>
+       </div>
+     </div>
+     <div class="col-sm-2">
+       <div class="input-group">
+           <%= label_tag :sid_oracle, "SID Oracle:" %>
+       </div>
+     </div>
+     <div class="col-sm-3">
+       <div class="input-group">
+           <%= label_tag :ouser_oracle, "Data/Hora Inicial:" %>
+       </div>
+     </div>
+     <div class="col-sm-3">
+       <div class="input-group">
+           <%= label_tag :ouser_oracle, "Data/Hora Final:" %>
+       </div>
+     </div>
+  </div>
+  <div class="row">
+     <div class="col-sm-2">
+        <div class="input-group">
+           <%= text_field_tag :ouser_oracle, (params[:ouser_oracle].present? ? params[:ouser_oracle] : nil), class: "form-control" %>
+        </div>   
+     </div>
+     <div class="col-sm-2">
+        <div class="input-group">
+           <%= text_field_tag :nm_componente, (params[:nm_componente].present? ? params[:nm_componente] : nil), class: "form-control" %>
+        </div>   
+     </div>
+     <div class="col-sm-2">
+        <div class="input-group">
+           <%= text_field_tag :sid_oracle, (params[:sid_oracle].present? ? params[:sid_oracle] : nil), class: "form-control" %>
+        </div>   
+     </div>
+     <div class="col-sm-3">
+        <div class="input-group">
+           <%= date_field_tag :data_inicial, (params[:data_inicial].present? ? params[:data_inicial] : nil), class: "form-control" %>
+        </div>
+     </div>
+     <div class="col-sm-3">
+        <div class="input-group">
+         <%= date_field_tag :data_final, (params[:data_final].present? ? params[:data_final] : nil), class: "form-control" %>
+        </div>
+     </div>
+  </div>
+  </br>
+   </br>
+  </br>
+  <center> <%= submit_tag "Procurar", :name => nil, class: "btn btn-primary btn-block" %></center>
+  <div id="dados_monitor"><%= render 'dados_monitor' %> </div>
+<% end %>
+</br>
+<script>
+  $(document).on('turbolinks:load', function() {
+     $(window).trigger('load.bs.select.data-api');
+  });
+</script>
