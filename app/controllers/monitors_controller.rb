@@ -1,4 +1,5 @@
 class MonitorsController < ApplicationController
+  respond_to :json, :html, :js
   
   def index
     if params[:data_inicial].present? && params[:data_final].present?
@@ -47,7 +48,9 @@ class MonitorsController < ApplicationController
 
       #Tirando Duplicados
       @dados_monitor= tab_array.uniq { |topic| topic.values }
-
+      respond_with(@dados_monitor)
+    else
+      flash.now[:notice] = "Campo data Inicial e Data Final são obrigatórios!"
     end
   
   end
