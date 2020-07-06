@@ -42,7 +42,7 @@ class MonitorsController < ApplicationController
   
         date_and_time = '%d-%m-%Y %H:%M:%S'
         data_hora = DateTime.parse("#{v1}-#{v2}-#{v3} #{v4.to_s}:#{v5}:#{v6}", date_and_time)
-        dado = {:sid => item["_source"]["sid_oracle"], :data_hora => data_hora.strftime('%d/%m/%Y %H:%M:%S'), :estacao => item["_source"]["estacao"], :servidor => item["_source"]["host"], :user => item["_source"]["ouser_oracle"], :componente => item["_source"]["nm_componente"], :componente_pai => item["_source"]["nm_intancia_pai"]}
+        dado = {:sid => item["_source"]["sid_oracle"], :data_hora => data_hora.strftime('%d/%m/%Y %H:%M:%S'), :estacao => item["_source"]["estacao"], :inst_oracle => item["_source"]["no_oracle"], :servidor => item["_source"]["host"], :user => item["_source"]["ouser_oracle"], :componente => item["_source"]["nm_componente"], :componente_pai => item["_source"]["nm_intancia_pai"]}
         tab_array << dado
       end ;nil
 
