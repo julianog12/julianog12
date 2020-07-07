@@ -2,36 +2,11 @@ class MonitorsController < ApplicationController
   respond_to :json, :html, :js
   
 
-  def formata_data(data, sinal, formato)
-    v1 = data[0..3]
-    v2 = data[5..6]
-    v3 = data[8..9]
-  
-    v4 = data[11..12].to_i
-    if sinal == "-"
-      v4 -= 3
-    elsif sinal == "+"
-      v4 += 3
-    end
-    v5 = data[14..15]
-    v6 = data[17..18]
-
-    #date_and_time = '%d-%m-%Y %H:%M:%S'
-    data_hora = DateTime.parse("#{v1}-#{v2}-#{v3} #{v4.to_s}:#{v5}:#{v6}", formato)
-    data_hora.strftime(formato)
-  end
-
-
   def index
     if params[:data_inicial].present? && params[:data_final].present?
 
-      puts params[:data_inicial]
-      puts params[:data_final]
       v_data_inicial =  formata_data(params[:data_inicial], "+", '%Y-%m-%dT%H:%M')
       v_data_final =  formata_data(params[:data_final], "+", '%Y-%m-%dT%H:%M')
-
-      puts "Data Inicial "+v_data_inicial 
-      puts "Data Final "+v_data_final 
 
       target_client = Elasticsearch::Client.new url: "http://172.17.82.27:8080/prd-uniface-monitor-#{params[:mes_ano]}", log: true
 
@@ -62,33 +37,39 @@ class MonitorsController < ApplicationController
 	    tab_array = []
 
       dados.each do |item|
-        
-        puts "Data/Hora "+item["_source"]["timestamp"]
-        
-        #v1 = item["_source"]["timestamp"][0..3]
-        #v2 = item["_source"]["timestamp"][5..6]
-        #v3 = item["_source"]["timestamp"][8..9]
-  
-        #v4 = item["_source"]["timestamp"][11..12].to_i
-        #v4 -= 3
-        #v5 = item["_source"]["timestamp"][14..15]
-        #v6 = item["_source"]["timestamp"][17..18]
-  
-        #date_and_time = '%d-%m-%Y %H:%M:%S'
-        #data_hora = DateTime.parse("#{v1}-#{v2}-#{v3} #{v4.to_s}:#{v5}:#{v6}", date_and_time)
-        
-        data_hora = formata_data(item["_source"]["timestamp"], "-", '%d-%m-%Y %H:%M:%S')
 
+        data_hora = formata_data(item["_source"]["timestamp"], "-", '%d-%m-%Y %H:%M:%S')
         dado = {:sid => item["_source"]["sid_oracle"], :data_hora => data_hora, :estacao => item["_source"]["estacao"], :inst_oracle => item["_source"]["no_oracle"], :servidor => item["_source"]["host"], :user => item["_source"]["ouser_oracle"], :componente => item["_source"]["nm_componente"], :componente_pai => item["_source"]["nm_intancia_pai"]}
         tab_array << dado
-      end ;nil
+
+      end
 
       #Tirando Duplicados
       @dados_monitor= tab_array.uniq { |topic| topic.values }
       respond_with(@dados_monitor)
     else
-      flash.now[:notice] = "Campo data Inicial e Data Final são obrigatórios!"
+      flash.now[:notice] = "Os campos data Inicial, Data Final e Mês/Ano são obrigatórios!"
     end
   
   end
+
+  def formata_data(data, sinal, formato)
+    v1 = data[0..3]
+    v2 = data[5..6]
+    v3 = data[8..9]
+  
+    v4 = data[11..12].to_i
+    if sinal == "-"
+      v4 -= 3
+    elsif sinal == "+"
+      v4 += 3
+    end
+    v5 = data[14..15]
+    v6 = data[17..18]
+
+    #date_and_time = '%d-%m-%Y %H:%M:%S'
+    data_hora = DateTime.parse("#{v1}-#{v2}-#{v3} #{v4.to_s}:#{v5}:#{v6}", formato)
+    data_hora.strftime(formato)
+  end
+
 end
