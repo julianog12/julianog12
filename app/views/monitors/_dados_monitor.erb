@@ -18,9 +18,10 @@
        <th>Data/Hora Acesso</th>
        <th>SID Oracle</th>
        <th>Usuário Oracle</th>
-       <th>Instância</th>
+       <th>Insância</th>
        <th>Servidor</th>
        <th>Estação</th>
+	   <th>Comp PAI</th>
        <th>Componente</th>
     </tr>
   </thead>
@@ -33,6 +34,7 @@
             <td><%= dados[:inst_oracle] %> </th>
             <td><%= dados[:servidor] %> </td>
             <td><%= dados[:estacao] %> </td>
+			<td><%= dados[:componente_pai] %> </td>
             <td><%= dados[:componente] %> </td>
          </tr>
      <% end %>
