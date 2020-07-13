@@ -39,7 +39,7 @@ class MonitorsController < ApplicationController
       dados.each do |item|
 
         data_hora = formata_data(item["_source"]["timestamp"], "-", '%d/%m/%Y %H:%M:%S')
-        dado = {:sid => item["_source"]["sid_oracle"], :data_hora => data_hora, :estacao => item["_source"]["estacao"], :inst_oracle => item["_source"]["no_oracle"], :servidor => item["_source"]["host"], :user => item["_source"]["ouser_oracle"], :componente => item["_source"]["nm_componente"], :componente_pai => item["_source"]["nm_intancia_pai"]}
+        dado = {:sid => item["_source"]["sid_oracle"], :data_hora => data_hora, :estacao => item["_source"]["estacao"], :inst_oracle => item["_source"]["no_oracle"], :servidor => item["_source"]["host"], :user => item["_source"]["ouser_oracle"], :componente => item["_source"]["nm_componente"], :componente_pai => item["_source"]["nm_instancia_pai"]} 
         tab_array << dado
 
       end
