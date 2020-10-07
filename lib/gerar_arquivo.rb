@@ -104,13 +104,11 @@ class GerarArquivo
 
   def post_funcao(v_componente, v_cmd, v_cmd_real, v_cmd_docto)
     v_comando_real = v_cmd_real.map { |i| i.to_s.gsub("\t", '  ') }.join("\n")
-    #v_comando_real = v_comando_real.force_encoding('UTF-8')
     v_comando_real = v_comando_real.encode("UTF-8", :invalid => :replace, :undef => :replace, :replace => "?")
     v_comando_docto = v_cmd_docto.map { |i| i.to_s.gsub("\t", '  ') }.join("\n")
-    #v_comando_docto = v_comando_docto.force_encoding('UTF-8')
     v_comando_docto = v_comando_docto.encode("UTF-8", :invalid => :replace, :undef => :replace, :replace => "?")
     v_tipo = tipo_funcao(v_cmd[0][0..(v_cmd[0].index(/\s/) -1)].to_s)
-    
+
     if !v_tipo.nil? && !v_tipo.empty?
       if v_cmd[0].to_s.split(' ').count <= 2
         begin
@@ -127,7 +125,6 @@ class GerarArquivo
       v_nm_funcao = v_nm_funcao.gsub('\n', '')
       v_nm_funcao = v_nm_funcao.gsub('\r', '')
 
-  
       v_post_string = { 'funcaos': {
         'nm_funcao': v_nm_funcao.downcase,
         'cd_componente': v_componente.downcase,
@@ -143,11 +140,6 @@ class GerarArquivo
         RestClient.post "#{@servidor_funcao}", JSON.parse(v_post_string)
       rescue StandardError => e
         Rails.logger.info 'AQUI123'
-        Rails.logger.info v_comando_real.encoding
-        Rails.logger.info v_comando_docto.encoding
-        Rails.logger.info Encoding.default_internal
-        Rails.logger.info Encoding.default_external
-        Rails.logger.info "Encoding do arquivo #{v_post_string.to_s.encoding}"
         Rails.logger.info '************************'
         Rails.logger.info e.inspect
         Rails.logger.info '********'
@@ -334,6 +326,7 @@ class GerarArquivo
             end
             if v_cmd_activate.any?
               v_comando = v_cmd_activate.map(&:to_s).join('')
+              v_comando = v_comando.encode("UTF-8", :invalid => :replace, :undef => :replace, :replace => "?")
               v_comando = v_comando.downcase.gsub('$componentname.', "\"#{v_id}\".")
               v_comando = v_comando.downcase.gsub('"$instancename.', "\"#{v_id}\".")
               v_comando = v_comando.downcase.gsub('%%$componentname', "#{v_id}")
