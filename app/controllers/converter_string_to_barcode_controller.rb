@@ -7,9 +7,9 @@ class ConverterStringToBarcodeController < ApplicationController
 
 
     if params[:string_converter].present?
-      heigth = params[:height] ||= 60
-      margin = params[:margin] ||= 5
-      xdim = params[:xdim] ||= 1
+      heigth = params[:height].to_i ||= 60
+      margin = params[:margin].to_i ||= 5
+      xdim = params[:xdim].to_i ||= 1
       tipoC = params[:tipo_code] ||=Barby::Code128
       tipo_code = "#{tipoC.classify.constantize}.new(\"#{params[:string_converter]}\")"
       barcode = eval(tipo_code)
