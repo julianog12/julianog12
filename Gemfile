@@ -36,7 +36,7 @@ group :test do
   gem 'chromedriver-helper'
 end
 group :production do
-  gem 'puma', '~> 4.1'
+  gem 'puma', '~> 4.3.6'
 end
 
 gem 'autoprefixer-rails'
