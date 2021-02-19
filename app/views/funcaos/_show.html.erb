@@ -15,11 +15,15 @@
 <div class="overflow-auto">
 <div class="modal-body">
   <pre style="white-space: pre-line;">
-     <%= @mostrar=='codigo' ? @funcao.codigo.gsub(" ", "&nbsp;").html_safe : @funcao.documentacao %>
+     <% if @mostrar=='codigo'%>
+        <%= @funcao.codigo.gsub(" ", "&nbsp;").html_safe %>
+     <% else %>
+        <%= @funcao.documentacao %>
+     <% end %>
+     <%#= @mostrar=='codigo' ? @funcao.codigo.gsub(" ", "&nbsp;").html_safe : @funcao.documentacao %>
   </pre>
 </div>
 </div>
 <div class="modal-footer">
-  <!--<button class="btn btn-primary">Fechar</button>-->
   <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
 </div>

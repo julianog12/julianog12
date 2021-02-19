@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_03_121848) do
+ActiveRecord::Schema.define(version: 2021_02_08_203901) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -38,7 +38,10 @@ ActiveRecord::Schema.define(version: 2019_09_03_121848) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "documentacao"
-    t.index ["cd_componente", "nm_funcao", "cd_empresa"], name: "index_funcaos_on_cd_componente_and_nm_funcao_and_cd_empresa", unique: true
+    t.string "nm_campo", limit: 32
+    t.string "nm_tabela", limit: 32
+    t.string "nm_modelo", limit: 10
+    t.index ["cd_componente", "nm_funcao", "nm_campo", "nm_tabela", "cd_empresa"], name: "index_funcao_01", unique: true
   end
 
   create_table "series", force: :cascade do |t|

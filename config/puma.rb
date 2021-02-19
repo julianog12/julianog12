@@ -33,7 +33,7 @@ environment ENV.fetch("RAILS_ENV") { "development" }
 # Allow puma to be restarted by `rails restart` command.
 plugin :tmp_restart
 
-app_dir = File.expand_path("../..", __FILE__)
+app_dir = "/home/user1/search" #File.expand_path("../..", __FILE__)
 shared_dir = "#{app_dir}/shared"
 
 # Default to production
@@ -44,11 +44,11 @@ environment rails_env
 bind "unix://#{shared_dir}/sockets/search-puma.sock"
 
 # Logging
-stdout_redirect "#{shared_dir}/logs/puma.stdout.log", "#{shared_dir}/logs/puma.stderr.log", true
+stdout_redirect "#{shared_dir}/log/puma.stdout.log", "#{shared_dir}/log/puma.stderr.log", true
 
 # Set master PID and state locations
-pidfile "#{shared_dir}/pids/puma.pid"
-state_path "#{shared_dir}/pids/puma.state"
+pidfile "#{shared_dir}/tmp/pids/puma.pid"
+state_path "#{shared_dir}/tmp/pids/puma.state"
 activate_control_app
 
 on_worker_boot do

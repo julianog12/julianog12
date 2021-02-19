@@ -15,19 +15,23 @@
   <table id="example" class="table">
   <thead class="grey lighten-2"">
      <tr>
-       <th>Componente</th>
-       <th>Nome Função</th>
+       <th>Comp</th>
        <th>Tipo</th>
-       <th>Documentação</th>
-       <th>Data Alteração</th>
+       <th>Nome</th>
+       <th>Tabela</th>
+       <th>Campo</th>
+       <th>Docto</th>
+       <th>Dt.Alteração</th>
     </tr>
   </thead>
   <tbody>
     <% @funcaos.each do |funcao| %>
          <tr>
             <td><%= funcao.cd_componente %></td>
-            <td><%= link_to funcao.nm_funcao, funcao_path(funcao, mostrar: 'codigo'), {remote: true, 'id' => 'mostrar_codigo', 'data-toggle' =>  "modal", 'data-target' => '#show-codigo'} %> </td>
             <td><%= funcao.tipo %></td>
+            <td><%= link_to funcao.nm_funcao, funcao_path(funcao, mostrar: 'codigo'), {remote: true, 'id' => 'mostrar_codigo', 'data-toggle' =>  "modal", 'data-target' => '#show-codigo'} %> </td>
+            <td><%= funcao.nm_tabela %></td>
+            <td><%= funcao.nm_campo %></td>
             <% if !funcao.documentacao.nil? && funcao.documentacao.length > 2 %>
                  <td class="text-truncate" style="max-width: 100px">
                     <%= link_to funcao.documentacao[0..60], funcao_path(funcao, mostrar: 'documentacao'), {remote: true, 'id' => 'mostrar_docto', 'data-toggle' =>  "modal", 'data-target' => '#show-documentacao'} %>
@@ -49,6 +53,12 @@
 </div>
 
 <div id="show-documentacao" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content"></div>
+  </div>
+</div>
+
+<div id="show-include" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content"></div>
   </div>
