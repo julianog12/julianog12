@@ -17,8 +17,9 @@ class Processar
     @cd_empresa = @arq_yml['ambiente']['empresa']
 
     @nm_arquivo = "#{Rails.root}/lib/arquivos_gerados/" + @arq_yml['geral']['nome_arq_result'] + "_#{Time.now.strftime('%d%m%Y%H%M%S')}"
+    Rails.logger.info @nm_arquivo
     @nm_arquivos_importados = "#{Rails.root}/lib/arquivos_gerados/" + "#{@cd_empresa}_importados" + "_#{Time.now.strftime('%d_%m_%Y_%H_%M_%S')}"
-
+    Rails.logger.info @nm_arquivos_importados
     begin
       Dir.glob(["#{Rails.root}/lib/arquivos_gerados/" + "#{@cd_empresa}_importados_*","#{Rails.root}/lib/arquivos_gerados/" + @arq_yml['geral']['nome_arq_result'] + "_*"] ).each do |arq|
         File.delete(arq)
