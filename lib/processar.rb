@@ -65,7 +65,7 @@ class Processar
         rescue
           raise "#{li.split[5]}       #{li.split[6]}"
         end
-        if li.split[8] == 'cfatf007'
+        if li.split[7] == 'cfatf007'
           v_nao_ler = true
         end
         if v_nao_ler
