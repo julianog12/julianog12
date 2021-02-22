@@ -276,7 +276,7 @@ class ProcessarEntryOperation
   def processar
     return nil if tipo_arquivo(@arquivo).nil?
 
-    v_arquivo_ler = "#{@diretorio_listener}#{@arquivo}"
+    v_arquivo_ler = "#{@diretorio_listener}/#{@arquivo}"
     v_id = nome_arquivo(v_arquivo_ler)
 
     begin
