@@ -173,14 +173,15 @@ class ProcessarTrigger
   
   def processar
     v_arquivo_ler = "#{@diretorio_listener}/#{@arquivo}"
+    raise "#{@diretorio_listener}/#{@arquivo}"
     nm_arquivo = nome_arquivo(v_arquivo_ler)
   
     begin
       deletar_triggers(nm_arquivo)
     rescue StandardError => e
-       Rails.logger.info 'Erro deletar funcao deletar_dados para o componeten #{nm_arquivo}'
-       Rails.logger.info e
-      end
+      Rails.logger.info 'Erro deletar funcao deletar_dados para o componeten #{nm_arquivo}'
+      Rails.logger.info e
+    end
   
     iniciou_trigger = false
     terminou_trigger = false
