@@ -7,24 +7,25 @@
 
 class Processar
   require 'open3'
-  require "#{Rails.root}/lib/processar_entry_operation.rb"
-  require "#{Rails.root}/lib/processar_trigger.rb"
-  require "#{Rails.root}/lib/processar_include_proc.rb"
+  require '/home/user1/search/current/lib/processar_entry_operation.rb'
+  require '/home/user1/search/current/lib/processar_trigger.rb'
+  require '/home/user1/search/current/lib/processar_include_proc.rb'
 
   def initialize(caminho_config)
     @caminho = caminho_config
     @arq_yml = YAML.safe_load(File.open(@caminho))
     @cd_empresa = @arq_yml['ambiente']['empresa']
 
-    @nm_arquivo = "#{Rails.root}../current/lib/arquivos_gerados/" + @arq_yml['geral']['nome_arq_result'] + "_#{Time.now.strftime('%d%m%Y%H%M%S')}"
-    @nm_arquivos_importados = "#{Rails.root}../current/lib/arquivos_gerados/" + "#{@cd_empresa}_importados" + "_#{Time.now.strftime('%d_%m_%Y_%H_%M_%S')}"
+    @nm_arquivo = '/home/user1/search/current/lib/arquivos_gerados/' + @arq_yml['geral']['nome_arq_result'] + "_#{Time.now.strftime('%d%m%Y%H%M%S')}"
+    @nm_arquivos_importados = '/home/user1/search/current/lib/arquivos_gerados/' + "#{@cd_empresa}_importados" + "_#{Time.now.strftime('%d_%m_%Y_%H_%M_%S')}"
     begin
-      Dir.glob(["#{Rails.root}/lib/arquivos_gerados/" + "#{@cd_empresa}_importados_*","#{Rails.root}/lib/arquivos_gerados/" + @arq_yml['geral']['nome_arq_result'] + "_*"] ).each do |arq|
+      Dir.glob(['/home/user1/search/current/lib/arquivos_gerados/' + "#{@cd_empresa}_importados_*",
+                '/home/user1/search/current/lib/arquivos_gerados/' + @arq_yml['geral']['nome_arq_result'] + "_*"] ).each do |arq|
         File.delete(arq)
       end
     rescue StandardError => e
       Rails.logger.info e.inspect
-      puts "Erro ao tentar remover aquivo #{Rails.root}/lib/arquivos_gerados/" + "#{@cd_empresa}_importados_*"
+      puts 'Erro ao tentar remover aquivo /home/user1/search/current/lib/arquivos_gerados/' + "#{@cd_empresa}_importados_*"
       nil
     end
 
