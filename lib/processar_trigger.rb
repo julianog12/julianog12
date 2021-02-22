@@ -172,7 +172,7 @@ class ProcessarTrigger
 
   
   def processar
-    v_arquivo_ler = "#{@diretorio_listener}#{@arquivo}"
+    v_arquivo_ler = "#{@diretorio_listener}/#{@arquivo}"
     nm_arquivo = nome_arquivo(v_arquivo_ler)
   
     begin
