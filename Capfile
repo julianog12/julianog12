@@ -6,6 +6,8 @@ require "capistrano/deploy"
 
 require 'capistrano/ssh_doctor'
 
+require 'capistrano/database_yml'
+
 # Load the SCM plugin appropriate to your project:
 #
 # require "capistrano/scm/hg"

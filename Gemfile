@@ -17,12 +17,13 @@ end
 group :development do
   gem 'better_errors'
   gem 'capistrano'
+  gem 'capistrano-database-yml', '~> 1.0.0'
   gem 'capistrano-rails'
   gem 'capistrano-rbenv'
   gem 'capistrano-ssh-doctor', git: 'https://github.com/capistrano-plugins/capistrano-ssh-doctor.git'
   gem 'net-ssh', '>= 6.0.2'
-  gem 'ed25519', '>= 1.2', '< 2.0'
   gem 'bcrypt_pbkdf', '>= 1.0', '< 2.0'
+  gem 'ed25519', '>= 1.2', '< 2.0'
   gem 'listen', '>= 3.0.5', '< 3.2'
   gem 'pry'
   gem 'rails_layout'
@@ -32,8 +33,8 @@ group :development do
 end
 group :test do
   gem 'capybara', '>= 2.15'
-  gem 'selenium-webdriver'
   gem 'chromedriver-helper'
+  gem 'selenium-webdriver'
 end
 group :production do
   gem 'puma', '~> 4.3.6'
