@@ -15,7 +15,7 @@
 /shared/*
 
 /config/database.yml
-/config/initializers/*
+#/config/initializers/
 
 /public/assets
 /storage/*
