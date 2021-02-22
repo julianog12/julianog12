@@ -252,7 +252,13 @@ class ProcessarEntryOperation
   end
 
   def nao_finalizou_leitura(linha)
-    (linha[0..0] == "[" || linha[0..0] == "("  || linha.match(/   error:   /) || linha[0..8] == "    info:" || linha.match(/warning:   1000 - Deprecated/) || linha.match(/   warning: 1000/))
+    (linha[0..0] == '[' ||
+     linha[0..0] == '('  ||
+     linha.match(/   error:   /) ||
+     linha[0..8] == "    info:" ||
+     linha.match(/warning:   1000 - Deprecated/) ||
+     linha.match(/   warning: 1000/) ||
+     linha.match(/ warning:   1000 - \(Prepro/) )
   end
 
   def deletar_local_operations(v_id)
@@ -310,9 +316,6 @@ class ProcessarEntryOperation
   
 
     File.read(v_arquivo_ler).each_line do |linha|
-      #if v_id == 'gppvr035' && lpmx_includes.any?
-      #  raise "#{terminou_trigger}\n#{lpmx_includes.join('\n')}"
-      #end
       if lpmx_includes.any? && terminou_trigger
         post_lpmx(v_id, 'trigger-form', 'LPMX', lpmx_includes) if lpmx_includes.any?
         lpmx_includes = []

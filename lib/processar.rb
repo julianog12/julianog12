@@ -7,20 +7,20 @@
 
 class Processar
   require 'open3'
-  require '/home/user1/search/current/lib/processar_entry_operation.rb'
-  require '/home/user1/search/current/lib/processar_trigger.rb'
-  require '/home/user1/search/current/lib/processar_include_proc.rb'
+  require "#{Rails.root}/lib/processar_entry_operation"
+  require "#{Rails.root}/lib/processar_trigger"
+  require "#{Rails.root}/lib/processar_include_proc"
 
   def initialize(caminho_config)
     @caminho = caminho_config
     @arq_yml = YAML.safe_load(File.open(@caminho))
     @cd_empresa = @arq_yml['ambiente']['empresa']
 
-    @nm_arquivo = '/home/user1/search/current/lib/arquivos_gerados/' + @arq_yml['geral']['nome_arq_result'] + "_#{Time.now.strftime('%d%m%Y%H%M%S')}"
-    @nm_arquivos_importados = '/home/user1/search/current/lib/arquivos_gerados/' + "#{@cd_empresa}_importados" + "_#{Time.now.strftime('%d_%m_%Y_%H_%M_%S')}"
+    @nm_arquivo = "#{Rails.root}/lib/arquivos_gerados/" + @arq_yml['geral']['nome_arq_result'] + "_#{Time.now.strftime('%d%m%Y%H%M%S')}"
+    @nm_arquivos_importados = "#{Rails.root}/lib/arquivos_gerados/" + "#{@cd_empresa}_importados" + "_#{Time.now.strftime('%d_%m_%Y_%H_%M_%S')}"
     begin
-      Dir.glob(['/home/user1/search/current/lib/arquivos_gerados/' + "#{@cd_empresa}_importados_*",
-                '/home/user1/search/current/lib/arquivos_gerados/' + @arq_yml['geral']['nome_arq_result'] + "_*"] ).each do |arq|
+      Dir.glob(["#{Rails.root}/lib/arquivos_gerados/" + "#{@cd_empresa}_importados_*",
+                "#{Rails.root}/lib/arquivos_gerados/" + @arq_yml['geral']['nome_arq_result'] + "_*"] ).each do |arq|
         File.delete(arq)
       end
     rescue StandardError => e
@@ -64,8 +64,8 @@ class Processar
         rescue
           raise "#{li.split[5]}       #{li.split[6]}"
         end
-        if v_dia_hora > @data_ultima_alteracao
-          break if v_dia != li.split[5]
+        #if v_dia_hora > @data_ultima_alteracao
+         # break if v_dia != li.split[5]
           ProcessarTrigger.new(@cd_empresa,
                                @servidor_funcao, 
                                @servidor_http,
@@ -80,7 +80,7 @@ class Processar
                                 @ultimo_diretorio, 
                                 li.split[7])
 
-        end
+        #end
       end
     end
     ProcessarIncludeProc.new(@cd_empresa, @servidor_funcao)
