@@ -74,7 +74,14 @@
      </div>
     <div class="col-sm-5">    
       <%= select_tag "fields",
-                    options_for_select([ ['Nome Entry/Operation/Trigger/Include', :nm_funcao], ['Nome Componente', :cd_componente], ['Campo', :nm_campo], ['Tabela', :nm_tabela], ['Conteúdo Entry/Operation/Trigger/Include', :codigo], ['Documentação', :documentacao], ['Tipo Função', :tipo], ['Todos', '*']], 
+                    options_for_select([ ['Campo', :nm_campo], 
+                                         ['Conteúdo Entry/Operation/Trigger/Include', :codigo],
+                                         ['Documentação', :documentacao],
+                                         ['Nome Componente', :cd_componente],
+                                         ['Nome Entry/Operation/Trigger/Include', :nm_funcao],
+                                         ['Tabela', :nm_tabela],
+                                         ['Tipo Função', :tipo],
+                                         ['Todos', '*']], 
                     selected: (params[:fields].present? ? params[:fields] : :codigo)), 
                     class: "selectpicker form-control",
                     multiple: true %>

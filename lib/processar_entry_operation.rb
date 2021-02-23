@@ -84,7 +84,7 @@ class ProcessarEntryOperation
     v_nm_funcao = v_nm_funcao.gsub('\r', '')
 
     if v_tipo_funcao.blank? || v_nm_funcao.blank?
-      raise "Erro v_tipo_funcao ou v_nm_funcao estão em branco!\n\n Linha #{v_linha}"
+      Rails.logger.info "Erro v_tipo_funcao ou v_nm_funcao estão em branco!\n\n Linha #{v_linha}"
     end
   
     [v_tipo_funcao, v_nm_funcao]
@@ -231,7 +231,7 @@ class ProcessarEntryOperation
   end
 
   def comecou_trigger(v_linha)
-    if v_linha.include?("Trigger <")
+    if v_linha.include?('Trigger <')
       nome = v_linha[(v_linha.index('<'))+1..(v_linha.index('>'))-1].strip
       tipo = v_linha[(v_linha.index('from')+5)..(v_linha.index(':')-1)]
       objeto = v_linha[(v_linha.index(':')+2)..(v_linha.index(/[\r\n]/))-1]
@@ -240,15 +240,15 @@ class ProcessarEntryOperation
   end
 
   def terminou_linha(v_linha)
-    (!v_linha.match(/endw/i) && 
-     !v_linha.match(/endf/i) && 
-     !v_linha.match(/endi/i) && 
-     !v_linha.match(/endv/i) && 
-     !v_linha.match(/endp/i) && 
-     !v_linha.nil? && 
+    (!v_linha.match(/endw/i) &&
+     !v_linha.match(/endf/i) &&
+     !v_linha.match(/endi/i) &&
+     !v_linha.match(/endv/i) &&
+     !v_linha.match(/endp/i) &&
+     !v_linha.nil? &&
      !v_linha.match(/^;/) &&
      !v_linha.match(/endselectcase/)) &
-     (!!(v_linha.match(/^end\s/i)) || !!(v_linha.match(/^end\;/i)) || !!(v_linha.match(/^end/i)))
+    (!!(v_linha.match(/^end\s/i)) || !!(v_linha.match(/^end\;/i)) || !!(v_linha.match(/^end/i)))
   end
 
   def nao_finalizou_leitura(linha)
@@ -256,9 +256,10 @@ class ProcessarEntryOperation
      linha[0..0] == '('  ||
      linha.match(/   error:   /) ||
      linha[0..8] == "    info:" ||
-     linha.match(/warning:   1000 - Deprecated/) ||
+     linha.match(/warning:   1000/) ||
      linha.match(/   warning: 1000/) ||
-     linha.match(/ warning:   1000 - \(Prepro/) )
+     linha.match(/ warning:   1000 - \(Prepro/) ||
+     linha.match(/ warning:   1000 - Procs statements/))
   end
 
   def deletar_local_operations(v_id)
@@ -346,7 +347,7 @@ class ProcessarEntryOperation
         end
       else
 
-        posic_include = linha.index("include LIB_COAMO:") ||0  if !v_linha.nil? && linha[0..1] == "[ " && !v_linha.match(/^;/)
+        posic_include = linha.index("include LIB_COAMO:") ||0  if !v_linha.nil? && linha[0..1] == "[ " && !v_linha.match(/^;/) && !dados_ini.nil?
         if posic_include.positive?
           lpmx_includes << v_linha_funcao if dados_ini[:nome] == "LPMX"
           nova_include = nome_include(linha, posic_include)
@@ -430,13 +431,16 @@ class ProcessarEntryOperation
               end
             end
             v_indica = v_linha.match(/\%\\/) ? true : false
-            if !v_indica 
-              if (!v_linha[-1, 1].empty? and v_linha[-1, 1] != ")" and v_linha.length >= 248)
+            unless v_indica
+              if !v_linha[-1, 1].empty? && v_linha[-1, 1] != ')' && v_linha.length >= 248
                 v_indica = true
               end
             end
             v_linha = tratar_linha(v_linha)
-            if !v_linha.nil? && v_linha.size.positive? && (v_linha.start_with? /^[a-z].*/i)
+            if !v_linha.nil? &&
+                v_linha.size.positive? &&
+                v_linha.start_with?(/^[a-z].*/i) &&
+                !v_linha.start_with?('else')
               v_cmd_activate << v_linha
             else
               v_indica = false
@@ -444,7 +448,7 @@ class ProcessarEntryOperation
             end
           end
         end
-        if nao_finalizou_leitura(linha) and iniciou_trigger
+        if nao_finalizou_leitura(linha) && iniciou_trigger
           #continuar leitura
         else
           if iniciou_trigger && lpmx_includes.any?

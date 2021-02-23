@@ -26,7 +26,6 @@ class ProcessarTrigger
     end
   end
 
-  
   def discartar_trigger(conteudo)
     (conteudo.match(/#include LIB_COAMO:G_ONERROR/) ||
    conteudo.match(/#include LIB_COAMO:G_READ/) ||
@@ -51,7 +50,6 @@ class ProcessarTrigger
    conteudo.match(/#include LIB_COAMO:G_HIST_ALT/))
   end
 
-
   def discartar_trigger2(conteudo)
     (conteudo.match(/^return\(-1\)/i) ||
      conteudo.match(/^return \(-1\)/i) ||
@@ -64,8 +62,26 @@ class ProcessarTrigger
 
   def discartar_trigger3(conteudo)
     conteudo = conteudo.to_s.gsub("\r", '').gsub("\n", '').gsub(' ', '')
-    (conteudo.include?('params$T_CD_OPERADOR$:IN;;incluirapartirdestepontoosparâmetrosreferentesaoseuprograma,estedeverasersempreoprimeiroparametroendparams'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?"))) ||
-    (conteudo.include?('params$T_CD_OPERADOR$:IN;;incluirapartirdestepontoosparâmetrosreferentesaoseuprograma,estedeverasersempreoprimeiroparametroendparamsedit'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")))
+    conteudo.include?('params$T_CD_OPERADOR$:IN;;incluirapartirdestepontoosparâmetrosreferentesaoseuprograma,estedeverasersempreoprimeiroparametroendparams'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
+    conteudo.include?('params$T_CD_OPERADOR$:IN;;incluirapartirdestepontoosparâmetrosreferentesaoseuprograma,estedeverasersempreoprimeiroparametroendparamsedit'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
+    conteudo.include?('lockif($status=-10)reload'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
+    conteudo.include?('findkey$entname,$curkeySelectCase$statusCase0;keynotfoundif($foreign);nonexistingkeyinupentityreturn(-1);onlyifWriteUptriggernotfilledendif;Case1;keyfoundonComponent;if(!$foreign);duplicatekeyindownentity;return(-1);endif;Case2;keyfoundinDBMS;if(!$foreign);duplicatekeyindownentity;return(-1);endifEndSelectCasereturn(0)end'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?"))
+  end
+
+  def discartar_trigger4(conteudo)
+    (conteudo.match(/call PG_REMOVE/i) ||
+     conteudo.match(/delete/i) ||
+     conteudo.match(/read/i) ||
+     conteudo.match(/write/i) ||
+     conteudo.match(/call PG_LMKEY/i) ||
+     conteudo.match(/call pg_operador/i) ||
+     conteudo.match(/call PG_ERRENTITY/i) ||
+     conteudo.match(/write/) ||
+     conteudo.match(/call PG_ERRFIELD/i) ||
+     conteudo.match(/call pg_store/i) ||
+     conteudo.match(/call pg_retrieve/i) ||
+     conteudo.match(/call pg_quit/i) ||
+     conteudo.match(/call pg_clear/i))
   end
 
 
@@ -73,12 +89,12 @@ class ProcessarTrigger
     begin
       conteudo_trigger = conteudo_trigger.reject { |c| c.empty? unless c.nil? } unless !nome_trigger == 'ERRF'
     rescue StandardError => e
-      puts e
-      puts componente 
-      puts nome_trigger
-      puts objeto
-      puts tipo_trigger
-      puts conteudo_trigger
+      Rails.logger.info e
+      Rails.logger.info componente 
+      Rails.logger.info nome_trigger
+      Rails.logger.info objeto
+      Rails.logger.info tipo_trigger
+      Rails.logger.info conteudo_trigger
       raise "Stop"
     end
     dados_objeto = objeto.split('.')
@@ -86,9 +102,10 @@ class ProcessarTrigger
     v_dados_funcao = conteudo_trigger.map { |i| i.to_s.gsub("\t", '  ') }.join("\n")
     v_dados_funcao = v_dados_funcao.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")
     return if (conteudo_trigger.size == 1 && (discartar_trigger(conteudo_trigger[0]) || discartar_trigger2(conteudo_trigger[0]))) || 
-               (conteudo_trigger.size == 2 && conteudo_trigger[1] == "\r" && discartar_trigger(conteudo_trigger[0])) ||
+              (conteudo_trigger.size == 2 && conteudo_trigger[1] == "\r" && discartar_trigger(conteudo_trigger[0])) ||
                discartar_trigger2(conteudo_trigger[0]) ||
                discartar_trigger3(v_dados_funcao) ||
+               discartar_trigger4(v_dados_funcao) ||
                nome_trigger == 'OPER' ||
                nome_trigger == 'LPMX'
 
@@ -111,7 +128,7 @@ class ProcessarTrigger
     else
       v_tipo = 'trigger-form'
     end
-    
+
     v_post_string = {'funcaos': {'cd_componente': componente, 
               'tipo': v_tipo, 
               'nm_funcao': nome_trigger,
@@ -121,7 +138,7 @@ class ProcessarTrigger
               'nm_tabela': nm_tabela, 
               'nm_modelo': nm_modelo }
             }
-  
+
     begin
       RestClient.post "#{@servidor_funcao}", JSON.parse(v_post_string.to_json)
     rescue StandardError => e
@@ -129,19 +146,16 @@ class ProcessarTrigger
       Rails.info "Erro ao fazer post funcao"
       Rails.info v_post_string
     end
-    
   end
-  
-  
+
   def grava_arq_include(componente, nome_include, conteudo_include)
     return if File.exists?("#{Rails.root}/lib/includes/#{componente}_#{nome_include.split(":")[1]}.txt") || conteudo_include.empty?
-  
+
     f = File.new("#{Rails.root}/lib/includes/#{nome_include.split(':')[1]}.txt", 'w')
     f.write conteudo_include.join("\n")
     f.close
   end
-  
-  
+
   def nome_include(linha, posic_include)
     nome = linha[(posic_include + 8)..(linha.index(/[\r\n]/)) - 1]
     unless nome.index(';').nil?
@@ -149,7 +163,7 @@ class ProcessarTrigger
     end
     nome.strip
   end
-  
+
   def nome_arquivo(arquivo)
     if arquivo.include?("/")
       parte_arq = arquivo.rindex(/\//) + 1

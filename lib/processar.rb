@@ -55,7 +55,7 @@ class Processar
 
 
   def processar
-    v_nao_ler = false
+    v_nao_ler = true
     v_dia = Time.now.strftime("%d%m%Y")
 
     File.open(@nm_arquivo, 'r:UTF-8').each_line.with_index do |li, v_count|
@@ -65,10 +65,10 @@ class Processar
         rescue
           raise "#{li.split[5]}       #{li.split[6]}"
         end
-        if li.split[7] == 'cfatf007'
-          v_nao_ler = true
-        end
-        if v_nao_ler
+        #if li.split[7].include?('acoco006')
+        #  v_nao_ler = true
+        #end
+        if v_nao_ler && li.split[7].length == 8
         #if v_dia_hora > @data_ultima_alteracao
          # break if v_dia != li.split[5]
           ProcessarTrigger.new(@cd_empresa,
