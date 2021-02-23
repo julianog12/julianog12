@@ -1,5 +1,5 @@
 class Funcao < ApplicationRecord
-  searchkick batch_size: 500,
+  searchkick batch_size: 1000,
              settings: {number_of_shards: 1}, 
              word_middle: [:nm_funcao, :codigo, :documentacao, :tipo, :nm_campo, :nm_tabela]
 

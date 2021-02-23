@@ -76,6 +76,9 @@ class ProcessarEntryOperation
     else
       v_dados = v_linha.split(' ')
       v_nm_funcao = v_dados[1].strip
+      if v_nm_funcao.match(/\;/)
+        v_nm_funcao = v_nm_funcao[0..(v_nm_funcao.index(/\;/)-1)]
+      end
       #v_linha.index(/\s/)+1)..v_linha.index(/\z/)]}"
       #v_nm_funcao = "#{v_nm_funcao[(v_nm_funcao.index(/\s/) + 1)..v_linha.index(/\z/)]}"
     end

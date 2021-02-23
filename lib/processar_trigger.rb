@@ -47,7 +47,9 @@ class ProcessarTrigger
    conteudo.match(/#include LIB_COAMO:G_CLEAR/) ||
    conteudo.match(/#include LIB_COAMO:G_QUIT/) ||
    conteudo.match(/#include LIB_COAMO:G_RETRSEQ/) ||
-   conteudo.match(/#include LIB_COAMO:G_HIST_ALT/))
+   conteudo.match(/#include LIB_COAMO:G_HIST_ALT/) ||
+   conteudo.match(/#include COAMO_LIB:C_ERRENT_LOCK/i) ||
+   conteudo.match(/#include COAMO_LIB:C_LOCK_RB/i))
   end
 
   def discartar_trigger2(conteudo)
@@ -61,12 +63,14 @@ class ProcessarTrigger
   end
 
   def discartar_trigger3(conteudo)
-    conteudo = conteudo.to_s.gsub("\r", '').gsub("\n", '').gsub(' ', '')
+    conteudo = conteudo.to_s.gsub("\r\n", '').gsub("\n", '').gsub(' ', '').gsub("\r", '')
     conteudo.include?('params$T_CD_OPERADOR$:IN;;incluirapartirdestepontoosparâmetrosreferentesaoseuprograma,estedeverasersempreoprimeiroparametroendparams'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
     conteudo.include?('params$T_CD_OPERADOR$:IN;;incluirapartirdestepontoosparâmetrosreferentesaoseuprograma,estedeverasersempreoprimeiroparametroendparamsedit'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
     conteudo.include?('lockif($status=-10)reload'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
-    conteudo.include?('findkey$entname,$curkeySelectCase$statusCase0;keynotfoundif($foreign);nonexistingkeyinupentityreturn(-1);onlyifWriteUptriggernotfilledendif;Case1;keyfoundonComponent;if(!$foreign);duplicatekeyindownentity;return(-1);endif;Case2;keyfoundinDBMS;if(!$foreign);duplicatekeyindownentity;return(-1);endifEndSelectCasereturn(0)end'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?"))
+    conteudo.include?('findkey$entname,$curkeySelectCase$statusCase0;keynotfoundif($foreign);nonexistingkeyinupentityreturn(-1);onlyifWriteUptriggernotfilledendif;Case1;keyfoundonComponent;if(!$foreign);duplicatekeyindownentity;return(-1);endif;Case2;keyfoundinDBMS;if(!$foreign);duplicatekeyindownentity;return(-1);endifEndSelectCasereturn(0)'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
+    conteudo.include?('retrieveif($status<0)message"Retrievesequentialdidnotsucceed;seemessageframe"endif)end'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?"))
   end
+  
 
   def discartar_trigger4(conteudo)
     (conteudo.match(/call PG_REMOVE/i) ||
@@ -81,7 +85,8 @@ class ProcessarTrigger
      conteudo.match(/call pg_store/i) ||
      conteudo.match(/call pg_retrieve/i) ||
      conteudo.match(/call pg_quit/i) ||
-     conteudo.match(/call pg_clear/i))
+     conteudo.match(/call pg_clear/i) ||
+     conteudo.match(/call PG_MAIORZERO/i))
   end
 
 
