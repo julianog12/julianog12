@@ -36,9 +36,8 @@ class Processar
     @ultimo_diretorio = @arq_yml['geral']['ultimo_diretorio']
     @data_ultima_alteracao = ler_arquivo_ultima_alteracao(@arq_yml['geral']['ultima_alteracao'].split(' '))
 
-    Rails.logger.info "Passou AQUI"
     gerar_arquivo
-    Rails.logger.info "Passou AQUI 2"
+
     processar
 
     gravar_arquivo_ultima_alteracao

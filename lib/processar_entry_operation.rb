@@ -102,9 +102,9 @@ class ProcessarEntryOperation
   end
 
   def grava_arq_include(componente, nome_include, conteudo_include)
-    return if File.exists?("#{Rails.root}/lib/includes/#{componente}_#{nome_include.split(":")[1]}.txt") || conteudo_include.empty?
+    return if File.exists?("#{Rails.root}/lib/includes/#{@cd_empresa}_#{nome_include.split(":")[1]}.txt") || conteudo_include.empty?
   
-    f = File.new("#{Rails.root}/lib/includes/#{nome_include.split(':')[1]}.txt", 'w')
+    f = File.new("#{Rails.root}/lib/includes/#{@cd_empresa}_#{nome_include.split(':')[1]}.txt", 'w')
     f.write conteudo_include.join("\n")
     f.close
   end

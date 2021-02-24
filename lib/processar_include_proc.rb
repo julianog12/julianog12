@@ -49,7 +49,7 @@ class ProcessarIncludeProc
 
   
   def processar
-    v_arq_includes = Dir.glob("#{Rails.root}/lib/includes/*.txt")
+    v_arq_includes = Dir.glob("#{Rails.root}/lib/includes/#{@cd_empresa}_*.txt")
     
     v_arq_includes.each do |arquivo|
       v_nome = arquivo[(arquivo.rindex(/\//))+1..(arquivo.index(/\./)-1)].to_s.downcase

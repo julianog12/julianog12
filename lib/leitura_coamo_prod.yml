@@ -1,11 +1,11 @@
 ---
 ambiente:
-  diretorio_listener: "/var/coamo/unifacedes/r97_credi_dsv/proclisting"
+  diretorio_listener: "/var/coamo/unifacedes/r96_coamo_pro/proclisting"
   extensao_leitura: all
-  empresa: 3
+  empresa: 2
 geral:
   ultimo_diretorio: proclisting/
-  ultima_alteracao: 2019 10 25 14 30 46
-  nome_arq_result: credi_desenv
+  ultima_alteracao: 2021 02 24 06 09 41
+  nome_arq_result: coamo_producao
   servidor_http: http://localhost/componentes
   servidor_http_funcao: http://localhost/funcaos
