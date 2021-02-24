@@ -61,26 +61,23 @@ class Processar
 
     File.open(@nm_arquivo, 'r:UTF-8').each_line.with_index do |li, v_count|
       if v_count.positive?
-        Rails.logger.info "Passou AQUI 3"
         begin
           v_dia_hora = Time.new(li.split[5][4..7], li.split[5][2..3], li.split[5][0..1], li.split[6][0..1], li.split[6][2..3])
         rescue
           raise "#{li.split[5]}       #{li.split[6]}"
         end
-        #if li.split[7].include?('acoco006')
-        #  v_nao_ler = true
-        #end
-        if v_nao_ler && li.split[7].length == 8
-          Rails.logger.info "Passou AQUI 4"
+        if v_nao_ler
+          Rails.logger.info li.split[7]
         #if v_dia_hora > @data_ultima_alteracao
          # break if v_dia != li.split[5]
-          ProcessarTrigger.new(@cd_empresa,
+          if li.split[7].length == 15
+            ProcessarTrigger.new(@cd_empresa,
                                @servidor_funcao, 
                                @servidor_http,
                                @diretorio_listener,
                                @ultimo_diretorio, 
                                li.split[7])
-          Rails.logger.info "Passou AQUI 5"
+          end
           ProcessarEntryOperation.new(@cd_empresa,
                                 @nm_arquivos_importados, 
                                 @servidor_funcao, 

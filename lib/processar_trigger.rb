@@ -18,7 +18,7 @@ class ProcessarTrigger
   end
 
   def inicio_trigger(linha)
-    if linha.include?('Trigger <')
+    if linha.include?('Trigger <') && linha[0.0] != '['
       nome = linha[(linha.index('<'))+1..(linha.index('>'))-1].strip
       tipo = linha[(linha.index('from')+5)..(linha.index(':')-1)]
       objeto = linha[(linha.index(':')+2)..(linha.index(/[\r\n]/))-1]
@@ -192,7 +192,6 @@ class ProcessarTrigger
   
   def processar
     v_arquivo_ler = "#{@diretorio_listener}/#{@arquivo}"
-    raise "#{@diretorio_listener}/#{@arquivo}"
     nm_arquivo = nome_arquivo(v_arquivo_ler)
   
     begin
