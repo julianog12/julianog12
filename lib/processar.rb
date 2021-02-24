@@ -36,8 +36,11 @@ class Processar
     @ultimo_diretorio = @arq_yml['geral']['ultimo_diretorio']
     @data_ultima_alteracao = ler_arquivo_ultima_alteracao(@arq_yml['geral']['ultima_alteracao'].split(' '))
 
+    Rails.logger.info "Passou AQUI"
     gerar_arquivo
+    Rails.logger.info "Passou AQUI 2"
     processar
+    Rails.logger.info "Passou AQUI 3"
 
     gravar_arquivo_ultima_alteracao
   end
@@ -53,7 +56,6 @@ class Processar
     File.open(@caminho, 'w') { |f| f.write @arq_yml.to_yaml }
   end
 
-
   def processar
     v_nao_ler = true
     v_dia = Time.now.strftime("%d%m%Y")
@@ -61,7 +63,7 @@ class Processar
     File.open(@nm_arquivo, 'r:UTF-8').each_line.with_index do |li, v_count|
       if v_count.positive?
         begin
-          v_dia_hora	= Time.new(li.split[5][4..7], li.split[5][2..3], li.split[5][0..1], li.split[6][0..1], li.split[6][2..3])
+          v_dia_hora = Time.new(li.split[5][4..7], li.split[5][2..3], li.split[5][0..1], li.split[6][0..1], li.split[6][2..3])
         rescue
           raise "#{li.split[5]}       #{li.split[6]}"
         end

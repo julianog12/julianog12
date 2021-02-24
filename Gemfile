@@ -31,13 +31,9 @@ group :development do
   gem 'spring-watcher-listen'
   gem 'web-console', '>= 3.3.0'
 end
-#group :test do
-#  gem 'capybara', '>= 2.15'
-#  gem 'selenium-webdriver'
-#  gem 'chromedriver-helper'
-#end
+
 group :production do
-  #gem 'puma', '~> 4.3.6'
+  gem 'puma', '~> 4.3.6'
 end
 
 gem 'autoprefixer-rails'
