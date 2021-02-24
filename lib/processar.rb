@@ -66,26 +66,24 @@ class Processar
           raise "#{li.split[5]}       #{li.split[6]}"
         end
         if v_nao_ler
-          Rails.logger.info li.split[7]
-        #if v_dia_hora > @data_ultima_alteracao
-         # break if v_dia != li.split[5]
-          if li.split[7].length == 15
-            ProcessarTrigger.new(@cd_empresa,
+          if v_dia_hora > @data_ultima_alteracao
+            break if v_dia != li.split[5]
+            if li.split[7].length == 15
+              ProcessarTrigger.new(@cd_empresa,
                                @servidor_funcao, 
                                @servidor_http,
                                @diretorio_listener,
                                @ultimo_diretorio, 
                                li.split[7])
-          end
-          ProcessarEntryOperation.new(@cd_empresa,
+            end
+            ProcessarEntryOperation.new(@cd_empresa,
                                 @nm_arquivos_importados, 
                                 @servidor_funcao, 
                                 @servidor_http,
                                 @diretorio_listener,
                                 @ultimo_diretorio, 
                                 li.split[7])
-
-        #end
+          end
         end
       end
     end
