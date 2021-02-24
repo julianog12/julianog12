@@ -234,7 +234,7 @@ class ProcessarEntryOperation
   end
 
   def comecou_trigger(v_linha)
-    if v_linha.include?('Trigger <')
+    if v_linha.include?('Trigger <') && v_linha[26..26] != ";"
       nome = v_linha[(v_linha.index('<'))+1..(v_linha.index('>'))-1].strip
       tipo = v_linha[(v_linha.index('from')+5)..(v_linha.index(':')-1)]
       objeto = v_linha[(v_linha.index(':')+2)..(v_linha.index(/[\r\n]/))-1]
