@@ -52,4 +52,3 @@ gem 'searchkick', '~> 4.4.2'
 gem 'sidekiq'
 gem 'typhoeus'
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
-#gem 'appsignal'
