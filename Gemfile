@@ -17,10 +17,12 @@ end
 group :development do
   gem 'better_errors'
   gem 'capistrano', '~> 3.10', require: false
+  gem 'capistrano-database-yml'
   gem 'capistrano-rails', '~> 1.6', require: false
+  gem 'capistrano-bundler', require: false
+  gem 'capistrano3-puma', require: false
   gem 'capistrano-rbenv'
   gem 'capistrano-ssh-doctor', git: 'https://github.com/capistrano-plugins/capistrano-ssh-doctor.git'
-  gem 'capistrano-database-yml'
   gem 'net-ssh', '>= 6.0.2'
   gem 'ed25519', '>= 1.2', '< 2.0'
   gem 'bcrypt_pbkdf', '>= 1.0', '< 2.0'

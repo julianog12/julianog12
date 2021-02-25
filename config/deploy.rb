@@ -4,15 +4,24 @@ lock "~> 3.15.0"
 set :application, "search"
 set :repo_url, "git@github.com:julianog12/search_omaoc.git"
 
-# Default branch is :master
+set :user,            'user1'
+set :puma_threads,    [4, 16]
+set :puma_workers,    0
 set :branch, :master
-# ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
-
-# Default deploy_to directory is /var/www/my_app_name
 set :deploy_to, '/home/user1/search'
 
 before 'deploy:starting', 'deploy:test_suite'
 
+set :pty,             true
+set :use_sudo,        false
+set :stage,           :production
+set :deploy_via,      :remote_cache
+
+set :puma_bind,       "unix://#{shared_path}/tmp/sockets/#{fetch(:application)}-puma.sock"
+set :puma_state,      "#{shared_path}/tmp/pids/puma.state"
+set :puma_pid,        "#{shared_path}/tmp/pids/puma.pid"
+set :puma_access_log, "#{release_path}/log/puma.error.log"
+set :puma_error_log,  "#{release_path}/log/puma.access.log"
 # Default value for :format is :airbrussh.
 set :format, :airbrussh
 
@@ -53,3 +62,22 @@ append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "public/syst
 #  end
 #end
 #
+
+namespace :deploy do
+  desc 'Restart application'
+  task :restart do
+    on roles(:app), in: :sequence, wait: 5 do
+      invoke 'puma:restart'
+    end
+  end
+  after  :finishing,    :compile_assets
+  after  :finishing,    :cleanup
+  after  :finishing,    :restart
+
+end
+task :restart_sidekiq do
+  on roles(:worker) do
+    execute :service, 'sidekiq restart'
+  end
+end
+after 'deploy:published', 'restart_sidekiq'
