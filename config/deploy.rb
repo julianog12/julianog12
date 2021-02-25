@@ -53,8 +53,10 @@ append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "public/syst
 #  end
 #end
 #
-#namespace :deploy do
-#  task :restart, :roles => :app, :except => { :no_release => true } do
-#    run "cd #{current_path} && touch tmp/restart.txt"
-#  end
-#end
+namespace :deploy do
+  desc "Restart application"
+  task :restart, :roles => :app, :except => { :no_release => true } do
+    run "cd #{current_path} && touch tmp/restart.txt"
+  end
+  after :finishing, "deploy:cleanup"
+end

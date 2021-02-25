@@ -45,6 +45,7 @@ gem 'i18n'
 gem 'jquery-rails'
 gem 'jquery-datatables'
 gem 'mini_racer', :platform=>:ruby
+gem 'oj'
 gem 'responders'
 gem 'rest-client'
 gem 'rufus-scheduler'
