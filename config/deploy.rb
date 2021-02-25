@@ -62,19 +62,18 @@ append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "public/syst
 #  end
 #end
 #
-
 namespace :deploy do
   desc 'Restart application'
   task :restart do
     on roles(:app), in: :sequence, wait: 5 do
-      invoke 'puma:restart'
+      execute :touch, release_path.join('tmp/restart.txt')
     end
   end
   after  :finishing,    :compile_assets
   after  :finishing,    :cleanup
   after  :finishing,    :restart
-
 end
+
 task :restart_sidekiq do
   on roles(:worker) do
     execute :service, 'sidekiq restart'
