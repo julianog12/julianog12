@@ -54,9 +54,20 @@ append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "public/syst
 #end
 #
 namespace :deploy do
-  desc "Restart application"
-  task :restart, :roles => :app, :except => { :no_release => true } do
-    run "cd #{current_path} && touch tmp/restart.txt"
+  desc 'Restart application'
+  task :restart do
+    on roles(:app) do
+      run "cd #{current_path} && touch tmp/restart.txt"
+    end
   end
-  after :finishing, "deploy:cleanup"
+  after :finishing, 'deploy:cleanup'
+end
+task :precompile do
+  on :sprockets_asset_host, reject: lambda { |h| h.properties.no_release } do
+    within fetch(:latest_release_directory) do
+      with rails_env: fetch(:rails_env) do
+        execute :rake, 'assets:precompile'
+      end
+    end
+  end
 end

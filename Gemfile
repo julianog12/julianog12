@@ -16,8 +16,8 @@ group :development, :test do
 end
 group :development do
   gem 'better_errors'
-  gem 'capistrano'
-  gem 'capistrano-rails'
+  gem 'capistrano', '~> 3.10', require: false
+  gem 'capistrano-rails', '~> 1.6', require: false
   gem 'capistrano-rbenv'
   gem 'capistrano-ssh-doctor', git: 'https://github.com/capistrano-plugins/capistrano-ssh-doctor.git'
   gem 'capistrano-database-yml'

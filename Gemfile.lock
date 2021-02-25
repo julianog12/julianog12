@@ -311,9 +311,9 @@ DEPENDENCIES
   bootstrap-sass
   bootstrap-select-rails
   byebug
-  capistrano
+  capistrano (~> 3.10)
   capistrano-database-yml
-  capistrano-rails
+  capistrano-rails (~> 1.6)
   capistrano-rbenv
   capistrano-ssh-doctor!
   coffee-rails (~> 4.2)
