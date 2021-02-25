@@ -46,15 +46,15 @@ append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "public/syst
 # Uncomment the following to require manually verifying the host key before first deploy.
 # set :ssh_options, verify_host_key: :secure
 
-after :deploy, 'deploy:database'
-namespace :deploy do
-  task :database, :roles => :app do
-    run "cp #{deploy_to}/shared/database.yml #{current_path}/config/"
-  end
-end
-
-namespace :deploy do
-  task :restart, :roles => :app, :except => { :no_release => true } do
-    run "cd #{current_path} && touch tmp/restart.txt"
-  end
-end
+#after :deploy, 'deploy:database'
+#namespace :deploy do
+#  task :database, :roles => :app do
+#    run "cp #{deploy_to}/shared/database.yml #{current_path}/config/"
+#  end
+#end
+#
+#namespace :deploy do
+#  task :restart, :roles => :app, :except => { :no_release => true } do
+#    run "cd #{current_path} && touch tmp/restart.txt"
+#  end
+#end

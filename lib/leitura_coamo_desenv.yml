@@ -1,6 +1,6 @@
 ---
 ambiente:
-  diretorio_listener: "/vagrant/dir_proclisting/r96_coamo_des/proclisting"
+  diretorio_listener: "/var/coamo/unifacedes/r96_coamo_des/proclisting"
   extensao_leitura: all
   empresa: 1
 geral:
