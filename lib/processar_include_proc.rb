@@ -53,6 +53,7 @@ class ProcessarIncludeProc
     
     v_arq_includes.each do |arquivo|
       v_nome = arquivo[(arquivo.rindex(/\//))+1..(arquivo.index(/\./)-1)].to_s.downcase
+      
       deletar_include(v_nome)
       post_includes(v_nome, File.read(arquivo))
     end
