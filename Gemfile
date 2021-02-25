@@ -16,7 +16,7 @@ group :development, :test do
 end
 group :development do
   gem 'better_errors'
-  gem 'capistrano', '~> 3.10', require: false
+  gem 'capistrano', '~> 3.15.0', require: false
   gem 'capistrano-database-yml'
   gem 'capistrano-rails', '~> 1.6', require: false
   gem 'capistrano-bundler', require: false

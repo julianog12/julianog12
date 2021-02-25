@@ -315,7 +315,7 @@ DEPENDENCIES
   bootstrap-sass
   bootstrap-select-rails
   byebug
-  capistrano (~> 3.10)
+  capistrano (~> 3.15.0)
   capistrano-bundler
   capistrano-database-yml
   capistrano-rails (~> 1.6)
