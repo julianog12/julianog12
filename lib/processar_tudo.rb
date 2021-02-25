@@ -38,7 +38,7 @@ class ProcessarTudo
 
     gerar_arquivo
 
-    processar
+    processar_tudo
 
     gravar_arquivo_ultima_alteracao
   end
@@ -54,7 +54,7 @@ class ProcessarTudo
     File.open(@caminho, 'w') { |f| f.write @arq_yml.to_yaml }
   end
 
-  def processar
+  def processar_tudo
     v_nao_ler = true
     v_dia = Time.now.strftime("%d%m%Y")
 
@@ -66,24 +66,21 @@ class ProcessarTudo
           raise "#{li.split[5]}       #{li.split[6]}"
         end
         if v_nao_ler
-          if v_dia_hora > @data_ultima_alteracao
-            break if v_dia != li.split[5]
-            if li.split[7].length == 15
-              ProcessarTrigger.new(@cd_empresa,
-                               @servidor_funcao, 
-                               @servidor_http,
-                               @diretorio_listener,
-                               @ultimo_diretorio, 
-                               li.split[7])
-            end
-            ProcessarEntryOperation.new(@cd_empresa,
-                                @nm_arquivos_importados, 
-                                @servidor_funcao, 
-                                @servidor_http,
-                                @diretorio_listener,
-                                @ultimo_diretorio, 
-                                li.split[7])
+          if li.split[7].length == 15
+            ProcessarTrigger.new(@cd_empresa,
+                             @servidor_funcao, 
+                             @servidor_http,
+                             @diretorio_listener,
+                             @ultimo_diretorio, 
+                             li.split[7])
           end
+          ProcessarEntryOperation.new(@cd_empresa,
+                              @nm_arquivos_importados, 
+                              @servidor_funcao, 
+                              @servidor_http,
+                              @diretorio_listener,
+                              @ultimo_diretorio, 
+                              li.split[7])
         end
       end
     end

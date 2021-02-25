@@ -79,8 +79,6 @@ class ProcessarEntryOperation
       if v_nm_funcao.match(/\;/)
         v_nm_funcao = v_nm_funcao[0..(v_nm_funcao.index(/\;/)-1)]
       end
-      #v_linha.index(/\s/)+1)..v_linha.index(/\z/)]}"
-      #v_nm_funcao = "#{v_nm_funcao[(v_nm_funcao.index(/\s/) + 1)..v_linha.index(/\z/)]}"
     end
     v_nm_funcao = v_nm_funcao[0..(v_nm_funcao.index(/\s/))] unless v_nm_funcao.index(/\s/).nil?
     v_nm_funcao = v_nm_funcao.gsub('\n', '')

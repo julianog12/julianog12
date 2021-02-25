@@ -42,6 +42,7 @@ class ProcessarTrigger
    conteudo.match(/#include LIB_COAMO:G_RETRSEQ/) ||
    conteudo.match(/#include LIB_COAMO:G_FORMAT_DIG/) ||
    conteudo.match(/#include LIB_COAMO:G_ONERROR/) ||
+   conteudo.match(/#include COAMO_LIB:G_ONERROR/) ||
    conteudo.match(/#include LIB_COAMO:G_WRITE/) ||
    conteudo.match(/#include LIB_COAMO:G_STORE/) ||
    conteudo.match(/#include LIB_COAMO:G_CLEAR/) ||
@@ -59,7 +60,8 @@ class ProcessarTrigger
      conteudo.match(/^return\(-99\)/i) ||
   	 conteudo.match(/^return -1/i) ||
      conteudo.match(/^exit\(0\)/i) ||
-     conteudo.match(/^exit/i))
+     conteudo.match(/^exit/i) ||
+     conteudo.match(/^return \(0\)/))
   end
 
   def discartar_trigger3(conteudo)
