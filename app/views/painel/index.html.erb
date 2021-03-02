@@ -1,3 +1,49 @@
+<style>
+  @media (min-width: 780px){
+    .modal-xl{
+      width: 90%;
+      max-width:1200px;
+    }
+  }
+</style>
+<%= form_tag painel_index_path, method: :get, id: "painel_search", role: "form" do %>
+  <h4 class="text-primary"><center>Atualização de Componentes por Dia</center></h4>
+  <div class="row">
+    <div class="col-sm-5">
+       <div class="input-group">
+        <%= label_tag :cd_empresa, "Selecione a Empresa:" %>
+      </div>
+    </div>
+    <div class="col-sm-3">
+       <div class="input-group">
+           <%= label_tag :ouser_oracle, "Data Inicial:" %>
+       </div>
+     </div>
+     <div class="col-sm-3">
+       <div class="input-group">
+           <%= label_tag :ouser_oracle, "Data Final:" %>
+       </div>
+     </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-5">
+      <%= select_tag "cd_empresa", options_for_select([ ['Coamo Desenv', 1], ['Coamo Prod', 2], ['Credi Desenv', 3], ['Credi Prod', 4]], selected: (params[:cd_empresa].present? ? params[:cd_empresa] : 1)), class: "form-control" %>
+    </div>
+    <div class="col-sm-3">
+        <div class="input-group"> 
+           <%= datetime_field_tag :data_inicial, (params[:data_inicial].present? ? params[:data_inicial] : nil), class: "form-control" %>
+        </div>
+     </div>
+     <div class="col-sm-3">
+        <div class="input-group">
+         <%= datetime_field_tag :data_final, (params[:data_final].present? ? params[:data_final] : nil), class: "form-control" %>
+        </div>
+     </div>
+  </div>
+  <br>
+  <button class="btn btn-primary btn-block" type="submit">Procurar</button>
+  <br>
+<% end %>
 <%#= render 'funcao_por_tipo' %>
 <%#= render 'funcao_por_componente' %>
 <%= render 'total_linhas_por_tipo' %>

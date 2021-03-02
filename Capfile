@@ -9,8 +9,8 @@ require 'capistrano/ssh_doctor'
 require 'capistrano/database_yml'
 require 'capistrano/rbenv'
 
-install_plugin Capistrano::Puma, load_hooks: false
-install_plugin Capistrano::Puma::Nginx  # if you want to upload a nginx site template
+#install_plugin Capistrano::Puma, load_hooks: false
+#install_plugin Capistrano::Puma::Nginx  # if you want to upload a nginx site template
 Dir.glob('lib/capistrano/tasks/*.rake').each { |r| import r }
 
 # Load the SCM plugin appropriate to your project:

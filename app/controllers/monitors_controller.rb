@@ -5,7 +5,7 @@ class MonitorsController < ApplicationController
   def index
     if params[:data_inicial].present? && params[:data_final].present?
 
-      v_data_inicial =  formata_data(params[:data_inicial], "+", '%Y-%m-%dT%H:%M')
+      v_data_inicial = formata_data(params[:data_inicial], "+", '%Y-%m-%dT%H:%M')
       v_data_final =  formata_data(params[:data_final], "+", '%Y-%m-%dT%H:%M')
 
       target_client = Elasticsearch::Client.new url: "http://172.17.82.27:8080/prd-uniface-monitor-#{params[:mes_ano]}", log: true

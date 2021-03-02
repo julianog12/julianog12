@@ -2,7 +2,7 @@ require 'sidekiq/web'
 
 Rails.application.routes.draw do    
 
-  get 'painel/index'
+  resources :painel, only: [:index]
   mount Sidekiq::Web => '/sidekiq'
 
   get '/monitors/index', to: 'monitors#index'

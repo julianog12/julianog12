@@ -1,16 +1,27 @@
 class PainelController < ApplicationController
 
   def index
-    @tot_linhas_por_tipo = []
-    Funcao.select("tipo").where("cd_empresa = '1'").group(:tipo).each do |reg|
-      Funcao.where('tipo = ?', reg.tipo).select('codigo').each do |regt|
-        if @tot_linhas_por_tipo.find {|x| x[:name] == reg.tipo}.nil?
-          @tot_linhas_por_tipo << { name: reg.tipo, data: regt.codigo.count("\n") }
-        else
-	        @tot_linhas_por_tipo.find{|h| h[:name] == reg.tipo}[:data] += regt.codigo.count("\n")
-        end
-      end
-    end
+    return unless params[:data_inicial].present? && params[:data_final].present?
+
+    v_data_inicial = formata_data(params[:data_inicial], '+', '%Y-%m-%dT%H:%M')
+    v_data_final =  formata_data(params[:data_final], '+', '%Y-%m-%dT%H:%M')
+
+    puts v_data_inicial
+    puts v_data_final
+
+    @tot_linhas_por_tipo = Funcao.where('created_at between ?  and ?', v_data_inicial, v_data_final)
+                                 .group_by_day(:created_at).count
+
+    #@tot_linhas_por_tipo = []
+    #Funcao.select("tipo").where("cd_empresa = '1'").group(:tipo).each do |reg|
+    #  Funcao.where('tipo = ?', reg.tipo).select('codigo').each do |regt|
+    #    if @tot_linhas_por_tipo.find {|x| x[:name] == reg.tipo}.nil?
+    #      @tot_linhas_por_tipo << { name: reg.tipo, data: regt.codigo.count("\n") }
+    #    else
+	  #      @tot_linhas_por_tipo.find{|h| h[:name] == reg.tipo}[:data] += regt.codigo.count("\n")
+    #    end
+    #  end
+    #end
 
     @funcoes_comp = []
     Funcao.select('cd_componente')
@@ -29,6 +40,26 @@ class PainelController < ApplicationController
 
     p @tot_linhas_por_tipo
 
-    respond_with(@funcoes.to_json, @funcoes_comp.to_json, @tot_linhas_por_tipo.to_json)
+    
   end
+
+  def formata_data(data, sinal, formato)
+    v1 = data[0..3]
+    v2 = data[5..6]
+    v3 = data[8..9]
+  
+    v4 = data[11..12].to_i
+    if sinal == "-"
+      v4 -= 3
+    elsif sinal == "+"
+      v4 += 3
+    end
+    v5 = data[14..15]
+    v6 = data[17..18]
+
+    #date_and_time = '%d-%m-%Y %H:%M:%S'
+    data_hora = DateTime.parse("#{v1}-#{v2}-#{v3} #{v4.to_s}:#{v5}:#{v6}", formato)
+    data_hora.strftime(formato)
+  end
+
 end
