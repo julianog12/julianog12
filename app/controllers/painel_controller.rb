@@ -6,11 +6,12 @@ class PainelController < ApplicationController
     v_data_inicial = formata_data(params[:data_inicial], '+', '%Y-%m-%dT%H:%M')
     v_data_final =  formata_data(params[:data_final], '+', '%Y-%m-%dT%H:%M')
 
-    @tot_linhas_por_tipo = Componente.find_by_sql("select n1.data, count(*) as total from 
-                     (select nome, DATE(created_at) as data, count(id) as total 
-                          from componentes 
-                      where nome is not null and cd_empresa = '4' and length(nome) = 8
-                      group by nome, DATE(created_at)) n1 group by n1.data")
+    @tot_linhas_por_tipo = Componente.distinct("cd_componente").where('created_at between ?  and ? and cd_empresa = ?',
+                                         v_data_inicial, 
+                                         v_data_final, 
+                                         params[:cd_empresa])
+                                  .group_by_day(:created_at)
+                                  .count
 
     #@tot_linhas_por_tipo = []
     #Funcao.select("tipo").where("cd_empresa = '1'").group(:tipo).each do |reg|
@@ -23,22 +24,22 @@ class PainelController < ApplicationController
     #  end
     #end
 
-    #@funcoes_comp = []
-    #Funcao.select('cd_componente')
-    #                      .where("length(cd_componente) = 8 and cd_empresa = '1' and tipo in('entry', 'operation')")
-    #                      .group(:cd_componente)
-    #                      .limit(15)
-    #                      .order('count(id) desc')
-    #                      .count.each do |reg|
-    #  @funcoes_comp << { name: reg[0], data: reg[1] }
-    #end
-#
-    #@funcoes = []
-    #Funcao.select('tipo').where("cd_empresa = '1'").group(:tipo).count.each do |reg|
-    #  @funcoes << { name: reg[0], data: reg[1] }
-    #end
-#
-    #p @tot_linhas_por_tipo
+    @funcoes_comp = []
+    Funcao.select('cd_componente')
+                          .where("length(cd_componente) = 8 and cd_empresa = '1' and tipo in('entry', 'operation')")
+                          .group(:cd_componente)
+                          .limit(15)
+                          .order('count(id) desc')
+                          .count.each do |reg|
+      @funcoes_comp << { name: reg[0], data: reg[1] }
+    end
+
+    @funcoes = []
+    Funcao.select('tipo').where("cd_empresa = '1'").group(:tipo).count.each do |reg|
+      @funcoes << { name: reg[0], data: reg[1] }
+    end
+
+    p @tot_linhas_por_tipo
 
     
   end
