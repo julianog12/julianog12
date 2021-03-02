@@ -6,8 +6,11 @@ class PainelController < ApplicationController
     v_data_inicial = formata_data(params[:data_inicial], '+', '%Y-%m-%dT%H:%M')
     v_data_final =  formata_data(params[:data_final], '+', '%Y-%m-%dT%H:%M')
 
-    @tot_linhas_por_tipo = Componente.find_by_sql("select n1.data, count(*) as total from (select nome, DATE(created_at) as data, count(id) as total from componentes where nome is not null and cd_empresa = '4' and length(nome) = 8 group by nome, D
-    ATE(created_at)) n1 group by n1.data")
+    @tot_linhas_por_tipo = Componente.find_by_sql("select n1.data, count(*) as total from 
+                     (select nome, DATE(created_at) as data, count(id) as total 
+                          from componentes 
+                      where nome is not null and cd_empresa = '4' and length(nome) = 8
+                      group by nome, DATE(created_at)) n1 group by n1.data")
 
     #@tot_linhas_por_tipo = []
     #Funcao.select("tipo").where("cd_empresa = '1'").group(:tipo).each do |reg|
