@@ -1,8 +1,8 @@
 # config valid for current version and patch releases of Capistrano
-lock "~> 3.15.0"
+lock '~> 3.15.0'
 
 set :application, 'search'
-set :repo_url, "git@github.com:julianog12/search_omaoc.git"
+set :repo_url, 'git@github.com:julianog12/search_omaoc.git'
 
 set :user, 'user1'
 set :puma_threads,    [4, 16]
@@ -22,14 +22,15 @@ set :use_sudo, false
 set :stage, :production
 set :deploy_via, :remote_cache
 
-set :puma_bind,       "unix://#{shared_path}/tmp/sockets/#{fetch(:application)}-puma.sock"
-set :puma_state,      "#{shared_path}/tmp/pids/puma.state"
-set :puma_pid,        "#{shared_path}/tmp/pids/puma.pid"
-set :puma_access_log, "#{release_path}/log/puma.error.log"
-set :puma_error_log,  "#{release_path}/log/puma.access.log"
-set :puma_preload_app, true
-set :puma_worker_timeout, nil
-set :puma_init_active_record, true
+#Essas configurações já faz automaticamente
+#set :puma_bind,       "unix://#{shared_path}/tmp/sockets/#{fetch(:application)}-puma.sock"
+#set :puma_state,      "#{shared_path}/tmp/pids/puma.state"
+#set :puma_pid,        "#{shared_path}/tmp/pids/puma.pid"
+#set :puma_access_log, "#{release_path}/log/puma.error.log"
+#set :puma_error_log,  "#{release_path}/log/puma.access.log"
+#set :puma_preload_app, true
+#set :puma_worker_timeout, nil
+#set :puma_init_active_record, true
 
 # You can configure the Airbrussh format using :format_options.
 # These are the defaults.
@@ -47,7 +48,7 @@ set :rbenv_custom_path, '/home/user1/.rbenv'
 
 # Default value for linked_dirs is []
 # append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "public/system"
-append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "public/system"
+append :linked_dirs, 'log', 'tmp/pids'", 'tmp/cache', 'tmp/sockets', 'public/system'
 
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
@@ -68,10 +69,16 @@ append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "public/syst
 #  end
 #end
 #
-task :restart_sidekiq do
-  on roles(:worker) do
-    execute :service, 'sidekiq restart'
-  end
-end
-after 'deploy:published', 'restart_sidekiq'
-after 'deploy:publishing', 'deploy:restart'
+#task :restart_sidekiq do
+#  on roles(:worker) do
+#    execute :service, 'sidekiq restart'
+#  end
+#end
+#after 'deploy:published', 'restart_sidekiq'
+
+#task :puma_sidekiq do
+#  on roles(:worker) do
+#    execute :service, 'puma restart'
+#  end
+#end
+#after 'deploy:published', 'puma_sidekiq'

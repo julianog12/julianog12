@@ -10,7 +10,7 @@
 /vendor/ruby/
 /log/*
 /tmp/*
-#/lib/arquivos_gerados/*
+/lib/arquivos_gerados/*
 
 /shared/*
 

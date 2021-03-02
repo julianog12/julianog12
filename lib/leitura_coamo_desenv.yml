@@ -1,11 +1,11 @@
 ---
 ambiente:
-  diretorio_listener: "/var/coamo/unifacedes/r96_coamo_des/proclisting"
+  diretorio_listener: "/vagrant/dir_proclisting/R96_coamo_des/Proclisting"
   extensao_leitura: all
   empresa: 1
 geral:
-  ultimo_diretorio: proclisting/
-  ultima_alteracao: 2021 02 25 15 30 00
+  ultimo_diretorio: Proclisting/
+  ultima_alteracao: 2021 03 02 12 30 54
   nome_arq_result: coamo_desenv
   servidor_http: http://localhost:3000/componentes
   servidor_http_funcao: http://localhost:3000/funcaos

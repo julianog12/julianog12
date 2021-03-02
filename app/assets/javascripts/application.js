@@ -17,3 +17,5 @@
 //= require datatables
 //= require bootstrap-sprockets
 //= require bootstrap-select
+//= require chartkick
+//= require Chart.bundle

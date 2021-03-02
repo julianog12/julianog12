@@ -62,7 +62,7 @@ class ProcessarEntryOperation
        v_tipo_funcao = 'entry'
      when v_linha.match(/^operation/)
        v_tipo_funcao = 'operation'
-     when v_linha.match(/^/)
+     when v_linha.match(/^partner operation/)
        v_tipo_funcao = 'partner-operation'
      when v_linha.match(/^public operation/)
        v_tipo_funcao = 'operation'
@@ -73,11 +73,14 @@ class ProcessarEntryOperation
       rescue StandardError => e
         v_nm_funcao = "#{v_linha[(v_linha.index(/\s/)+1)..v_linha.index(/\z/)]}"
       end
+    elsif v_linha.include?('public') or v_linha.include?('partner')
+      v_nm_funcao = "#{v_linha[(v_linha.index(/\s/)+1)..v_linha.index(/\z/)]}"
+      v_nm_funcao = "#{v_nm_funcao[(v_nm_funcao.index(/\s/) + 1)..v_linha.index(/\z/)]}"
     else
       v_dados = v_linha.split(' ')
       v_nm_funcao = v_dados[1].strip
       if v_nm_funcao.match(/\;/)
-        v_nm_funcao = v_nm_funcao[0..(v_nm_funcao.index(/\;/)-1)]
+        v_nm_funcao = v_nm_funcao[0..((v_nm_funcao.index(/\;/))-1)]
       end
     end
     v_nm_funcao = v_nm_funcao[0..(v_nm_funcao.index(/\s/))] unless v_nm_funcao.index(/\s/).nil?
@@ -87,7 +90,7 @@ class ProcessarEntryOperation
     if v_tipo_funcao.blank? || v_nm_funcao.blank?
       Rails.logger.info "Erro v_tipo_funcao ou v_nm_funcao estão em branco!\n\n Linha #{v_linha}"
     end
-  
+
     [v_tipo_funcao, v_nm_funcao]
   end
 
@@ -101,13 +104,11 @@ class ProcessarEntryOperation
 
   def grava_arq_include(componente, nome_include, conteudo_include)
     return if File.exists?("#{Rails.root}/lib/includes/#{@cd_empresa}_#{nome_include.split(":")[1]}.txt") || conteudo_include.empty?
-  
+
     f = File.new("#{Rails.root}/lib/includes/#{@cd_empresa}_#{nome_include.split(':')[1]}.txt", 'w')
     f.write conteudo_include.join("\n")
     f.close
   end
-
-
 
   def post_lpmx(v_componente, v_tipo, v_nm_funcao, v_cmd)
     v_cmd = v_cmd.map { |i| i.to_s.gsub("\t", '  ') }.join("\n")
@@ -122,7 +123,7 @@ class ProcessarEntryOperation
         }
       }
       v_delete_string = 
-	      {params: 
+        {params: 
         {
           'nm_funcao': v_nm_funcao, 
           'cd_empresa': @cd_empresa,
@@ -142,7 +143,6 @@ class ProcessarEntryOperation
     end
   end
 
-
   def post_entry_operation(v_componente, v_tipo, v_nm_funcao, v_cmd, v_cmd_real, v_cmd_docto)
     v_comando_real = v_cmd_real.map { |i| i.to_s.gsub("\t", '  ') }.join("\n")
     v_comando_real = v_comando_real.encode("UTF-8", :invalid => :replace, :undef => :replace, :replace => "?")
@@ -150,7 +150,6 @@ class ProcessarEntryOperation
     v_comando_docto = v_comando_docto.encode("UTF-8", :invalid => :replace, :undef => :replace, :replace => "?")
 
     if !v_tipo.nil? && !v_tipo.empty?
-
       v_post_string = { 'funcaos': {
         'nm_funcao': v_nm_funcao.downcase,
         'cd_componente': v_componente.downcase,
@@ -160,7 +159,6 @@ class ProcessarEntryOperation
         'cd_empresa': @cd_empresa
         }
       }
-
       begin
         v_post_string = v_post_string.to_json
         RestClient.post "#{@servidor_funcao}", JSON.parse(v_post_string)
@@ -192,27 +190,22 @@ class ProcessarEntryOperation
   def trata_linha_comentario(v_linha, endPosLine)
     v2 = v_linha.index(';')
     v_linha2 = v_linha[(v2+1)..endPosLine]
-
     v2 = v_linha2.index('|')
     if !v2.nil?
       v_linha2 = v_linha2[(v2+1)..endPosLine]
     end
-
     v2 = v_linha2.index(/\S/)
     if !v2.nil?
       v_linha2 = v_linha2[v2..endPosLine]
     end
-
     v2 = v_linha2.index('*****')
     if !v2.nil?
       v_linha2 = ''
     end
-
     v2 = v_linha2.index('=====')
     if !v2.nil?
       v_linha2 = ''
     end
-
     v2 = v_linha2.index('---')
     if !v2.nil?
       v_linha2 = ''

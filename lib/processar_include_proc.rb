@@ -13,13 +13,17 @@ class ProcessarIncludeProc
   end
 
   def deletar_include(nm_include)
-    RestClient.delete "#{@servidor_funcao}/#{nm_include}", {params: 
-      {
-       cd_empresa: @cd_empresa,
-       nm_funcao: nm_include,
-  	   remover: '4'
+    begin
+      RestClient.delete "#{@servidor_funcao}/#{nm_include}", {params: 
+        {
+         cd_empresa: @cd_empresa,
+         nm_funcao: nm_include,
+  	     remover: '4'
+        }
       }
-    }
+    rescue
+      nil
+    end
   end
 
   def post_includes(nm_include, conteudo)
@@ -36,7 +40,7 @@ class ProcessarIncludeProc
             }
   
     begin
-  	v_post_string = v_post_string.to_json
+    	v_post_string = v_post_string.to_json
   	
       RestClient.post "#{@servidor_funcao}", JSON.parse(v_post_string)
     rescue StandardError => e
@@ -53,7 +57,7 @@ class ProcessarIncludeProc
     
     v_arq_includes.each do |arquivo|
       v_nome = arquivo[(arquivo.rindex(/\//))+1..(arquivo.index(/\./)-1)].to_s.downcase
-      
+      v_nome = v_nome[2..(v_nome.index(/\Z/))]
       deletar_include(v_nome)
       post_includes(v_nome, File.read(arquivo))
     end

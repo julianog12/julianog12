@@ -20,7 +20,6 @@ group :development do
   gem 'capistrano-database-yml'
   gem 'capistrano-rails', '~> 1.6', require: false
   gem 'capistrano-bundler', require: false
-  gem 'capistrano3-puma', require: false
   gem 'capistrano-rbenv'
   gem 'capistrano-ssh-doctor', git: 'https://github.com/capistrano-plugins/capistrano-ssh-doctor.git'
   gem 'net-ssh', '>= 6.0.2'
@@ -35,17 +34,19 @@ group :development do
 end
 
 group :production do
-  gem 'puma', '~> 4.3.6'
+  #gem 'puma', '~> 4.3.6'
 end
 
+gem 'chartkick'
+gem 'groupdate'
 gem 'autoprefixer-rails'
 gem 'bootstrap-sass'
 gem 'bootstrap-select-rails'
 gem 'diffy'
 gem 'elasticsearch'
 gem 'i18n'
-gem 'jquery-rails'
 gem 'jquery-datatables'
+gem 'jquery-rails'
 gem 'mini_racer', :platform=>:ruby
 gem 'oj'
 gem 'responders'

@@ -1,0 +1,6 @@
+<div style="display: inline-block; width: 48%; border-style: solid; border-width:thin; border-color: #FFFFFF;">
+<%= 
+    
+    pie_chart Funcao.select('tipo').where("cd_empresa = '1'").group(:tipo).count
+%>
+</div>
