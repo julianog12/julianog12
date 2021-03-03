@@ -4,7 +4,6 @@
 # frozen_string_literal: true
 #"/var/coamo/unifacedes/r96_coamo_des/proclisting"
 
-
 class Processar
   require 'open3'
   require "#{Rails.root}/lib/processar_entry_operation"
@@ -51,9 +50,9 @@ class Processar
   def gravar_arquivo_ultima_alteracao
     data = Time.now.strftime('%Y %m %d %H %M %S').to_s
     #@arq_yml['geral']['ultima_alteracao'] = data
-    config = Configuracao.where("cd_empresa = #{@cd_empresa} and parametro = 'ultima_alteracao'")
-    config.update(valor: data)
     #File.open(@caminho, 'w') { |f| f.write @arq_yml.to_yaml }
+    config = Configuracao.where("cd_empresa = '#{@cd_empresa}' and parametro = 'ultima_alteracao'")
+    config.update(valor: data)
   end
 
   def processar
