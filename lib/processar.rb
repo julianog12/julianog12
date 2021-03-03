@@ -12,8 +12,6 @@ class Processar
   require "#{Rails.root}/lib/processar_include_proc"
 
   def initialize(tempresa)
-    puts "ENTROU "
-    puts tempresa
     #@caminho = caminho_config
     #@arq_yml = YAML.safe_load(File.open(@caminho))
     @cd_empresa = tempresa[:cd_empresa]
@@ -53,7 +51,8 @@ class Processar
   def gravar_arquivo_ultima_alteracao
     data = Time.now.strftime('%Y %m %d %H %M %S').to_s
     #@arq_yml['geral']['ultima_alteracao'] = data
-    Configuracao.update(valor: data).where("cd_empresa = #{@cd_empresa} and campo = 'ultima_alteracao'")
+    config = Configuracao.where("cd_empresa = #{@cd_empresa} and parametro = 'ultima_alteracao'")
+    config.update(valor: data)
     #File.open(@caminho, 'w') { |f| f.write @arq_yml.to_yaml }
   end
 
