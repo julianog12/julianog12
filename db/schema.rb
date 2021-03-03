@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_08_203901) do
+ActiveRecord::Schema.define(version: 2021_03_03_182203) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,6 +22,14 @@ ActiveRecord::Schema.define(version: 2021_02_08_203901) do
     t.datetime "updated_at", null: false
     t.string "cd_empresa", limit: 3
     t.string "tipo", limit: 32
+  end
+
+  create_table "configuracaos", force: :cascade do |t|
+    t.string "cd_empresa", limit: 2
+    t.string "parametro", limit: 50
+    t.string "valor", limit: 400
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "diffs", force: :cascade do |t|

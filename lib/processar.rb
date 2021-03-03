@@ -11,16 +11,18 @@ class Processar
   require "#{Rails.root}/lib/processar_trigger"
   require "#{Rails.root}/lib/processar_include_proc"
 
-  def initialize(caminho_config)
-    @caminho = caminho_config
-    @arq_yml = YAML.safe_load(File.open(@caminho))
-    @cd_empresa = @arq_yml['ambiente']['empresa']
+  def initialize(tempresa)
+    puts "ENTROU "
+    puts tempresa
+    #@caminho = caminho_config
+    #@arq_yml = YAML.safe_load(File.open(@caminho))
+    @cd_empresa = tempresa[:cd_empresa]
 
-    @nm_arquivo = "#{Rails.root}/lib/arquivos_gerados/" + @arq_yml['geral']['nome_arq_result'] + "_#{Time.now.strftime('%d%m%Y%H%M%S')}"
+    @nm_arquivo = "#{Rails.root}/lib/arquivos_gerados/" + tempresa[:nome_arq_result] + "_#{Time.now.strftime('%d%m%Y%H%M%S')}"
     @nm_arquivos_importados = "#{Rails.root}/lib/arquivos_gerados/" + "#{@cd_empresa}_importados" + "_#{Time.now.strftime('%d_%m_%Y_%H_%M_%S')}"
     begin
       Dir.glob(["#{Rails.root}/lib/arquivos_gerados/" + "#{@cd_empresa}_importados_*",
-                "#{Rails.root}/lib/arquivos_gerados/" + @arq_yml['geral']['nome_arq_result'] + "_*"] ).each do |arq|
+                "#{Rails.root}/lib/arquivos_gerados/" + tempresa[:nome_arq_result] + "_*"] ).each do |arq|
         File.delete(arq)
       end
     rescue StandardError => e
@@ -29,12 +31,12 @@ class Processar
       nil
     end
 
-    @extensao_arquivo = (@arq_yml['ambiente']['extensao_leitura'] == 'all' ? '*' : @arq_yml['ambiente']['extensao_leitura'])
-    @servidor_funcao = @arq_yml['geral']['servidor_http_funcao']
-    @servidor_http = @arq_yml['geral']['servidor_http']
-    @diretorio_listener = @arq_yml['ambiente']['diretorio_listener']
-    @ultimo_diretorio = @arq_yml['geral']['ultimo_diretorio']
-    @data_ultima_alteracao = ler_arquivo_ultima_alteracao(@arq_yml['geral']['ultima_alteracao'].split(' '))
+    @extensao_arquivo = (tempresa[:extensao_leitura] == 'all' ? '*' : tempresa[:extensao_leitura])
+    @servidor_funcao = tempresa[:servidor_http_funcao]
+    @servidor_http = tempresa[:servidor_http]
+    @diretorio_listener = tempresa[:diretorio_listener]
+    @ultimo_diretorio = tempresa[:ultimo_diretorio]
+    @data_ultima_alteracao = ler_arquivo_ultima_alteracao(tempresa[:ultima_alteracao].split(' '))
 
     gerar_arquivo
 
@@ -50,8 +52,9 @@ class Processar
 
   def gravar_arquivo_ultima_alteracao
     data = Time.now.strftime('%Y %m %d %H %M %S').to_s
-    @arq_yml['geral']['ultima_alteracao'] = data
-    File.open(@caminho, 'w') { |f| f.write @arq_yml.to_yaml }
+    #@arq_yml['geral']['ultima_alteracao'] = data
+    Configuracao.update(valor: data).where("cd_empresa = #{@cd_empresa} and campo = 'ultima_alteracao'")
+    #File.open(@caminho, 'w') { |f| f.write @arq_yml.to_yaml }
   end
 
   def processar
