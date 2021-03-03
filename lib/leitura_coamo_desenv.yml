@@ -5,7 +5,7 @@ ambiente:
   empresa: 1
 geral:
   ultimo_diretorio: Proclisting/
-  ultima_alteracao: 2021 03 02 12 30 54
+  ultima_alteracao: 2021 03 02 19 08 43
   nome_arq_result: coamo_desenv
   servidor_http: http://localhost:3000/componentes
   servidor_http_funcao: http://localhost:3000/funcaos

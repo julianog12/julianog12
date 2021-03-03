@@ -12,7 +12,7 @@ arquivos_yml = Dir.glob("#{Rails.root}/lib/*.yml")
 #end
 
 arquivos_yml.each.with_index do |arq, index|
-  next
+  next if Rails.env == 'development'
   #next if arq.include?("leitura_coamo_desenv.yml")
   scheduler.cron '30 09 * * 1-5 America/Sao_Paulo' do
     Processar.new(arq)

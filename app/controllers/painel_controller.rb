@@ -5,43 +5,52 @@ class PainelController < ApplicationController
 
     v_data_inicial = formata_data(params[:data_inicial], '+', '%Y-%m-%dT%H:%M')
     v_data_final =  formata_data(params[:data_final], '+', '%Y-%m-%dT%H:%M')
+    @v_data_inicial = v_data_inicial
+    @v_data_final = v_data_final
+    @cd_empresa = params[:cd_empresa]
 
-    @tot_linhas_por_tipo = Componente.distinct("cd_componente").where('created_at between ?  and ? and cd_empresa = ?',
+    @tot_comps_por_dia = Funcao.where('created_at between ?  and ? and cd_empresa = ? and length(cd_componente) = 8',
                                          v_data_inicial, 
                                          v_data_final, 
-                                         params[:cd_empresa])
+                                         "#{params[:cd_empresa]}")
                                   .group_by_day(:created_at)
                                   .count
 
-    #@tot_linhas_por_tipo = []
-    #Funcao.select("tipo").where("cd_empresa = '1'").group(:tipo).each do |reg|
-    #  Funcao.where('tipo = ?', reg.tipo).select('codigo').each do |regt|
-    #    if @tot_linhas_por_tipo.find {|x| x[:name] == reg.tipo}.nil?
-    #      @tot_linhas_por_tipo << { name: reg.tipo, data: regt.codigo.count("\n") }
+    puts "@tot_comps_por_dia"
+    puts @tot_comps_por_dia
+    puts @tot_comps_por_dia.class
+    #@tot_linhas_por_dia = []
+    #Funcao.select('tipo').where('cd_empresa = ?', "#{params[:cd_empresa]}").group(:tipo).each do |reg|
+    #  Funcao.where('tipo = ? and cd_empresa = ?', reg.tipo, "#{params[:cd_empresa]}").select('codigo').each do |regt|
+    #    if @tot_linhas_por_dia.find {|x| x[:name] == reg.tipo}.nil?
+    #      @tot_linhas_por_dia << { name: reg.tipo, data: regt.codigo.count("\n") }
     #    else
-	  #      @tot_linhas_por_tipo.find{|h| h[:name] == reg.tipo}[:data] += regt.codigo.count("\n")
+	  #      @tot_linhas_por_dia.find{|h| h[:name] == reg.tipo}[:data] += regt.codigo.count("\n")
     #    end
-    #  end
+    # end
     #end
+    #p @tot_linhas_por_dia
 
-    @funcoes_comp = []
-    Funcao.select('cd_componente')
-                          .where("length(cd_componente) = 8 and cd_empresa = '1' and tipo in('entry', 'operation')")
-                          .group(:cd_componente)
-                          .limit(15)
-                          .order('count(id) desc')
-                          .count.each do |reg|
-      @funcoes_comp << { name: reg[0], data: reg[1] }
+
+    linhas_por_dia = []
+    Funcao.select('tipo')
+          .where('created_at between ? and ? and cd_empresa = ?',
+                  v_data_inicial,
+                  v_data_final,
+                  "#{params[:cd_empresa]}")
+          .group(:tipo).each do |reg|
+      linhas_por_dia << { 'name': reg.tipo, 'data': Funcao.where('created_at between ? and ? and tipo = ? and cd_empresa = ?',
+                                              v_data_inicial,
+                                              v_data_final,
+                                              reg.tipo, 
+                                              "#{params[:cd_empresa]}")
+                                      .group_by_day(:created_at).count }
     end
-
-    @funcoes = []
-    Funcao.select('tipo').where("cd_empresa = '1'").group(:tipo).count.each do |reg|
-      @funcoes << { name: reg[0], data: reg[1] }
-    end
-
-    p @tot_linhas_por_tipo
-
-    
+    #@tot_linhas_por_dia = Hash[linhas_por_dia.each_slice(2).to_a]
+    @tot_linhas_por_dia = linhas_por_dia
+    puts "@tot_linhas_por_dia"
+    puts @tot_linhas_por_dia
+    puts @tot_linhas_por_dia.class
   end
 
   def formata_data(data, sinal, formato)
