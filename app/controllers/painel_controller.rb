@@ -1,20 +1,7 @@
 class PainelController < ApplicationController
 
   def index
-    return unless params[:data_inicial].present? && params[:data_final].present?
-
-    v_data_inicial = formata_data(params[:data_inicial], '+', '%Y-%m-%dT%H:%M')
-    v_data_final =  formata_data(params[:data_final], '+', '%Y-%m-%dT%H:%M')
-    @v_data_inicial = v_data_inicial
-    @v_data_final = v_data_final
-    @cd_empresa = params[:cd_empresa]
-
-    @tot_comps_por_dia = Funcao.where('created_at between ?  and ? and cd_empresa = ? and length(cd_componente) = 8',
-                                         v_data_inicial, 
-                                         v_data_final, 
-                                         "#{params[:cd_empresa]}")
-                                  .group_by_day(:created_at)
-                                  .count
+    return unless params[:cd_empresa].present?
 
     @total_linhas = 0
     tot_linhas = 0
@@ -38,11 +25,21 @@ class PainelController < ApplicationController
     linhas_por_tipo.each do |it|
       @tot_linhas_por_tipo[it[:name]] = it[:data]
     end
-    
-    puts "@tot_linhas_por_tipo"
-    puts @tot_linhas_por_tipo.class
-    p @tot_linhas_por_tipo
 
+    return unless params[:data_inicial].present? && params[:data_final].present? && params[:cd_empresa].present?
+
+    v_data_inicial = formata_data(params[:data_inicial], '+', '%Y-%m-%dT%H:%M')
+    v_data_final =  formata_data(params[:data_final], '+', '%Y-%m-%dT%H:%M')
+    @v_data_inicial = v_data_inicial
+    @v_data_final = v_data_final
+    @cd_empresa = params[:cd_empresa]
+
+    @tot_comps_por_dia = Funcao.where('created_at between ?  and ? and cd_empresa = ? and length(cd_componente) = 8',
+                                         v_data_inicial, 
+                                         v_data_final, 
+                                         "#{params[:cd_empresa]}")
+                                  .group_by_day(:created_at)
+                                  .count
 
     linhas_por_dia = []
     Funcao.select('tipo')
@@ -59,6 +56,7 @@ class PainelController < ApplicationController
                                       .group_by_day(:created_at).count }
     end
     @tot_linhas_por_dia = linhas_por_dia
+
   end
 
   def formata_data(data, sinal, formato)
