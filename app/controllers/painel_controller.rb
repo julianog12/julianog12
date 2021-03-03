@@ -22,7 +22,6 @@ class PainelController < ApplicationController
         end
      end
     end
-    linhas_por_modelo.first(25)
     @tot_linhas_por_modelo = {}
     linhas_por_modelo.each do |it|
       @tot_linhas_por_modelo[it[:name]] = it[:data]
