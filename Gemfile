@@ -49,6 +49,7 @@ gem 'jquery-datatables'
 gem 'jquery-rails'
 gem 'mini_racer', :platform=>:ruby
 gem 'oj'
+gem 'rack-timeout', require: 'rack/timeout/base'
 gem 'responders'
 gem 'rest-client'
 gem 'rufus-scheduler'
