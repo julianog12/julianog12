@@ -10,10 +10,7 @@ class Processar
   require "#{Rails.root}/lib/processar_trigger"
   require "#{Rails.root}/lib/processar_include_proc"
 
-  def initialize(empresa)
-    dados = Configuracao.where("cd_empresa = '#{empresa}'")
-    tempresa = dados.map{ |c| [c.parametro.to_sym, c.valor] }.to_h
-    tempresa[:cd_empresa] = dados.first.cd_empresa
+  def initialize(tempresa)
 
     @cd_empresa = tempresa[:cd_empresa]
 
