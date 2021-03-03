@@ -16,20 +16,32 @@ class PainelController < ApplicationController
                                   .group_by_day(:created_at)
                                   .count
 
-    puts "@tot_comps_por_dia"
-    puts @tot_comps_por_dia
-    puts @tot_comps_por_dia.class
-    #@tot_linhas_por_dia = []
-    #Funcao.select('tipo').where('cd_empresa = ?', "#{params[:cd_empresa]}").group(:tipo).each do |reg|
-    #  Funcao.where('tipo = ? and cd_empresa = ?', reg.tipo, "#{params[:cd_empresa]}").select('codigo').each do |regt|
-    #    if @tot_linhas_por_dia.find {|x| x[:name] == reg.tipo}.nil?
-    #      @tot_linhas_por_dia << { name: reg.tipo, data: regt.codigo.count("\n") }
-    #    else
-	  #      @tot_linhas_por_dia.find{|h| h[:name] == reg.tipo}[:data] += regt.codigo.count("\n")
-    #    end
-    # end
-    #end
-    #p @tot_linhas_por_dia
+    @total_linhas = 0
+    tot_linhas = 0
+    linhas_por_tipo = []
+    Funcao.select('tipo').where('cd_empresa = ?', "#{params[:cd_empresa]}").group(:tipo).each do |reg|
+      Funcao.where('tipo = ? and cd_empresa = ?', reg.tipo, "#{params[:cd_empresa]}").select('codigo').each do |regt|
+        tot_linhas = regt.codigo.count("\n")
+        @total_linhas += tot_linhas
+        if !linhas_por_tipo.nil? 
+          if linhas_por_tipo.find {|x| x[:name] == reg.tipo}.nil? 
+            linhas_por_tipo << { name: reg.tipo, data: tot_linhas }
+          else
+            linhas_por_tipo.find{|h| h[:name] == reg.tipo}[:data] += tot_linhas
+          end
+        else
+          linhas_por_tipo << { name: reg.tipo, data: tot_linhas }
+        end
+     end
+    end
+    @tot_linhas_por_tipo = {}
+    linhas_por_tipo.each do |it|
+      @tot_linhas_por_tipo[it[:name]] = it[:data]
+    end
+    
+    puts "@tot_linhas_por_tipo"
+    puts @tot_linhas_por_tipo.class
+    p @tot_linhas_por_tipo
 
 
     linhas_por_dia = []
@@ -46,11 +58,7 @@ class PainelController < ApplicationController
                                               "#{params[:cd_empresa]}")
                                       .group_by_day(:created_at).count }
     end
-    #@tot_linhas_por_dia = Hash[linhas_por_dia.each_slice(2).to_a]
     @tot_linhas_por_dia = linhas_por_dia
-    puts "@tot_linhas_por_dia"
-    puts @tot_linhas_por_dia
-    puts @tot_linhas_por_dia.class
   end
 
   def formata_data(data, sinal, formato)
