@@ -10,9 +10,11 @@ class Processar
   require "#{Rails.root}/lib/processar_trigger"
   require "#{Rails.root}/lib/processar_include_proc"
 
-  def initialize(tempresa)
-    #@caminho = caminho_config
-    #@arq_yml = YAML.safe_load(File.open(@caminho))
+  def initialize(empresa)
+    dados = Configuracao.where("cd_empresa = '#{empresa}'")
+    tempresa = dados.map{ |c| [c.parametro.to_sym, c.valor] }.to_h
+    tempresa[:cd_empresa] = dados.first.cd_empresa
+
     @cd_empresa = tempresa[:cd_empresa]
 
     @nm_arquivo = "#{Rails.root}/lib/arquivos_gerados/" + tempresa[:nome_arq_result] + "_#{Time.now.strftime('%d%m%Y%H%M%S')}"
@@ -49,8 +51,6 @@ class Processar
 
   def gravar_arquivo_ultima_alteracao
     data = Time.now.strftime('%Y %m %d %H %M %S').to_s
-    #@arq_yml['geral']['ultima_alteracao'] = data
-    #File.open(@caminho, 'w') { |f| f.write @arq_yml.to_yaml }
     config = Configuracao.where("cd_empresa = '#{@cd_empresa}' and parametro = 'ultima_alteracao'")
     config.update(valor: data)
   end
