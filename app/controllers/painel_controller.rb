@@ -22,7 +22,7 @@ class PainelController < ApplicationController
     #    end
     # end
     #end
-    @tot_linhas_por_modelo = {}
+    #@tot_linhas_por_modelo = {}
     #linhas_por_modelo.each do |it|
     #  @tot_linhas_por_modelo[it[:name]] = it[:data]
     #end
@@ -63,21 +63,21 @@ class PainelController < ApplicationController
                                   .group_by_day(:created_at)
                                   .count
 
-    linhas_por_dia = []
-    Funcao.select('tipo')
-          .where('created_at between ? and ? and cd_empresa = ?',
-                  v_data_inicial,
-                  v_data_final,
-                  "#{params[:cd_empresa]}")
-          .group(:tipo).each do |reg|
-      linhas_por_dia << { 'name': reg.tipo, 'data': Funcao.where('created_at between ? and ? and tipo = ? and cd_empresa = ?',
-                                              v_data_inicial,
-                                              v_data_final,
-                                              reg.tipo, 
-                                              "#{params[:cd_empresa]}")
-                                      .group_by_day(:created_at).count }
-    end
-    @tot_linhas_por_dia = linhas_por_dia
+    #linhas_por_dia = []
+    #Funcao.select('tipo')
+    #      .where('created_at between ? and ? and cd_empresa = ?',
+    #              v_data_inicial,
+    #              v_data_final,
+    #              "#{params[:cd_empresa]}")
+    #      .group(:tipo).each do |reg|
+    #  linhas_por_dia << { 'name': reg.tipo, 'data': Funcao.where('created_at between ? and ? and tipo = ? and cd_empresa = ?',
+    #                                          v_data_inicial,
+    #                                          v_data_final,
+    #                                          reg.tipo, 
+    #                                          "#{params[:cd_empresa]}")
+    #                                  .group_by_day(:created_at).count }
+    #end
+    #@tot_linhas_por_dia = linhas_por_dia
 
   end
 
