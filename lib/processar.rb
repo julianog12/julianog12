@@ -63,7 +63,7 @@ class Processar
         rescue
           raise "#{li.split[5]}       #{li.split[6]}"
         end
-        next if li.split[7].match(/^aps/i) || li.split[7].match(/^arh/i) || li.split[7].match(/^ccn/i) || li.split[7].match(/^cnf/i) 
+        next if li.split[7].match(/^aps/i)
         if v_nao_ler
           if v_dia_hora > @data_ultima_alteracao
             break if v_dia != li.split[5]

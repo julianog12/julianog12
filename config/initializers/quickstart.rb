@@ -12,10 +12,6 @@ scheduler = Rufus::Scheduler.new
 
 empresas = [1,2,3,4]
 
-scheduler.in '20s' do
-  GerarRelatoriosGerenciais.new(empresas)
-end
-
 scheduler.cron '15 12 * * 1-5 America/Sao_Paulo', :job => true do
   GerarRelatoriosGerenciais.new(empresas)
 end

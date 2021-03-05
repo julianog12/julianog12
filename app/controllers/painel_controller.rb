@@ -1,14 +1,18 @@
 class PainelController < ApplicationController
 
+  layout "application_dashboard"
+
   def index
     return unless params[:cd_empresa].present?
-
+    
     @total_linhas = 0
     tot_linhas = 0
     report_file = "#{Rails.root}/public/reports/#{params[:cd_empresa]}_report.rep"
+    puts report_file
     if File.exist?(report_file)
-        @tot_linhas_por_modelo = eval(File.open(report_file).read)
-        p @tot_linhas_por_modelo
+      puts "ENTROU REPORTFILE"
+      @tot_linhas_por_modelo = eval(File.open(report_file).read)
+      puts @tot_linhas_por_modelo
     end
 
     linhas_por_tipo = []
