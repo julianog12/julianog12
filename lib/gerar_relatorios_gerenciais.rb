@@ -29,8 +29,9 @@ class GerarRelatoriosGerenciais
       if reg.modelo.length == 4
         Funcao.where('substring(cd_componente,1,4) = ? and cd_empresa = ? and length(cd_componente) in (7, 8)', reg.modelo, "#{empresa}")
               .select('codigo').each do |regt|
-          tot_linhas = regt.codigo.count("\n")
-          if !linhas_por_modelo.nil? 
+          tot_linhas = 0
+          tot_linhas = regt.codigo.count("\n") unless regt.codigo.count("\n").nil?
+          if !linhas_por_modelo.nil?  unless regt.codigo.count("\n").nil?
             if linhas_por_modelo.find {|x| x[:name] == reg.modelo}.nil? 
               linhas_por_modelo << { name: reg.modelo, data: tot_linhas }
             else
@@ -43,7 +44,8 @@ class GerarRelatoriosGerenciais
       else
 
         Funcao.where('substring(cd_componente,1,3) = ? and cd_empresa = ? and length(cd_componente) in (7,8)', reg.modelo, "#{empresa}").select('codigo').each do |regt|
-          tot_linhas = regt.codigo.count("\n")
+          tot_linhas = 0
+          tot_linhas = regt.codigo.count("\n") unless regt.codigo.count("\n").nil?
           if !linhas_por_modelo.nil? 
             if linhas_por_modelo.find {|x| x[:name] == reg.modelo}.nil? 
               linhas_por_modelo << { name: reg.modelo, data: tot_linhas }
@@ -74,9 +76,10 @@ class GerarRelatoriosGerenciais
     tot_linhas = 0
 
     linhas_por_tipo = []
-    Funcao.select('tipo').where('cd_empresa = ?', "#{empresa}").group(:tipo).each do |reg|
-      Funcao.where('tipo = ? and cd_empresa = ?', reg.tipo, "#{empresa}").select('codigo').each do |regt|
-        tot_linhas = regt.codigo.count("\n")
+    Funcao.select('tipo').where('cd_empresa = ? and length(cd_componente) in(7,8)', "#{empresa}").group(:tipo).each do |reg|
+      Funcao.where('tipo = ? and cd_empresa = ? and length(cd_componente) in(7,8)', reg.tipo, "#{empresa}").select('codigo').each do |regt|
+        tot_linhas = 0
+        tot_linhas = regt.codigo.count("\n") unless regt.codigo.count("\n").nil?
         total_linhas += tot_linhas
         if !linhas_por_tipo.nil? 
           if linhas_por_tipo.find {|x| x[:name] == reg.tipo}.nil? 
@@ -108,10 +111,10 @@ class GerarRelatoriosGerenciais
   end
 
   def report_total_objetos(empresa)
-    total_componentes = Funcao.where("cd_empresa = ?", "#{empresa}").distinct.pluck(:cd_componente).count
-    total_includes = Funcao.where("cd_empresa = ? and tipo =  'includes'", "#{empresa}").count
-    total_operations = Funcao.where("cd_empresa = ? and tipo =  'operation'", "#{empresa}").count
-    total_execs = Funcao.where("cd_empresa = ? and tipo =  'trigger-form' and nm_funcao = 'EXEC'", "#{empresa}").count
+    total_componentes = Funcao.where("cd_empresa = ?", "#{empresa} and length(cd_componente) in(7,8)").distinct.pluck(:cd_componente).count
+    total_includes = Funcao.where("cd_empresa = ? and tipo =  'include' and length(cd_componente) in(7,8)", "#{empresa}").count
+    total_operations = Funcao.where("cd_empresa = ? and tipo =  'operation' and length(cd_componente) in(7,8)", "#{empresa}").count
+    total_execs = Funcao.where("cd_empresa = ? and tipo =  'trigger-form' and nm_funcao = 'EXEC' and length(cd_componente) in(7,8)", "#{empresa}").count
 
     dados = {componentes: total_componentes, includes: total_includes, operations: total_operations, exec: total_execs}
 
