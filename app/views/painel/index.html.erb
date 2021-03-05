@@ -10,8 +10,8 @@
     <header>
       <%= render 'layouts/navigation' %>
     </header>
+    <br>
    <%= form_tag painel_index_path, method: :get, id: "painel_search", role: "form" do %>
-     <h4 class="text-primary"><center>Atualização de Componentes por Dia</center></h4>
      <div class="row">
        <div class="col-sm-5">
           <div class="input-group">
@@ -53,8 +53,6 @@
 <%= render 'total_linhas_por_modelo' unless @tot_linhas_por_modelo.nil? %>
 <%= render 'total_comps_por_dia' unless @tot_comps_por_dia.nil? %>
 <%#= render 'total_linhas_por_dia'  unless @tot_linhas_por_dia.nil? %>
-<br>
-<br>
 <br>
 <br>
 <br>

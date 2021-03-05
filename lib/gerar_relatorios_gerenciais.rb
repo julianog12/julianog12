@@ -12,20 +12,37 @@ class GerarRelatoriosGerenciais
   def processar(empresas)
     empresas.each do |empresa|
       linhas_por_modelo = []
-      Funcao.select('substring(cd_componente,1,4) as modelo')
+      Funcao.select("case when substring(cd_componente,1,3) in('ccn', 'arh', cnf') then substring(cd_componente,1,3)
+                          else substring(cd_componente,1,4)' end
+                          as modelo")
             .where('cd_empresa = ? and length(cd_componente) = 8', "#{empresa}").group('substring(cd_componente,1,4)').each do |reg|
-        Funcao.where('substring(cd_componente,1,4) = ? and cd_empresa = ? and length(cd_componente) = 8', reg.modelo, "#{empresa}").select('codigo').each do |regt|
-          tot_linhas = regt.codigo.count("\n")
-          if !linhas_por_modelo.nil? 
-            if linhas_por_modelo.find {|x| x[:name] == reg.modelo}.nil? 
-              linhas_por_modelo << { name: reg.modelo, data: tot_linhas }
+        if reg.modelo.length == 4
+          Funcao.where('substring(cd_componente,1,4) = ? and cd_empresa = ? and length(cd_componente) = 8', reg.modelo, "#{empresa}").select('codigo').each do |regt|
+            tot_linhas = regt.codigo.count("\n")
+            if !linhas_por_modelo.nil? 
+              if linhas_por_modelo.find {|x| x[:name] == reg.modelo}.nil? 
+                linhas_por_modelo << { name: reg.modelo, data: tot_linhas }
+              else
+                linhas_por_modelo.find{|h| h[:name] == reg.modelo}[:data] += tot_linhas
+              end
             else
-              linhas_por_modelo.find{|h| h[:name] == reg.modelo}[:data] += tot_linhas
+              linhas_por_modelo << { name: reg.modelo, data: tot_linhas }
             end
-          else
-            linhas_por_modelo << { name: reg.modelo, data: tot_linhas }
           end
-       end
+        else
+          Funcao.where('substring(cd_componente,1,3) = ? and cd_empresa = ? and length(cd_componente) = 8', reg.modelo, "#{empresa}").select('codigo').each do |regt|
+            tot_linhas = regt.codigo.count("\n")
+            if !linhas_por_modelo.nil? 
+              if linhas_por_modelo.find {|x| x[:name] == reg.modelo}.nil? 
+                linhas_por_modelo << { name: reg.modelo, data: tot_linhas }
+              else
+                linhas_por_modelo.find{|h| h[:name] == reg.modelo}[:data] += tot_linhas
+              end
+            else
+              linhas_por_modelo << { name: reg.modelo, data: tot_linhas }
+            end
+          end
+        end
       end
       tot_linhas_por_modelo = {}
       linhas_por_modelo.each do |it|

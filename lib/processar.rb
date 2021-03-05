@@ -67,7 +67,7 @@ class Processar
         if v_nao_ler
           if v_dia_hora > @data_ultima_alteracao
             break if v_dia != li.split[5]
-            if li.split[7].length == 15
+            if li.split[7].length == 15 || li.split[7].match(/^arh/i) || li.split[7].match(/^ccn/i) || li.split[7].match(/^cnf/i) 
               ProcessarTrigger.new(@cd_empresa,
                                @servidor_funcao, 
                                @servidor_http,
