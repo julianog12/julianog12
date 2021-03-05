@@ -31,7 +31,7 @@ class GerarRelatoriosGerenciais
               .select('codigo').each do |regt|
           tot_linhas = 0
           tot_linhas = regt.codigo.count("\n") unless regt.codigo.count("\n").nil?
-          if !linhas_por_modelo.nil?  unless regt.codigo.count("\n").nil?
+          if !linhas_por_modelo.nil?
             if linhas_por_modelo.find {|x| x[:name] == reg.modelo}.nil? 
               linhas_por_modelo << { name: reg.modelo, data: tot_linhas }
             else
