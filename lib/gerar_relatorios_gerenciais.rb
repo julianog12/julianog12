@@ -112,7 +112,7 @@ class GerarRelatoriosGerenciais
 
   def report_total_objetos(empresa)
     total_componentes = Funcao.where('cd_empresa = ? and length(cd_componente) in(7,8)', "#{empresa}").distinct.pluck(:cd_componente).count
-    total_includes = Funcao.where("cd_empresa = ? and tipo =  'include' and length(cd_componente) in(7,8)", "#{empresa}").count
+    total_includes = Funcao.where("cd_empresa = ? and tipo =  'include'", "#{empresa}").count
     total_operations = Funcao.where("cd_empresa = ? and tipo =  'operation' and length(cd_componente) in(7,8)", "#{empresa}").count
     total_execs = Funcao.where("cd_empresa = ? and tipo =  'trigger-form' and nm_funcao = 'EXEC' and length(cd_componente) in(7,8)", "#{empresa}").count
 
