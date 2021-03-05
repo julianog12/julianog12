@@ -4,36 +4,20 @@ class PainelController < ApplicationController
 
   def index
     return unless params[:cd_empresa].present?
-    
-    @total_linhas = 0
-    tot_linhas = 0
-    report_file = "#{Rails.root}/public/reports/#{params[:cd_empresa]}_report.rep"
-    puts report_file
+
+    report_file = "#{Rails.root}/public/reports/#{params[:cd_empresa]}_linhas_por_modelo_report.rep"
     if File.exist?(report_file)
-      puts "ENTROU REPORTFILE"
       @tot_linhas_por_modelo = eval(File.open(report_file).read)
-      puts @tot_linhas_por_modelo
     end
 
-    linhas_por_tipo = []
-    Funcao.select('tipo').where('cd_empresa = ?', "#{params[:cd_empresa]}").group(:tipo).each do |reg|
-      Funcao.where('tipo = ? and cd_empresa = ?', reg.tipo, "#{params[:cd_empresa]}").select('codigo').each do |regt|
-        tot_linhas = regt.codigo.count("\n")
-        @total_linhas += tot_linhas
-        if !linhas_por_tipo.nil? 
-          if linhas_por_tipo.find {|x| x[:name] == reg.tipo}.nil? 
-            linhas_por_tipo << { name: reg.tipo, data: tot_linhas }
-          else
-            linhas_por_tipo.find{|h| h[:name] == reg.tipo}[:data] += tot_linhas
-          end
-        else
-          linhas_por_tipo << { name: reg.tipo, data: tot_linhas }
-        end
-     end
+    report_file = "#{Rails.root}/public/reports/#{params[:cd_empresa]}_linhas_por_tipo_report.rep"
+    if File.exist?(report_file)
+      @tot_linhas_por_tipo = eval(File.open(report_file).read)
     end
-    @tot_linhas_por_tipo = {}
-    linhas_por_tipo.each do |it|
-      @tot_linhas_por_tipo[it[:name]] = it[:data]
+
+    report_file = "#{Rails.root}/public/reports/#{params[:cd_empresa]}_total_linhas_geral_report.rep"
+    if File.exist?(report_file)
+      @total_linhas = File.open(report_file).read
     end
 
     return unless params[:data_inicial].present? && params[:data_final].present? && params[:cd_empresa].present?
