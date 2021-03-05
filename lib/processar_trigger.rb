@@ -149,9 +149,9 @@ class ProcessarTrigger
     begin
       RestClient.post "#{@servidor_funcao}", JSON.parse(v_post_string.to_json)
     rescue StandardError => e
-      Rails.info e.inspect
-      Rails.info "Erro ao fazer post funcao"
-      Rails.info v_post_string
+      Rails.logger.info e.inspect
+      Rails.logger.info "Erro ao fazer post funcao"
+      Rails.logger.info v_post_string
     end
   end
 
