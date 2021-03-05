@@ -20,6 +20,13 @@ class PainelController < ApplicationController
       @total_linhas = File.open(report_file).read
     end
 
+    report_file = "#{Rails.root}/public/reports/#{params[:cd_empresa]}_total_objetos_de_implementacao_report.rep"
+    if File.exist?(report_file)
+      @total_objetos_de_implementacao = eval(File.open(report_file).read)
+      @total_linhas_objetos_implementacao = 0
+      @total_objetos_de_implementacao.map{|k,v| @total_linhas_objetos_implementacao+= v}
+    end
+
     return unless params[:data_inicial].present? && params[:data_final].present? && params[:cd_empresa].present?
 
     v_data_inicial = formata_data(params[:data_inicial], '+', '%Y-%m-%dT%H:%M')
@@ -34,22 +41,6 @@ class PainelController < ApplicationController
                                          "#{params[:cd_empresa]}")
                                   .group_by_day(:created_at)
                                   .count
-
-    #linhas_por_dia = []
-    #Funcao.select('tipo')
-    #      .where('created_at between ? and ? and cd_empresa = ?',
-    #              v_data_inicial,
-    #              v_data_final,
-    #              "#{params[:cd_empresa]}")
-    #      .group(:tipo).each do |reg|
-    #  linhas_por_dia << { 'name': reg.tipo, 'data': Funcao.where('created_at between ? and ? and tipo = ? and cd_empresa = ?',
-    #                                          v_data_inicial,
-    #                                          v_data_final,
-    #                                          reg.tipo, 
-    #                                          "#{params[:cd_empresa]}")
-    #                                  .group_by_day(:created_at).count }
-    #end
-    #@tot_linhas_por_dia = linhas_por_dia
 
   end
 
