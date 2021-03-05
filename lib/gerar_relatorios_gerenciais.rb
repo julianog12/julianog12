@@ -12,6 +12,7 @@ class GerarRelatoriosGerenciais
     empresas.each do |empresa|
       report_linhas_por_modelo(empresa)
       report_linhas_por_tipo(empresa)
+      report_total_objetos(empresa)
     end
   end
 
@@ -104,6 +105,23 @@ class GerarRelatoriosGerenciais
     out_file = File.new("#{Rails.root.join('public')}/reports/#{empresa}_total_linhas_geral_report.rep", 'w')
     out_file.puts total_linhas
     out_file.close
+  end
+
+  def report_total_objetos(empresa)
+    total_componentes = Funcao.where("cd_empresa = ?", "#{empresa}").distinct.pluck(:cd_componente).count
+    total_includes = Funcao.where("cd_empresa = ? and tipo =  'includes'", "#{empresa}").count
+    total_operations = Funcao.where("cd_empresa = ? and tipo =  'operation'", "#{empresa}").count
+    total_execs = Funcao.where("cd_empresa = ? and tipo =  'trigger-form' and nm_funcao = 'EXEC'", "#{empresa}").count
+
+    dados = {componentes: total_componentes, includes: total_includes, operations: total_operations, exec: total_execs}
+
+    unless File.directory?("#{Rails.root.join('public')}/reports")
+      Dir.mkdir "#{Rails.root.join('public')}/reports"
+    end
+    out_file = File.new("#{Rails.root.join('public')}/reports/#{empresa}_total_objetos_de_implementacao_report.rep", 'w')
+    out_file.puts dados
+    out_file.close
+    
   end
 
 end

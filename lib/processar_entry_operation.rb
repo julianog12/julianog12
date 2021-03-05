@@ -400,7 +400,12 @@ class ProcessarEntryOperation
             v_comando = v_comando.downcase.gsub('%%$instancename', "#{v_id}")
             v_post_string = {'componentes': {'nome': v_id, 'linha': v_comando, 'cd_empresa': @cd_empresa, 'tipo': tipo_arquivo(@arquivo) }}
             v_post_string = v_post_string.to_json
-            RestClient.post "#{@servidor_http}", JSON.parse(v_post_string)
+            begin
+              RestClient.post "#{@servidor_http}", JSON.parse(v_post_string)
+            rescue
+              Rails.logger.info "Erro ao chamar RestClient.post #{@servidor_http} linha 406 processar_entry_operation"
+              nil
+            end
             v_cmd_activate = []
             v_indica = false
           end
