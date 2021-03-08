@@ -27,6 +27,7 @@ class GerarRelatoriosGerenciais
                         then substring(cd_componente,1,3)
                         else substring(cd_componente,1,4) end").each do |reg|
       if reg.modelo.length == 4
+        next if reg.modelo == 'acre' || reg.modelo == 'acon'
         Funcao.where('substring(cd_componente,1,4) = ? and cd_empresa = ? and length(cd_componente) in (7, 8)', reg.modelo, "#{empresa}")
               .select('codigo').each do |regt|
           tot_linhas = 0
@@ -42,7 +43,6 @@ class GerarRelatoriosGerenciais
           end
         end
       else
-
         Funcao.where('substring(cd_componente,1,3) = ? and cd_empresa = ? and length(cd_componente) in (7,8)', reg.modelo, "#{empresa}").select('codigo').each do |regt|
           tot_linhas = 0
           tot_linhas = regt.codigo.count("\n") unless regt.codigo.count("\n").nil?
@@ -76,7 +76,7 @@ class GerarRelatoriosGerenciais
     tot_linhas = 0
 
     linhas_por_tipo = []
-    Funcao.select('tipo').where('cd_empresa = ? and length(cd_componente) in(7,8)', "#{empresa}").group(:tipo).each do |reg|
+    Funcao.select('tipo').where("cd_empresa = ? and length(cd_componente) in(7,8) and substring(cd_componente,1,4) not in ('acon', 'acre')", "#{empresa}").group(:tipo).each do |reg|
       Funcao.where('tipo = ? and cd_empresa = ? and length(cd_componente) in(7,8)', reg.tipo, "#{empresa}").select('codigo').each do |regt|
         tot_linhas = 0
         tot_linhas = regt.codigo.count("\n") unless regt.codigo.count("\n").nil?
@@ -111,10 +111,10 @@ class GerarRelatoriosGerenciais
   end
 
   def report_total_objetos(empresa)
-    total_componentes = Funcao.where('cd_empresa = ? and length(cd_componente) in(7,8)', "#{empresa}").distinct.pluck(:cd_componente).count
+    total_componentes = Funcao.where("cd_empresa = ? and length(cd_componente) in(7,8) and substring(cd_componente,1,4) not in ('acon', 'acre')", "#{empresa}").distinct.pluck(:cd_componente).count
     total_includes = Funcao.where("cd_empresa = ? and tipo =  'include'", "#{empresa}").count
-    total_operations = Funcao.where("cd_empresa = ? and tipo =  'operation' and length(cd_componente) in(7,8)", "#{empresa}").count
-    total_execs = Funcao.where("cd_empresa = ? and tipo =  'trigger-form' and nm_funcao = 'EXEC' and length(cd_componente) in(7,8)", "#{empresa}").count
+    total_operations = Funcao.where("cd_empresa = ? and tipo =  'operation' and length(cd_componente) in(7,8) and substring(cd_componente,1,4) not in ('acon', 'acre')", "#{empresa}").count
+    total_execs = Funcao.where("cd_empresa = ? and tipo =  'trigger-form' and nm_funcao = 'EXEC' and length(cd_componente) in(7,8) and substring(cd_componente,1,4) not in ('acon', 'acre')", "#{empresa}").count
 
     dados = {componentes: total_componentes, includes: total_includes, operations: total_operations, exec: total_execs}
 
