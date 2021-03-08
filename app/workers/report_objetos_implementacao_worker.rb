@@ -1,6 +1,6 @@
 class ReportObjetosImplementacaoWorker
   include Sidekiq::Worker
-  sidekiq_options queue: :low, retry: true
+  #sidekiq_options queue: :low, retry: true
 
   def perform(empresa)
     total_componentes = Funcao.where("cd_empresa = ? and length(cd_componente) in(7,8) and substring(cd_componente,1,4) not in ('acon', 'acre')", "#{empresa}").distinct.pluck(:cd_componente).count

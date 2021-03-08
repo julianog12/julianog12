@@ -1,6 +1,6 @@
 class ReportLinhasPorModeloWorker
   include Sidekiq::Worker
-  sidekiq_options queue: :critical, retry: true
+  #sidekiq_options queue: :critical, retry: true
 
   def perform(empresa)
     linhas_por_modelo = []
