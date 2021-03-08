@@ -1,6 +1,6 @@
 class ReportLinhasPorTipoWorker
   include Sidekiq::Worker
-  #sidekiq_options queue: :report_linhas_tipo, retry: true
+  sidekiq_options queue: :default, retry: true
 
 
   def perform(empresa)
