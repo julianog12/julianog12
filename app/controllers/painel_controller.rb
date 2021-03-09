@@ -1,6 +1,6 @@
 class PainelController < ApplicationController
 
-  layout "application_dashboard"
+  layout 'application_dashboard'
 
   def index
     return unless params[:cd_empresa].present?
@@ -43,13 +43,12 @@ class PainelController < ApplicationController
     @v_data_final = v_data_final
     @cd_empresa = params[:cd_empresa]
 
-    @tot_comps_por_dia = Funcao.where('created_at between ?  and ? and cd_empresa = ? and length(cd_componente) = 8',
-                                         v_data_inicial, 
-                                         v_data_final, 
-                                         "#{params[:cd_empresa]}")
+    @tot_comps_por_dia = Funcao.where('created_at between ? and ? and cd_empresa = ? and length(cd_componente) in(7,8)',
+                                       v_data_inicial,
+                                       v_data_final,
+                                       params[:cd_empresa].to_s)
                                   .group_by_day(:created_at)
                                   .count
-    
   end
 
   def formata_data(data, sinal, formato)

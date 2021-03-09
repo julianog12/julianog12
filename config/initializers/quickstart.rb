@@ -10,6 +10,7 @@ empresas = [4,3,2,1]
 
 scheduler.cron '00 21 * * 1-5 America/Sao_Paulo', :job => true do
   GerarRelatoriosGerenciais.new([4,2])
+  #GerarRelatoriosGerenciais.new([1])
 end
 
 #scheduler.in '1s' do

@@ -1,7 +1,74 @@
-<div style="display: inline-block; width: 100%; border-style: solid; border-width:thin; border-color: #FFFFFF;">
+<!--<div style="display: inline-block; width: 100%; border-style: solid; border-width:thin; border-color: #FFFFFF;">
    <h2><center>Total Linhas/Modelo</center></h2>
 
-   <%= 
+   <%#= 
     line_chart @tot_linhas_por_modelo 
     %>
+</div>-->
+
+<div style="; margin:0 auto; width: 45%; border-style: solid; border-width:thin; border-color: #FFFFFF;">
+     <h2><center>Total Linhas/Modelo</center></h2>
+
+<hr>
+  <table id="linhas_por_tipo" class="table">
+  <thead class="grey lighten-2"">
+     <tr>
+       <th>Modelo</th>
+       <th>Tot.Linhas</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @tot_linhas_por_modelo.each do |objs| 
+         p objs
+       %>
+         <tr>
+            <td><%= objs[0] %></td>
+            <td><%= objs[1].to_i %></td>
+         </tr>
+     <% end %>
+  </tbody>
+  </table>
+
+<script>
+	$(document).ready(function() {
+	    var table = $('#linhas_por_tipo').dataTable( {
+          dom: 'lBfrtip',
+	        lengthChange: true,
+          "lengthMenu": [ [7, 60, -1], [7, 60, "All"] ],
+          pageLength: 7,
+	        buttons: [ 'copy', 'excel', 'csv', 'pdf', 'colvis' ],
+          language: {
+              "sEmptyTable": "Nenhum registro encontrado",
+              "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+              "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
+              "sInfoFiltered": "(Filtrados de _MAX_ registros)",
+              "sInfoPostFix": "",
+              "sInfoThousands": ".",
+              "sLengthMenu": "_MENU_ resultados por página",
+              "sLoadingRecords": "Carregando...",
+              "sProcessing": "Processando...",
+              "sZeroRecords": "Nenhum registro encontrado",
+              "sSearch": "Pesquisar",
+              "oPaginate": {
+                    "sNext": "Próximo",
+                    "sPrevious": "Anterior",
+                    "sFirst": "Primeiro",
+                    "sLast": "Último"
+               },
+               buttons: {
+                    colvis: 'Visibilidade Campos'
+               },
+              "oAria": {
+                   "sSortAscending": ": Ordenar colunas de forma ascendente",
+                    "sSortDescending": ": Ordenar colunas de forma descendente"
+              }
+          }
+	    });
+
+      //$('select').selectpicker();
+	 
+	    //table.buttons().container()
+	    //    .appendTo( '#example_wrapper .col-md-6:eq(0)' );
+	} );
+</script>
 </div>

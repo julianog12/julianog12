@@ -1,4 +1,4 @@
-<div style="; margin:0 auto; width: 50%; border-style: solid; border-width:thin; border-color: #FFFFFF;">
+<div style="; margin:0 auto; width: 45%; border-style: solid; border-width:thin; border-color: #FFFFFF;">
      <h2><center>Total Objetos de Implementação por Modelo</center></h2>
 
 <hr>
@@ -7,18 +7,31 @@
      <tr>
        <th>Modelo</th>
        <th>Tot.Componentes</th>
-       <th>Total Operations</th>
-       <th>Total Geral</th>
+       <th>Tot.Operations</th>
+       <th>Tot.Modelo</th>
+       <th>Tot.Linhas do Modelo</th>
+       <th>% Linhas Total</th>
     </tr>
   </thead>
   <tbody>
     <% @total_objetos_de_impl_modelo.each do |objs| %>
          <tr>
             <td><%= objs[:name] %></td>
-            <td><%= objs[:data][:componentes] %></td>
-            <td><%= objs[:data][:operations] %></td>
-            <td><%= objs[:data][:operations].to_i + objs[:data][:componentes] %></td>
-
+            <td><%= number_to_human(objs[:data][:componentes]) %></td>
+            <td><%= number_to_human(objs[:data][:operations]) %></td>
+            <td><%= number_to_human(objs[:data][:operations].to_i + objs[:data][:componentes].to_i) %></td>
+            <% 
+               total_linhas_geral = 0
+               total_linhas_modelo = 0
+               percent = 0.00
+               unless @tot_linhas_por_modelo.nil?
+                 total_linhas_geral = @tot_linhas_por_modelo.inject(0) {|sum, hash| sum + hash[1]} || 0 
+                 total_linhas_modelo = @tot_linhas_por_modelo.find { |key, values| key == objs[:name]}[1] || 0
+                 percent = (total_linhas_modelo.to_f/total_linhas_geral.to_f)*100
+               end
+            %>
+            <td><%= number_to_human(total_linhas_modelo) %></td>
+            <td><%= number_to_percentage(percent, precision: 2) %></td>
          </tr>
      <% end %>
   </tbody>
