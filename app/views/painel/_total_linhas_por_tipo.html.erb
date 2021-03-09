@@ -1,5 +1,5 @@
 <div style="display: inline-block; width: 48%; border-style: solid; border-width:thin; border-color: #FFFFFF;">
-   <h2><center> <%= "Total Linhas/Tipo - Total Geral #{sprintf('%.0f' % @total_linhas)}" %> </center></h2>
+   <h2><center> <%= "Total Linhas/Tipo - Total Geral #{number_with_delimiter(@total_linhas)}" %> </center></h2>
    
    <%= pie_chart @tot_linhas_por_tipo %>
 </div>

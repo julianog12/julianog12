@@ -17,9 +17,9 @@
     <% @total_objetos_de_impl_modelo.each do |objs| %>
          <tr>
             <td><%= objs[:name] %></td>
-            <td><%= number_to_human(objs[:data][:componentes]) %></td>
-            <td><%= number_to_human(objs[:data][:operations]) %></td>
-            <td><%= number_to_human(objs[:data][:operations].to_i + objs[:data][:componentes].to_i) %></td>
+            <td><%= number_with_delimiter(objs[:data][:componentes]) %></td>
+            <td><%= number_with_delimiter(objs[:data][:operations]) %></td>
+            <td><%= number_with_delimiter(objs[:data][:operations].to_i + objs[:data][:componentes].to_i) %></td>
             <% 
                total_linhas_geral = 0
                total_linhas_modelo = 0
@@ -30,7 +30,7 @@
                  percent = (total_linhas_modelo.to_f/total_linhas_geral.to_f)*100
                end
             %>
-            <td><%= number_to_human(total_linhas_modelo) %></td>
+            <td><%= number_with_delimiter(total_linhas_modelo) %></td>
             <td><%= number_to_percentage(percent, precision: 2) %></td>
          </tr>
      <% end %>

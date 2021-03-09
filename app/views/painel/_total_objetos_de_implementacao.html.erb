@@ -1,5 +1,5 @@
 <div style="display: inline-block; width: 48%; border-style: solid; border-width:thin; border-color: #FFFFFF;">
-   <h2><center><%= "Total de Objetos de Implementação - Total Geral #{@total_linhas_objetos_implementacao}"%></center></h2>
+   <h2><center><%= "Total de Objetos de Implementação - Total Geral #{number_with_delimiter(@total_linhas_objetos_implementacao)}"%></center></h2>
    
    <%= pie_chart @total_objetos_de_implementacao %>
 </div>
