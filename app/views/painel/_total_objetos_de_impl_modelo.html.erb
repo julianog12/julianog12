@@ -39,24 +39,24 @@
 
 <script>
 	$(document).ready(function() {
-    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
-    "percent-pre": function ( a ) {
-      
-        var x = (a == "." || a === '%') ? 0 : a.replace( /%/, "" );
-        return parseFloat( x );
-    },
- 
-    "percent-asc": function ( a, b ) {
-        return ((a < b) ? -1 : ((a > b) ? 1 : 0));
-    },
- 
-    "percent-desc": function ( a, b ) {
-        return ((a < b) ? 1 : ((a > b) ? -1 : 0));
-    }
-} );
+    jQuery.fn.dataTableExt.oSort['numeric-comma-asc'] = function(a, b) {
+        var x = (a == "-") ? 0 : a.replace(/,/, ".");
+        var y = (b == "-") ? 0 : b.replace(/,/, ".");
+        x = parseFloat(x);
+        y = parseFloat(y);
+        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+    };
+
+    jQuery.fn.dataTableExt.oSort['numeric-comma-desc'] = function(a, b) {
+        var x = (a == "-") ? 0 : a.replace(/,/, ".");
+        var y = (b == "-") ? 0 : b.replace(/,/, ".");
+        x = parseFloat(x);
+        y = parseFloat(y);
+        return ((x < y) ? 1 : ((x > y) ? -1 : 0));
+    };
 	    var table = $('#example').dataTable( {
-          columnDefs: [
-           { type: 'formatted-num', targets: 0 }
+          "aoColumnDefs": [
+           { type: 'numeric-comma-pre', targets: 0 }
           ],
           dom: 'lBfrtip',
 	        lengthChange: true,
@@ -69,6 +69,8 @@
               "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
               "sInfoFiltered": "(Filtrados de _MAX_ registros)",
               "sInfoPostFix": "",
+              "decimal": ",",
+              "thousands": ".",
               "sInfoThousands": ".",
               "sLengthMenu": "_MENU_ resultados por página",
               "sLoadingRecords": "Carregando...",
