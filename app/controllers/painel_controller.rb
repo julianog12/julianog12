@@ -20,6 +20,14 @@ class PainelController < ApplicationController
       @total_linhas = File.open(report_file).read
     end
 
+    report_file = "#{Rails.root}/public/reports/#{params[:cd_empresa]}_total_objetos_de_implementacao_modelo_report.rep"
+    if File.exist?(report_file)
+      @total_objetos_de_impl_modelo = []
+      File.readlines(report_file).each do |reg|
+        @total_objetos_de_impl_modelo << eval(reg)
+      end
+    end
+
     report_file = "#{Rails.root}/public/reports/#{params[:cd_empresa]}_total_objetos_de_implementacao_report.rep"
     if File.exist?(report_file)
       @total_objetos_de_implementacao = eval(File.open(report_file).read)
@@ -41,7 +49,7 @@ class PainelController < ApplicationController
                                          "#{params[:cd_empresa]}")
                                   .group_by_day(:created_at)
                                   .count
-
+    
   end
 
   def formata_data(data, sinal, formato)

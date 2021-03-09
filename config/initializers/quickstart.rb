@@ -8,7 +8,7 @@ scheduler = Rufus::Scheduler.new
 
 empresas = [4,3,2,1]
 
-scheduler.cron '16 08 * * 1-5 America/Sao_Paulo', :job => true do
+scheduler.cron '00 21 * * 1-5 America/Sao_Paulo', :job => true do
   GerarRelatoriosGerenciais.new([4,2])
 end
 
