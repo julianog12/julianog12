@@ -39,7 +39,25 @@
 
 <script>
 	$(document).ready(function() {
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+    "percent-pre": function ( a ) {
+      
+        var x = (a == "." || a === '%') ? 0 : a.replace( /%/, "" );
+        return parseFloat( x );
+    },
+ 
+    "percent-asc": function ( a, b ) {
+        return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+    },
+ 
+    "percent-desc": function ( a, b ) {
+        return ((a < b) ? 1 : ((a > b) ? -1 : 0));
+    }
+} );
 	    var table = $('#example').dataTable( {
+          columnDefs: [
+           { type: 'formatted-num', targets: 0 }
+          ],
           dom: 'lBfrtip',
 	        lengthChange: true,
           "lengthMenu": [ [7, 60, -1], [7, 60, "All"] ],
@@ -64,7 +82,7 @@
                     "sLast": "Último"
                },
                buttons: {
-                    colvis: 'Visibilidade Campos'
+                    colvis: 'Campos'
                },
               "oAria": {
                    "sSortAscending": ": Ordenar colunas de forma ascendente",
@@ -78,5 +96,6 @@
 	    //table.buttons().container()
 	    //    .appendTo( '#example_wrapper .col-md-6:eq(0)' );
 	} );
+    
 </script>
 </div>

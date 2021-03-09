@@ -6,11 +6,17 @@ require "#{Rails.root}/lib/gerar_relatorios_gerenciais.rb"
 
 scheduler = Rufus::Scheduler.new
 
-empresas = [4,3,2,1]
-
-scheduler.cron '00 21 * * 1-5 America/Sao_Paulo', :job => true do
-  GerarRelatoriosGerenciais.new([4,2])
-  #GerarRelatoriosGerenciais.new([1])
+empresa = []
+if Rails.env == 'production'
+  empresas = [4,3,2,1]
+  scheduler.cron '00 21 * * 1-5 America/Sao_Paulo', :job => true do
+    GerarRelatoriosGerenciais.new([4,2])
+  end
+else
+  empresas = []
+  scheduler.in '1s' do
+    GerarRelatoriosGerenciais.new([1])
+  end
 end
 
 #scheduler.in '1s' do

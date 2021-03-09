@@ -31,7 +31,11 @@
      </div>
      <div class="row">
        <div class="col-sm-5">
-         <%= select_tag "cd_empresa", options_for_select([ ['Coamo Prod', 2], ['Credi Prod', 4]], selected: (params[:cd_empresa].present? ? params[:cd_empresa] : 1)), class: "form-control" %>
+         <% if Rails.env == 'development' %>
+           <%= select_tag "cd_empresa", options_for_select([ ['Coamo Prod', 1], ['Credi Prod', 4]], selected: (params[:cd_empresa].present? ? params[:cd_empresa] : 1)), class: "form-control" %>
+         <% else %>
+           <%= select_tag "cd_empresa", options_for_select([ ['Coamo Prod', 2], ['Credi Prod', 4]], selected: (params[:cd_empresa].present? ? params[:cd_empresa] : 1)), class: "form-control" %>
+         <% end %>
        </div>
        <div class="col-sm-3">
            <div class="input-group"> 
