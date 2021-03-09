@@ -13,6 +13,7 @@ class GerarRelatoriosGerenciais
       report_linhas_por_modelo(empresa)
       report_linhas_por_tipo(empresa)
       report_total_objetos(empresa)
+      report_total_objetos_modelo(empresa)
     end
   end
 
@@ -26,6 +27,10 @@ class GerarRelatoriosGerenciais
 
   def report_total_objetos(empresa)
     ReportObjetosImplementacaoWorker.perform_async(empresa)
+  end
+
+  def report_total_objetos_modelo(empresa)
+    ReportObjetosImplModeloWorker.perform_async(empresa)
   end
 
 end

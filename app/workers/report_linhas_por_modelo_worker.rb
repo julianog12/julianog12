@@ -28,7 +28,10 @@ class ReportLinhasPorModeloWorker
           end
         end
       else
-        Funcao.where('substring(cd_componente,1,3) = ? and cd_empresa = ? and length(cd_componente) in (7,8)', reg.modelo, "#{empresa}").select('codigo').each do |regt|
+        Funcao.where('substring(cd_componente,1,3) = ? and cd_empresa = ? and length(cd_componente) in (7,8)',
+                      reg.modelo, 
+                      empresa.to_s)
+              .select('codigo').each do |regt|
           tot_linhas = 0
           tot_linhas = regt.codigo.count("\n") unless regt.codigo.count("\n").nil?
           if !linhas_por_modelo.nil? 
