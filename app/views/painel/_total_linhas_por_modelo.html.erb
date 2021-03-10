@@ -32,7 +32,7 @@
 <script>
 	$(document).ready(function() {
 	    var table = $('#linhas_por_tipo').dataTable( {
-          dom: 'lBfrtip',
+          dom: 'Bfrtip',
 	        lengthChange: true,
           "lengthMenu": [ [7, 60, -1], [7, 60, "All"] ],
           pageLength: 7,
@@ -55,12 +55,9 @@
                     "sFirst": "Primeiro",
                     "sLast": "Último"
                },
-               buttons: {
-                    colvis: 'Campos'
-               },
               "oAria": {
                    "sSortAscending": ": Ordenar colunas de forma ascendente",
-                    "sSortDescending": ": Ordenar colunas de forma descendente"
+                   "sSortDescending": ": Ordenar colunas de forma descendente"
               }
           }
 	    });
