@@ -55,10 +55,7 @@
         return ((x < y) ? 1 : ((x > y) ? -1 : 0));
     };
 	  var table = $('#example').DataTable( {
-          dom: 'Bfrtip',
-          "aoColumnDefs": [
-             { type: 'numeric-comma-pre', targets: 0 }
-          ],
+          dom: 'lBfrtip',
 	        lengthChange: true,
           "lengthMenu": [ [7, 60, -1], [7, 60, "All"] ],
           pageLength: 7,
@@ -92,7 +89,7 @@
               }
           }
 	  });
-    table.buttons().container().appendTo( '.example_wrapper .col-sm-6:eq(0)' );
+    //table.buttons().container().appendTo( '.example_wrapper .col-sm-6:eq(0)' );
 
 	 
 	} );
