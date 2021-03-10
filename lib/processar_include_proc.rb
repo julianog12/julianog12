@@ -44,9 +44,9 @@ class ProcessarIncludeProc
   	
       RestClient.post "#{@servidor_funcao}", JSON.parse(v_post_string)
     rescue StandardError => e
-      Rails.info e.inspect
-      Rails.info "Erro Post Includes"
-      Rails.info v_post_string
+      Rails.logger.info e.inspect
+      Rails.logger.info "Erro Post Includes"
+      Rails.logger.info v_post_string
     end
     
   end

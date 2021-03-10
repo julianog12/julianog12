@@ -175,7 +175,7 @@ class FuncaosController < ApplicationController
                                       :remover, 
                                       :nm_tabela,
                                       :nm_campo,
-                                      :nm_Modelo,
+                                      :nm_modelo,
                                       :id)
     end
 end

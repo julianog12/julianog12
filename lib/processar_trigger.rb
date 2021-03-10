@@ -102,7 +102,6 @@ class ProcessarTrigger
       Rails.logger.info objeto
       Rails.logger.info tipo_trigger
       Rails.logger.info conteudo_trigger
-      raise "Stop"
     end
     dados_objeto = objeto.split('.')
 
@@ -149,7 +148,8 @@ class ProcessarTrigger
     begin
       RestClient.post "#{@servidor_funcao}", JSON.parse(v_post_string.to_json)
     rescue StandardError => e
-      Rails.logger.info e.inspect
+      puts e.inspect
+      puts v_post_string
       Rails.logger.info "Erro ao fazer post funcao"
       Rails.logger.info v_post_string
     end
@@ -165,6 +165,9 @@ class ProcessarTrigger
 
   def nome_include(linha, posic_include)
     nome = linha[(posic_include + 8)..(linha.index(/[\r\n]/)) - 1]
+    if nome == '' || nome.nil?
+      byebug
+    end
     unless nome.index(';').nil?
       nome = nome[0..(nome.index(';') - 1)]
     end

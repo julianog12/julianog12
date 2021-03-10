@@ -103,9 +103,10 @@ class ProcessarEntryOperation
   end
 
   def grava_arq_include(componente, nome_include, conteudo_include)
-    return if File.exists?("#{Rails.root}/lib/includes/#{@cd_empresa}_#{nome_include.split(":")[1]}.txt") || conteudo_include.empty?
+    arq_gravar = "#{Rails.root}/lib/includes/#{@cd_empresa}_#{nome_include.split(":")[1]}.txt"
+    return if File.exists?(arq_gravar) || conteudo_include.empty?
 
-    f = File.new("#{Rails.root}/lib/includes/#{@cd_empresa}_#{nome_include.split(':')[1]}.txt", 'w')
+    f = File.new(arq_gravar, 'w')
     f.write conteudo_include.join("\n")
     f.close
   end
@@ -308,9 +309,11 @@ class ProcessarEntryOperation
     lpmx_includes = []
     iniciou_trigger = false
     terminou_trigger = false
+    cont = 0
   
 
     File.read(v_arquivo_ler).each_line do |linha|
+      cont += 1
       if lpmx_includes.any? && terminou_trigger
         post_lpmx(v_id, 'trigger-form', 'LPMX', lpmx_includes) if lpmx_includes.any?
         lpmx_includes = []
@@ -341,7 +344,7 @@ class ProcessarEntryOperation
         end
       else
 
-        posic_include = linha.index("include LIB_COAMO:") ||0  if !v_linha.nil? && linha[0..1] == "[ " && !v_linha.match(/^;/) && !dados_ini.nil?
+        posic_include = (linha.index("include LIB_COAMO:")||linha.index("include COAMO_LIB:")) ||0  if !v_linha.nil? && linha[0..1] == "[ " && !v_linha.match(/^;/) && !dados_ini.nil?
         if posic_include.positive?
           lpmx_includes << v_linha_funcao if dados_ini[:nome] == "LPMX"
           nova_include = nome_include(linha, posic_include)
