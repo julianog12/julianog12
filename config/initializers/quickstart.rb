@@ -13,7 +13,7 @@ if Rails.env == 'production'
     GerarRelatoriosGerenciais.new([4,2])
   end
 else
-  empresas = []
+  empresas = [4]
   scheduler.in '1s' do
     GerarRelatoriosGerenciais.new([1])
   end

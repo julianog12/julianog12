@@ -19,3 +19,6 @@
 //= require bootstrap-select
 //= require chartkick
 //= require Chart.bundle
+//= reqquire jszip
+//= reqquire pdfmake
+//= reqquire vfs_fonts
