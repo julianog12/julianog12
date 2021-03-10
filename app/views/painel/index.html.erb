@@ -19,13 +19,17 @@
          </div>
        </div>
        <div class="col-sm-3">
-          <div class="input-group">
-              <%= label_tag :ouser_oracle, "Data Inicial:" %>
+          <div id="mouseon-datas">
+            <div class="input-group">
+                <%= label_tag :ouser_oracle, "Data Inicial:" %>
+            </div>
           </div>
         </div>
         <div class="col-sm-3">
-          <div class="input-group">
+          <div id="mouseon-datas">
+            <div class="input-group">
               <%= label_tag :ouser_oracle, "Data Final:" %>
+            </div>
           </div>
         </div>
      </div>
@@ -62,3 +66,17 @@
 <br>
 <br>
 <br>
+<script>
+$(function() {
+			// mouse-on example
+			var mouseOnDiv = $('#mouseon-datas div');
+			var tipContent = $(
+				'<p><b>Use as Datas Inicial e Final para mostrar o gráfico de "Total Componentes Atualizados/DIA".</b></p>'
+			);
+			mouseOnDiv.data('powertipjq', tipContent);
+			mouseOnDiv.powerTip({
+				placement: 'e',
+				mouseOnToPopup: true
+			});
+		});
+</script>
