@@ -43,12 +43,20 @@ class PainelController < ApplicationController
     @v_data_final = v_data_final
     @cd_empresa = params[:cd_empresa]
 
-    @tot_comps_por_dia = Funcao.where('created_at between ? and ? and cd_empresa = ? and length(cd_componente) in(7,8)',
+    @tot_comps_por_dia = {}
+    comps_por_dia = []
+    Funcao.where('created_at between ? and ? and cd_empresa = ? and length(cd_componente) in(7,8)',
                                        v_data_inicial,
                                        v_data_final,
                                        params[:cd_empresa].to_s)
-                                  .group_by_day(:created_at)
-                                  .count
+                                  .select("cd_componente, date_trunc('month', created_at) dia, count(*) as total")
+                                     .group("cd_componente, date_trunc('month', created_at)").each do |reg|
+      comps_por_dia << {name: reg.dia, data: reg.total}
+    end
+    comps_por_dia.each do |it|
+      @tot_comps_por_dia[it[:name].strftime("%d/%a/%Y")] = it[:data]
+    end
+
   end
 
   def formata_data(data, sinal, formato)
