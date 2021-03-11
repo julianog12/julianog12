@@ -49,14 +49,18 @@ class PainelController < ApplicationController
                                        v_data_inicial,
                                        v_data_final,
                                        params[:cd_empresa].to_s)
-                                  .select("cd_componente, date_trunc('month', created_at) dia, count(*) as total")
-                                     .group("cd_componente, date_trunc('month', created_at)").each do |reg|
-      comps_por_dia << {name: reg.dia, data: reg.total}
-    end
-    comps_por_dia.each do |it|
-      @tot_comps_por_dia[it[:name].strftime("%d/%a/%Y")] = it[:data]
+                                  .select("cd_componente, to_date(to_char(created_at, 'DD/MM/YYYY'), 'DD/MM/YYYY') dia, count(*) as total")
+                                     .group("cd_componente, to_date(to_char(created_at, 'DD/MM/YYYY'), 'DD/MM/YYYY')").each do |reg|
+      comps_por_dia << {name: reg.dia.strftime("%d/%m/%Y"), data: reg.total}
     end
 
+    comps_por_dia.each do |it|
+      if @tot_comps_por_dia.find {|k,v | k == it[:name]}.nil? 
+        @tot_comps_por_dia[it[:name]] = it[:data]
+      else
+        @tot_comps_por_dia.find{|k,v| k == it[:name]}[1] += 1
+      end
+    end
   end
 
   def formata_data(data, sinal, formato)
