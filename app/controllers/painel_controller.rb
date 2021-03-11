@@ -51,7 +51,8 @@ class PainelController < ApplicationController
                                        params[:cd_empresa].to_s)
                                   .select("cd_componente, to_date(to_char(created_at, 'DD/MM/YYYY'), 'DD/MM/YYYY') dia, count(*) as total")
                                      .group("cd_componente, to_date(to_char(created_at, 'DD/MM/YYYY'), 'DD/MM/YYYY')").each do |reg|
-      comps_por_dia << {name: reg.dia.strftime("%d/%m/%Y"), data: reg.total}
+      dia_semana = I18n.l(reg.dia, format: "%a")
+      comps_por_dia << {name: reg.dia.strftime("#{dia_semana} %d/%m/%Y"), data: reg.total}
     end
 
     comps_por_dia.each do |it|

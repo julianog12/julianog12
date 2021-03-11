@@ -16,7 +16,7 @@ module Search
     config.load_defaults 5.2
     config.active_job.queue_adapter = :sidekiq 
 	
-	config.i18n.default_locale = :"pt-BR"
+	  config.i18n.default_locale = :"pt-BR"
 
     #config.middleware.insert_after ActionDispatch::Static, Rack::Deflater
 
