@@ -37,6 +37,7 @@ group :production do
   gem 'puma', '~> 4.3.6'
 end
 
+gem "activerecord-tablefree"
 gem 'chartkick'
 gem 'groupdate'
 gem 'autoprefixer-rails'
