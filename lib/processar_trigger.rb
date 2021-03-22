@@ -61,7 +61,8 @@ class ProcessarTrigger
   	 conteudo.match(/^return -1/i) ||
      conteudo.match(/^exit\(0\)/i) ||
      conteudo.match(/^exit/i) ||
-     conteudo.match(/^return \(0\)/))
+     conteudo.match(/^return \(0\)/i) ||
+     conteudo.match(/^return\(0\)/i))
   end
 
   def discartar_trigger3(conteudo)
@@ -70,6 +71,8 @@ class ProcessarTrigger
     conteudo.include?('params$T_CD_OPERADOR$:IN;;incluirapartirdestepontoosparâmetrosreferentesaoseuprograma,estedeverasersempreoprimeiroparametroendparamsedit'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
     conteudo.include?('lockif($status=-10)reload'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
     conteudo.include?('findkey$entname,$curkeySelectCase$statusCase0;keynotfoundif($foreign);nonexistingkeyinupentityreturn(-1);onlyifWriteUptriggernotfilledendif;Case1;keyfoundonComponent;if(!$foreign);duplicatekeyindownentity;return(-1);endif;Case2;keyfoundinDBMS;if(!$foreign);duplicatekeyindownentity;return(-1);endifEndSelectCasereturn(0)'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
+    conteudo.include?('findkey$entname,$curkeySelectCase$statusCase0;keynotfoundif($foreign);nonexistingkeyinupentityreturn(-1);onlyifWriteUptriggernotfilledendifCase1;keyfoundonComponentif(!$foreign);duplicatekeyindownentityreturn(-1)endifCase2;keyfoundinDBMSif(!$foreign);duplicatekeyindownentityreturn(-1)endifEndSelectCasereturn(0)'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
+    conteudo.include?('retrieve/oif($status<0)if($status=-15)message$text(2202);Multiplehits:inforeignentityif($status=-14)message$text(2205);Multiplehits:notinforeignentityif($status=-11)message$text(2009);Occurrencecurrentlylockedif($status=-7)message$text(2006);Duplicatekeyif($status=-4)message$text(2003);Cannotopentableorfileif($status=-3)message$text(2002);ExceptionalI/Oerrorif($status=-2)message$text(2200);Keynotfound:inforeignentityelseif($status=1)message$text(2201);Keynotfound:foreignentityw/WRITEUPif($status=2);Oneoccurrencefoundinforeignentityretrieve/eif($status<0)message$text(2002);I/Oerrordetectedendifif($status=3)message$text(2203);Occurrenceun-removedif($status=4)message$text(2204);Keyfound:occurrencerepositionedendifreturn($status)'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
     conteudo.include?('retrieveif($status<0)message"Retrievesequentialdidnotsucceed;seemessageframe"endif)end'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?"))
   end
   
@@ -97,11 +100,8 @@ class ProcessarTrigger
       conteudo_trigger = conteudo_trigger.reject { |c| c.empty? unless c.nil? } unless !nome_trigger == 'ERRF'
     rescue StandardError => e
       Rails.logger.info e
-      Rails.logger.info componente 
-      Rails.logger.info nome_trigger
-      Rails.logger.info objeto
-      Rails.logger.info tipo_trigger
-      Rails.logger.info conteudo_trigger
+      Rails.logger.info "##Erro ao montar conteudo da trigger (post_triggers - L103). Componente #{componente}, Trigger #{nome_trigger}"
+      return
     end
     dados_objeto = objeto.split('.')
 
@@ -150,15 +150,16 @@ class ProcessarTrigger
     rescue StandardError => e
       puts e.inspect
       puts v_post_string
-      Rails.logger.info "Erro ao fazer post funcao"
+      Rails.logger.info '##Erro ao fazer post funcao'
       Rails.logger.info v_post_string
     end
   end
 
   def grava_arq_include(componente, nome_include, conteudo_include)
-    return if File.exists?("#{Rails.root}/lib/includes/#{componente}_#{nome_include.split(":")[1]}.txt") || conteudo_include.empty?
+    arq_include = "#{Rails.root}/lib/includes/#{@cd_empresa}_#{nome_include.split(":")[1]}.txt"
+    return if File.exists?(arq_include) || conteudo_include.empty?
 
-    f = File.new("#{Rails.root}/lib/includes/#{nome_include.split(':')[1]}.txt", 'w')
+    f = File.new(arq_include, 'w')
     f.write conteudo_include.join("\n")
     f.close
   end
@@ -202,10 +203,10 @@ class ProcessarTrigger
     begin
       deletar_triggers(nm_arquivo)
     rescue StandardError => e
-      Rails.logger.info 'Erro deletar funcao deletar_dados para o componeten #{nm_arquivo}'
+      Rails.logger.info '##Erro deletar funcao deletar_dados para o componeten #{nm_arquivo}'
       Rails.logger.info e
     end
-  
+
     iniciou_trigger = false
     terminou_trigger = false
     nome_include = ''
@@ -217,15 +218,14 @@ class ProcessarTrigger
     conteudo_include = []
     total = 0
 
-
     File.read(v_arquivo_ler).each_line do |linha|
       linhar = linha[26...(linha.index(/\Z/))]
       total += 1
       if conteudo_trigger.any? && terminou_trigger
         post_triggers(nm_arquivo,
-                      nome_trigger, 
-                      objeto, 
-                      tipo_trigger, 
+                      nome_trigger,
+                      objeto,
+                      tipo_trigger,
                       conteudo_trigger)
         nome_trigger = ''
         conteudo_trigger = []
@@ -272,9 +272,9 @@ class ProcessarTrigger
     end
     if conteudo_trigger.any?
       post_triggers(nm_arquivo,
-                    nome_trigger, 
-                    objeto, 
-                    tipo_trigger, 
+                    nome_trigger,
+                    objeto,
+                    tipo_trigger,
                     conteudo_trigger)
       nome_trigger = ''
       conteudo_trigger = []
@@ -289,5 +289,5 @@ class ProcessarTrigger
       nome_include = ''
     end
   end
-  
+
 end

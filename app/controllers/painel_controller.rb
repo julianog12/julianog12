@@ -37,8 +37,8 @@ class PainelController < ApplicationController
 
     return unless params[:data_inicial].present? && params[:data_final].present? && params[:cd_empresa].present?
 
-    v_data_inicial = formata_data(params[:data_inicial], '+', '%Y-%m-%dT%H:%M')
-    v_data_final =  formata_data(params[:data_final], '+', '%Y-%m-%dT%H:%M')
+    v_data_inicial = formata_data(params[:data_inicial], '', '%Y-%m-%dT%H:%M')
+    v_data_final =  formata_data(params[:data_final], '', '%Y-%m-%dT%H:%M')
     @v_data_inicial = v_data_inicial
     @v_data_final = v_data_final
     @cd_empresa = params[:cd_empresa]
@@ -50,17 +50,18 @@ class PainelController < ApplicationController
                                        v_data_final,
                                        params[:cd_empresa].to_s)
                                   .select("cd_componente, to_date(to_char(created_at, 'DD/MM/YYYY'), 'DD/MM/YYYY') dia, count(*) as total")
-                                     .group("cd_componente, to_date(to_char(created_at, 'DD/MM/YYYY'), 'DD/MM/YYYY')").each do |reg|
+                                  .order("dia asc")
+                                  .group("cd_componente, to_date(to_char(created_at, 'DD/MM/YYYY'), 'DD/MM/YYYY')").each do |reg|
       dia_semana = I18n.l(reg.dia, format: "%a")
-      comps_por_dia << {name: reg.dia.strftime("#{dia_semana} %d/%m/%Y"), data: reg.total}
+      if comps_por_dia.find{|x| x[:name]==reg.dia.strftime("#{dia_semana} %d/%m/%Y")}.nil?
+        comps_por_dia << {name: reg.dia.strftime("#{dia_semana} %d/%m/%Y"), data: 1}
+      else
+        comps_por_dia.find{|x| x[:name]==reg.dia.strftime("#{dia_semana} %d/%m/%Y")}[:data]+= 1
+      end
     end
 
     comps_por_dia.each do |it|
-      if @tot_comps_por_dia.find {|k,v | k == it[:name]}.nil? 
-        @tot_comps_por_dia[it[:name]] = it[:data]
-      else
-        @tot_comps_por_dia.find{|k,v| k == it[:name]}[1] += 1
-      end
+      @tot_comps_por_dia[it[:name]] = it[:data]
     end
   end
 
@@ -70,9 +71,9 @@ class PainelController < ApplicationController
     v3 = data[8..9]
   
     v4 = data[11..12].to_i
-    if sinal == "-"
+    if sinal == '-'
       v4 -= 3
-    elsif sinal == "+"
+    elsif sinal == '+'
       v4 += 3
     end
     v5 = data[14..15]

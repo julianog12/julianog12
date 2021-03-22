@@ -107,14 +107,14 @@ class FuncaosController < ApplicationController
   def destroy
     begin
       if params[:remover] == '1'
-        Funcao.where("cd_componente = ? and cd_empresa = ? and tipo in('entry', 'operation', 'partner-operation', 'Local Proc', 'Operation')", 
+        Funcao.where("cd_componente = ? and cd_empresa = ? and tipo in('entry', 'operation', 'partner-operation')", 
                           "#{params[:cd_componente]}",
                           "#{params[:cd_empresa]}").each do |reg|
           reg.delete
           Funcao.searchkick_index.remove(reg)
         end
       elsif params[:remover] == '2'
-        Funcao.where("cd_componente = ? and cd_empresa = ? and nm_funcao <> 'LPMX' and tipo in('trigger-form', 'trigger-field', 'trigger-entity', 'trigger-service')", 
+        Funcao.where("cd_componente = ? and cd_empresa = ? and nm_funcao <> 'LPMX' and tipo in('trigger-form', 'trigger-field', 'trigger-entity')", 
                       "#{params[:cd_componente]}",
                       "#{params[:cd_empresa]}").each do |reg|
           reg.delete

@@ -39,7 +39,7 @@ class ProcessarEntryOperation
         v = dados[0].downcase != dados[1].downcase unless dados[0].nil? && dados[1].nil?
       rescue StandardError => e
         Rails.logger.info e
-        Rails.logger.info 'Erro linhaContemNewInstance'
+        Rails.logger.info '##Erro linhaContemNewInstance'
         Rails.logger.info v_linha
         Rails.logger.info dados.inspect
       end
@@ -88,7 +88,7 @@ class ProcessarEntryOperation
     v_nm_funcao = v_nm_funcao.gsub('\r', '')
 
     if v_tipo_funcao.blank? || v_nm_funcao.blank?
-      Rails.logger.info "Erro v_tipo_funcao ou v_nm_funcao estão em branco!\n\n Linha #{v_linha}"
+      Rails.logger.info "##Erro v_tipo_funcao ou v_nm_funcao estão em branco!\n\n Linha #{v_linha}"
     end
 
     [v_tipo_funcao, v_nm_funcao]
@@ -136,7 +136,7 @@ class ProcessarEntryOperation
         RestClient.post "#{@servidor_funcao}", JSON.parse(v_post_string.to_json)
       rescue StandardError => e
         Rails.logger.info e.inspect
-        Rails.logger.info 'Erro post_lpmx'
+        Rails.logger.info '##Erro post_lpmx'
         Rails.logger.info '************************'
         Rails.logger.info v_post_string
         Rails.logger.info '********'
@@ -167,7 +167,7 @@ class ProcessarEntryOperation
         Rails.logger.info '************************'
         Rails.logger.info e.inspect
         Rails.logger.info '********'
-        Rails.logger.info 'Erro post_entry_operation'
+        Rails.logger.info '##Erro post_entry_operation'
         Rails.logger.info v_post_string
       end      
     end
@@ -269,7 +269,7 @@ class ProcessarEntryOperation
       {
        cd_componente: v_id,
        cd_empresa: @cd_empresa,
-       remover: "1"
+       remover: '1'
       }
     }
   end
@@ -284,7 +284,7 @@ class ProcessarEntryOperation
     begin
       deletar_local_operations(v_id)
     rescue StandardError => e
-      Rails.logger.info 'Erro deletar funcao deletar_dados'
+      Rails.logger.info '##Erro deletar funcao deletar_dados'
       Rails.logger.info e
       return nil
     end
@@ -333,7 +333,7 @@ class ProcessarEntryOperation
       v_linha, posFinalLinha = inicio_fim_linha(linha)
       v_linha_funcao = v_linha
       v_linha = v_linha.lstrip unless v_linha.nil?
-      if v_indica
+      if v_indica && !v_linha.nil?
         v_indica = v_linha.match(/\%\\/) ? true : false unless v_linha.nil?
         v_linha = tratar_linha(v_linha)
         if !v_linha.nil? && v_linha.size > 0
@@ -406,7 +406,7 @@ class ProcessarEntryOperation
             begin
               RestClient.post "#{@servidor_http}", JSON.parse(v_post_string)
             rescue
-              Rails.logger.info "Erro ao chamar RestClient.post #{@servidor_http} linha 406 processar_entry_operation"
+              Rails.logger.info "##Erro ao chamar RestClient.post #{@servidor_http} linha 406 processar_entry_operation"
               nil
             end
             v_cmd_activate = []
