@@ -176,6 +176,7 @@ class FuncaosController < ApplicationController
                                       :nm_tabela,
                                       :nm_campo,
                                       :nm_modelo,
-                                      :id)
+                                      :id,
+                                      :nr_linhas)
     end
 end

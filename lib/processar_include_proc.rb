@@ -28,6 +28,7 @@ class ProcessarIncludeProc
 
   def post_includes(nm_include, conteudo)
     v_conteudo = conteudo.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => '?')
+    v_nr_linhas = v_conteudo.count("\n") unless v_conteudo.count("\n").nil?
     v_tipo = 'include'
     v_post_string = {'funcaos': {'cd_componente': nil, 
               'tipo': v_tipo, 
@@ -36,7 +37,8 @@ class ProcessarIncludeProc
               'cd_empresa': @cd_empresa,
               'nm_campo': nil, 
               'nm_tabela': nil, 
-              'nm_modelo': nil }
+              'nm_modelo': nil,
+              'nr_linhas': v_nr_linhas || 1 }
             }
   
     begin

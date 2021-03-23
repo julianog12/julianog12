@@ -104,7 +104,6 @@ class ProcessarTrigger
       return
     end
     dados_objeto = objeto.split('.')
-
     v_dados_funcao = conteudo_trigger.map { |i| i.to_s.gsub("\t", '  ') }.join("\n")
     v_dados_funcao = v_dados_funcao.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")
     return if (conteudo_trigger.size == 1 && (discartar_trigger(conteudo_trigger[0]) || discartar_trigger2(conteudo_trigger[0]))) || 
@@ -142,7 +141,8 @@ class ProcessarTrigger
               'cd_empresa': @cd_empresa,
               'nm_campo': nm_campo, 
               'nm_tabela': nm_tabela, 
-              'nm_modelo': nm_modelo }
+              'nm_modelo': nm_modelo,
+              'nr_linhas': conteudo_trigger.size }
             }
 
     begin

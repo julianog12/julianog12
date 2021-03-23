@@ -15,6 +15,7 @@ group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
 end
 group :development do
+  gem 'install awesome_print'
   gem 'better_errors'
   gem 'capistrano', '~> 3.15.0', require: false
   gem 'capistrano-database-yml'

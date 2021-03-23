@@ -6,7 +6,7 @@ class GravaFuncoes
       funcao = Funcao.new(dados)
       if funcao.tipo == 'include'
         funcao_u = Funcao.where('nm_funcao = ? and tipo = ?', funcao.nm_funcao, funcao.tipo).first
-        if funcao_u.empty?
+        if funcao_u.nil?
           funcao.save
         end
       else

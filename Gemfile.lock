@@ -56,6 +56,7 @@ GEM
     arel (9.0.0)
     autoprefixer-rails (10.2.4.0)
       execjs
+    awesome_print (1.9.2)
     bcrypt_pbkdf (1.1.0)
     bcrypt_pbkdf (1.1.0-x64-mingw32)
     better_errors (2.9.1)
@@ -185,8 +186,6 @@ GEM
     pry (0.14.0)
       coderay (~> 1.1)
       method_source (~> 1.0)
-    puma (4.3.6)
-      nio4r (~> 2.0)
     raabro (1.4.0)
     racc (1.5.2)
     rack (2.2.3)
@@ -312,6 +311,7 @@ PLATFORMS
 DEPENDENCIES
   activerecord-tablefree
   autoprefixer-rails
+  awesome_print
   bcrypt_pbkdf (>= 1.0, < 2.0)
   better_errors
   bootsnap (>= 1.1.0)
@@ -340,7 +340,6 @@ DEPENDENCIES
   oj
   pg (>= 0.18, < 2.0)
   pry
-  puma (~> 4.3.6)
   rack-timeout
   rails (~> 5.2.2.1)
   rails_layout
