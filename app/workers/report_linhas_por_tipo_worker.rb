@@ -8,21 +8,9 @@ class ReportLinhasPorTipoWorker
     tot_linhas = 0
 
     linhas_por_tipo = []
-    Funcao.select('tipo').where("cd_empresa = ? and length(cd_componente) in(7,8) and substring(cd_componente,1,4) not in ('acon', 'acre')", "#{empresa}").group(:tipo).each do |reg|
-      Funcao.where("tipo = ? and cd_empresa = ? and length(cd_componente) in(7,8) and substring(cd_componente,1,4) not in ('acon', 'acre')", reg.tipo, "#{empresa}").select('codigo').each do |regt|
-        tot_linhas = 0
-        tot_linhas = regt.codigo.count("\n") unless regt.codigo.count("\n").nil?
-        total_linhas += tot_linhas
-        if !linhas_por_tipo.nil? 
-          if linhas_por_tipo.find {|x| x[:name] == reg.tipo}.nil? 
-            linhas_por_tipo << { name: reg.tipo, data: tot_linhas }
-          else
-            linhas_por_tipo.find{|h| h[:name] == reg.tipo}[:data] += tot_linhas
-          end
-        else
-          linhas_por_tipo << { name: reg.tipo, data: tot_linhas }
-        end
-      end
+    Funcao.select('tipo, sum(nr_linhas) as total').where("cd_empresa = ? and length(cd_componente) in(7,8) and substring(cd_componente,1,4) not in ('acon', 'acre')", "#{empresa}").group(:tipo).each do |reg|
+      total_linhas += reg.total
+      linhas_por_tipo << { name: reg.tipo, data: reg.total }
     end
     tot_linhas_por_tipo = {}
     linhas_por_tipo.each do |it|
