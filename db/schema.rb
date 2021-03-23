@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_10_192131) do
+ActiveRecord::Schema.define(version: 2021_03_23_125003) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -49,6 +49,7 @@ ActiveRecord::Schema.define(version: 2021_03_10_192131) do
     t.string "nm_campo", limit: 32
     t.string "nm_tabela", limit: 32
     t.string "nm_modelo", limit: 20
+    t.integer "nr_linhas"
     t.index ["cd_componente", "nm_funcao", "nm_campo", "nm_tabela", "cd_empresa"], name: "index_funcao_01", unique: true
   end
 

@@ -4,7 +4,14 @@ class GravaFuncoes
   def perform(dados)
     begin
       funcao = Funcao.new(dados)
-      funcao.save
+      if funcao.tipo == 'include'
+        funcao_u = Funcao.where('nm_funcao = ? and tipo = ?', funcao.nm_funcao, funcao.tipo).first
+        if funcao_u.empty?
+          funcao.save
+        end
+      else
+        funcao.save
+      end
     rescue ActiveRecord::RecordNotUnique
       if dados["nm_campo"].empty?
         funcao = Funcao.where("nm_funcao = ? and cd_componente = ? and cd_empresa =  ?",
