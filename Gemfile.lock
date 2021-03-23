@@ -186,6 +186,8 @@ GEM
     pry (0.14.0)
       coderay (~> 1.1)
       method_source (~> 1.0)
+    puma (4.3.6)
+      nio4r (~> 2.0)
     raabro (1.4.0)
     racc (1.5.2)
     rack (2.2.3)
@@ -340,6 +342,7 @@ DEPENDENCIES
   oj
   pg (>= 0.18, < 2.0)
   pry
+  puma (~> 4.3.6)
   rack-timeout
   rails (~> 5.2.2.1)
   rails_layout
