@@ -111,6 +111,8 @@ class ProcessarEntryOperation
     f.close
   end
 
+
+
   def post_lpmx(v_componente, v_tipo, v_nm_funcao, v_cmd)
     v_nr_linhas = v_cmd.size
     v_cmd = v_cmd.map { |i| i.to_s.gsub("\t", '  ') }.join("\n")
@@ -122,7 +124,8 @@ class ProcessarEntryOperation
         'codigo': v_cmd,
         'documentacao': nil,
         'cd_empresa': @cd_empresa,
-        'nr_linhas': v_nr_linhas || 1
+        'nr_linhas': v_nr_linhas || 1,
+        'nm_modelo': nome_modelo(v_componente.downcase)
         }
       }
       v_delete_string = 
@@ -160,7 +163,8 @@ class ProcessarEntryOperation
         'codigo': v_comando_real,
         'documentacao': v_comando_docto,
         'cd_empresa': @cd_empresa,
-        'nr_linhas': v_cmd.size || 1
+        'nr_linhas': v_cmd.size || 1,
+        'nm_modelo': nome_modelo(v_componente.downcase)
         }
       }
       begin

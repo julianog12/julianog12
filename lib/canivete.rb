@@ -62,6 +62,18 @@
     end
   end
   
+
+
+  def nome_modelo(componente)
+    v_model = ''
+    case componente[0..2]
+    when 'ccn', 'cnf', 'arh'
+      v_model = reg.cd_componente[0..2]
+    else
+      v_model = reg.cd_componente[0..3]
+    end
+    v_model
+  end
   
   
   def nome_arquivo(v_arquivo)
