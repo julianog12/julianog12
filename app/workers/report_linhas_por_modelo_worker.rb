@@ -4,20 +4,10 @@ class ReportLinhasPorModeloWorker
 
   def perform(empresa)
     linhas_por_modelo = []
-    Funcao.select("nm_modelo, count(*) as total")
+    Funcao.select("nm_modelo, sum(nr_linhas) as total")
           .where("cd_empresa = ? and length(cd_componente) in (7, 8) and substring(cd_componente,1,4) not in ('acon', 'acre')", "#{empresa}")
           .group("nm_modelo").each do |reg|
-      tot_linhas = 0
-      tot_linhas = reg.nr_linhas
-      if !linhas_por_modelo.nil?
-        if linhas_por_modelo.find {|x| x[:name] == reg.modelo}.nil? 
-          linhas_por_modelo << { name: reg.modelo, data: tot_linhas }
-        else
-          linhas_por_modelo.find{|h| h[:name] == reg.modelo}[:data] += tot_linhas
-        end
-      else
-        linhas_por_modelo << { name: reg.modelo, data: tot_linhas }
-      end
+      linhas_por_modelo << { name: reg.modelo, data: reg.total }
     end
     tot_linhas_por_modelo = {}
     linhas_por_modelo.each do |it|
