@@ -1,0 +1,84 @@
+<div style="; margin:0 auto; width: 95%; border-style: solid; border-width:thin; border-color: #FFFFFF;">
+     <center><h4>Componenentes do Modelo <%= @model_componentes[0].cd_componente[0..3].upcase %></h4> </center>
+  <table id="example" class="table">
+  <thead class="grey lighten-2"">
+     <tr>
+       <th>Componente</th>
+       <th>Tot.Linhas do Modelo</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @model_componentes.each do |objs| %>
+         <tr>
+            <td><%= objs.cd_componente %></td>
+            <td><%= objs.nr_linhas %></td>
+         </tr>
+     <% end %>
+  </tbody>
+  </table>
+
+<script>
+	$(document).ready(function() {
+    jQuery.fn.dataTableExt.oSort['numeric-comma-asc'] = function(a, b) {
+        var x = (a == "-") ? 0 : a.replace(/,/, ".");
+        var y = (b == "-") ? 0 : b.replace(/,/, ".");
+        x = parseFloat(x);
+        y = parseFloat(y);
+        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+    };
+
+    jQuery.fn.dataTableExt.oSort['numeric-comma-desc'] = function(a, b) {
+        var x = (a == "-") ? 0 : a.replace(/,/, ".");
+        var y = (b == "-") ? 0 : b.replace(/,/, ".");
+        x = parseFloat(x);
+        y = parseFloat(y);
+        return ((x < y) ? 1 : ((x > y) ? -1 : 0));
+    };
+	  var table = $('#example').DataTable( {
+          dom: 'lBfrtip',
+	        lengthChange: true,
+          "lengthMenu": [ [10, -1], [10, "All"] ],
+          pageLength: 10,
+          order: [[ 1, "desc" ]],
+	        buttons: [
+            'copyHtml5',
+            'csvHtml5',
+            'excelHtml5',
+            'pdfHtml5'
+          ],
+          language: {
+            "sEmptyTable": "Nenhum registro encontrado",
+            "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+            "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
+            "sInfoFiltered": "(Filtrados de _MAX_ registros)",
+            "sInfoPostFix": "",
+            "decimal": ",",
+            "thousands": ".",
+            "sInfoThousands": ".",
+            "sLengthMenu": "_MENU_ resultados por página",
+            "sLoadingRecords": "Carregando...",
+            "sProcessing": "Processando...",
+            "sZeroRecords": "Nenhum registro encontrado",
+            "sSearch": "Pesquisar",
+            "oPaginate": {
+               "sNext": "Próximo",
+               "sPrevious": "Anterior",
+               "sFirst": "Primeiro",
+               "sLast": "Último"
+            },
+            buttons: {
+              colvis: 'Campos'
+            },
+            "oAria": {
+               "sSortAscending": ": Ordenar colunas de forma ascendente",
+               "sSortDescending": ": Ordenar colunas de forma descendente"
+            }
+          }
+	  });
+    //table.buttons().container().appendTo( '.example_wrapper .col-sm-6:eq(0)' );
+
+	 
+	} );
+    
+</script>
+</div>

@@ -1,4 +1,5 @@
 class PainelController < ApplicationController
+  respond_to :json, :html, :js
 
   layout 'application_dashboard'
 
@@ -35,13 +36,14 @@ class PainelController < ApplicationController
       @total_objetos_de_implementacao.map{|k,v| @total_linhas_objetos_implementacao+= v}
     end
 
+    @cd_empresa = params[:cd_empresa]
+
     return unless params[:data_inicial].present? && params[:data_final].present? && params[:cd_empresa].present?
 
     v_data_inicial = formata_data(params[:data_inicial], '', '%Y-%m-%dT%H:%M')
     v_data_final =  formata_data(params[:data_final], '', '%Y-%m-%dT%H:%M')
     @v_data_inicial = v_data_inicial
     @v_data_final = v_data_final
-    @cd_empresa = params[:cd_empresa]
 
     @tot_comps_por_dia = {}
     comps_por_dia = []
@@ -63,6 +65,16 @@ class PainelController < ApplicationController
     comps_por_dia.each do |it|
       @tot_comps_por_dia[it[:name]] = it[:data]
     end
+  end
+
+  def show
+    @model_componentes = Funcao.where("cd_empresa = ? and nm_modelo = ? and length(cd_componente) in(7,8) and substring(cd_componente,1,4) not in ('acon', 'acre')",
+                               params[:empresa].to_s,
+                               params[:id])
+                               .select("cd_componente, sum(nr_linhas) as nr_linhas")
+                               .group("cd_componente")
+                               .order("2 desc")
+    respond_with(@model_componentes)
   end
 
   def formata_data(data, sinal, formato)

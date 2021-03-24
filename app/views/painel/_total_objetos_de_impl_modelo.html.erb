@@ -1,8 +1,9 @@
 <div style="; margin:0 auto; width: 45%; border-style: solid; border-width:thin; border-color: #FFFFFF;">
-     <h2><center>Total Objetos de Implementação por Modelo</center></h2>
+     <h4><center>Total Objetos de Implementação por Modelo</center></h4>
 
+empresa <%= @cd_empresa %>
 <hr>
-  <table id="example" class="table">
+  <table id="componentes" class="table">
   <thead class="grey lighten-2"">
      <tr>
        <th>Modelo</th>
@@ -16,7 +17,7 @@
   <tbody>
     <% @total_objetos_de_impl_modelo.each do |objs| %>
          <tr>
-            <td><%= objs[:name] %></td>
+            <td><%= link_to objs[:name], painel_path(id: objs[:name], empresa: @cd_empresa), {remote: true, 'data-toggle' =>  "modal", 'data-target' => '#mostrar-componentes'} %></td>
             <td><%= number_with_delimiter(objs[:data][:componentes]) %></td>
             <td><%= number_with_delimiter(objs[:data][:operations]) %></td>
             <td><%= number_with_delimiter(objs[:data][:operations].to_i + objs[:data][:componentes].to_i) %></td>
@@ -37,6 +38,14 @@
   </tbody>
   </table>
 
+  <div id="mostrar-componentes" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+         <div class="modal-body"></div>
+      </div>
+    </div>
+  </div>
+
 <script>
 	$(document).ready(function() {
     jQuery.fn.dataTableExt.oSort['numeric-comma-asc'] = function(a, b) {
@@ -54,17 +63,18 @@
         y = parseFloat(y);
         return ((x < y) ? 1 : ((x > y) ? -1 : 0));
     };
-	  var table = $('#example').DataTable( {
+	  var table = $('#componentes').DataTable( {
           dom: 'lBfrtip',
 	        lengthChange: true,
           "lengthMenu": [ [7, 60, -1], [7, 60, "All"] ],
           pageLength: 7,
+          order: [[ 4, "desc" ]],
 	        buttons: [
-        'copyHtml5',
-        'csvHtml5',
-        'excelHtml5',
-        'pdfHtml5'
-    ],
+            'copyHtml5',
+            'csvHtml5',
+            'excelHtml5',
+            'pdfHtml5'
+          ],
           language: {
               "sEmptyTable": "Nenhum registro encontrado",
               "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",

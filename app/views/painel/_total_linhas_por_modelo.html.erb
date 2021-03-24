@@ -18,9 +18,7 @@
     </tr>
   </thead>
   <tbody>
-    <% @tot_linhas_por_modelo.each do |objs| 
-         p objs
-       %>
+    <% @tot_linhas_por_modelo.each do |objs| %>
          <tr>
             <td><%= objs[0] %></td>
             <td><%= number_with_delimiter(objs[1]) %></td>

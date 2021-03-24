@@ -9,7 +9,7 @@ class ReportLinhasPorTipoWorker
 
     linhas_por_tipo = []
     Funcao.select('tipo, sum(nr_linhas) as total').where("cd_empresa = ? and length(cd_componente) in(7,8) and substring(cd_componente,1,4) not in ('acon', 'acre')", "#{empresa}").group(:tipo).each do |reg|
-      total_linhas += reg.total
+      total_linhas += reg.total unless reg.total.nil?
       linhas_por_tipo << { name: reg.tipo, data: reg.total }
     end
     tot_linhas_por_tipo = {}
