@@ -5,7 +5,7 @@ class GravaFuncoes
     begin
       funcao = Funcao.new(dados)
       if funcao.tipo == 'include'
-        funcao_u = Funcao.where('nm_funcao = ? and tipo = ?', funcao.nm_funcao, funcao.tipo).first
+        funcao_u = Funcao.where('cd_empresa = ? and nm_funcao = ? and tipo = ?', funcao.cd_empresa.to_s, funcao.nm_funcao, funcao.tipo).first
         if funcao_u.nil?
           funcao.save
         end
@@ -17,7 +17,7 @@ class GravaFuncoes
         funcao = Funcao.where("nm_funcao = ? and cd_componente = ? and cd_empresa =  ?",
                               dados["nm_funcao"],
                               dados["cd_componente"].downcase,
-                              dados["cd_empresa"]).first
+                              dados["cd_empresa"].to_s).first
       else
         funcao = Funcao.where("nm_funcao = ? and cd_componente = ? and cd_empresa = ? and nm_campo = ? and nm_tabela = ?", 
                           dados["nm_funcao"],

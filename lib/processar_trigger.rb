@@ -141,7 +141,7 @@ class ProcessarTrigger
               'cd_empresa': @cd_empresa,
               'nm_campo': nm_campo, 
               'nm_tabela': nm_tabela, 
-              'nm_modelo': nm_modelo,
+              'nm_modelo':  nome_modelo(componente.downcase),
               'nr_linhas': conteudo_trigger.size }
             }
 

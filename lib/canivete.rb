@@ -68,9 +68,9 @@
     v_model = ''
     case componente[0..2]
     when 'ccn', 'cnf', 'arh'
-      v_model = reg.cd_componente[0..2]
+      v_model = componente[0..2]
     else
-      v_model = reg.cd_componente[0..3]
+      v_model = componente[0..3]
     end
     v_model
   end

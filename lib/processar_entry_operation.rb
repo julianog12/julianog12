@@ -87,7 +87,7 @@ class ProcessarEntryOperation
     v_nm_funcao = v_nm_funcao.gsub('\n', '')
     v_nm_funcao = v_nm_funcao.gsub('\r', '')
 
-    if v_tipo_funcao.blank? || v_nm_funcao.blank?
+    if v_tipo_funcao.empty? || v_nm_funcao.empty?
       Rails.logger.info "##Erro v_tipo_funcao ou v_nm_funcao estão em branco!\n\n Linha #{v_linha}"
     end
 
