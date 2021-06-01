@@ -117,10 +117,8 @@ class ProcessarTrigger
     if dados_objeto.size == 3
       nm_campo = dados_objeto[0].downcase
       nm_tabela = dados_objeto[1].downcase
-      nm_modelo = dados_objeto[2].downcase
     elsif dados_objeto.size == 2
       nm_tabela = dados_objeto[0].downcase
-      nm_modelo = dados_objeto[1].downcase
     end
 
     v_tipo = ''
@@ -141,7 +139,7 @@ class ProcessarTrigger
               'cd_empresa': @cd_empresa,
               'nm_campo': nm_campo, 
               'nm_tabela': nm_tabela, 
-              'nm_modelo':  nome_modelo(componente.downcase),
+              'nm_modelo': nome_modelo(componente.downcase),
               'nr_linhas': conteudo_trigger.size }
             }
 
@@ -199,12 +197,17 @@ class ProcessarTrigger
   def processar
     v_arquivo_ler = "#{@diretorio_listener}/#{@arquivo}"
     nm_arquivo = nome_arquivo(v_arquivo_ler)
+
+    if nm_arquivo.include?("_") && nm_arquivo.length > 8 && !nm_arquivo.include?("@")
+      return
+    end
   
     begin
       deletar_triggers(nm_arquivo)
     rescue StandardError => e
       Rails.logger.info '##Erro deletar funcao deletar_dados para o componeten #{nm_arquivo}'
       Rails.logger.info e
+      return nil
     end
 
     iniciou_trigger = false

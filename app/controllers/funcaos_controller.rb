@@ -73,7 +73,43 @@ class FuncaosController < ApplicationController
 
   def create
     dados = funcao_params
-    GravaFuncoes.perform_async(dados.to_h)
+    #GravaFuncoes.perform_async(dados.to_h)
+
+    begin
+      funcao = Funcao.new(dados)
+      if funcao.tipo == 'include'
+        funcao_u = Funcao.where('cd_empresa = ? and nm_funcao = ? and tipo = ?', 
+                                 funcao.cd_empresa.to_s, 
+                                 funcao.nm_funcao, 
+                                 funcao.tipo).first
+        if funcao_u.nil?
+          funcao.save
+        end
+      else
+        funcao.save
+      end
+    rescue ActiveRecord::RecordNotUnique
+      if dados["nm_campo"].empty?
+        funcao = Funcao.where("nm_funcao = ? and cd_componente = ? and cd_empresa =  ?",
+                              dados["nm_funcao"],
+                              dados["cd_componente"].downcase,
+                              dados["cd_empresa"].to_s).first
+      else
+        funcao = Funcao.where("nm_funcao = ? and cd_componente = ? and cd_empresa = ? and nm_campo = ? and nm_tabela = ?", 
+                          dados["nm_funcao"],
+                          dados["cd_componente"].downcase,
+                          dados["cd_empresa"],
+                          dados["nm_campo"],
+                          dados["nm_tabela"]).first
+      end
+      begin
+        funcao.update(dados)
+      rescue StandardError => e
+        raise e.inspect
+      end
+    rescue ActiveRecord::RecordInvalid => invalid
+      raise e.inspect
+    end
     render body: nil
 
     #@funcao = Funcao.new(dados)
@@ -105,41 +141,88 @@ class FuncaosController < ApplicationController
   end
 
   def destroy
-    begin
-      if params[:remover] == '1'
-        Funcao.where("cd_componente = ? and cd_empresa = ? and tipo in('entry', 'operation', 'partner-operation')", 
-                          "#{params[:cd_componente]}",
-                          "#{params[:cd_empresa]}").each do |reg|
+    if params[:remover] == '1'
+      Funcao.where("cd_componente = ? and cd_empresa = ? and tipo in('entry', 'operation', 'partner-operation')", 
+                        params[:cd_componente].to_s,
+                        params[:cd_empresa].to_s).each do |reg|
+        begin
           reg.delete
-          Funcao.searchkick_index.remove(reg)
+        rescue StandardError => e
+          Rails.logger.info "##Erro ao deletar params = 1 componente #{params[:cd_componente]} empresa #{params[:cd_empresa]}"
+          Rails.logger.info e
         end
-      elsif params[:remover] == '2'
-        Funcao.where("cd_componente = ? and cd_empresa = ? and nm_funcao <> 'LPMX' and tipo in('trigger-form', 'trigger-field', 'trigger-entity')", 
-                      "#{params[:cd_componente]}",
-                      "#{params[:cd_empresa]}").each do |reg|
-          reg.delete
+        begin
+          #DeletaFuncoes.perform_async(reg.id)
           Funcao.searchkick_index.remove(reg)
-        end
-      elsif params[:remover] == '3'
-        Funcao.where("cd_componente = ? and cd_empresa = ? and nm_funcao = ? and tipo = 'trigger-form'", 
-                    "#{params[:id]}",
-                      "#{params[:cd_empresa]}",
-                      "#{params[:nm_funcao]}").each do |reg|
-          reg.delete
-          Funcao.searchkick_index.remove(reg)
-        end
-
-      elsif params[:remover] == '4'
-        Funcao.where("cd_empresa = ? and nm_funcao = ? and tipo = 'include'", 
-            "#{params[:cd_empresa]}",
-            "#{params[:nm_funcao]}").each do |reg|
-          reg.delete
-          Funcao.searchkick_index.remove(reg)
+        rescue StandardError => e
+          Rails.logger.error "##Erro ao deletar params = 1 ElasticSearch"
+          Rails.logger.error e
         end
       end
-    rescue
-      nil
+    elsif params[:remover] == '2'
+      Funcao.where("cd_componente = ? and cd_empresa = ? and nm_funcao <> 'LPMX' and tipo in('trigger-form', 'trigger-field', 'trigger-entity')", 
+                    params[:cd_componente].to_s,
+                    params[:cd_empresa].to_s).each do |reg|
+        begin
+          reg.delete
+          #DeletaFuncoes.perform_async(reg.id)
+          Funcao.searchkick_index.remove(reg)
+        rescue StandardError => e
+          Rails.logger.info "##Erro ao deletar params = 2 componente #{params[:cd_componente]} empresa #{params[:cd_empresa]}"
+          Rails.logger.info e
+        end
+        begin
+          #DeletaFuncoes.perform_async(reg.id)
+          Funcao.searchkick_index.remove(reg)
+        rescue StandardError => e
+          Rails.logger.error "##Erro ao deletar params = 2 ElasticSearch"
+          Rails.logger.error e
+        end
+      end
+    elsif params[:remover] == '3'
+      Funcao.where("cd_componente = ? and cd_empresa = ? and nm_funcao = ? and tipo = 'trigger-form'", 
+                    params[:id].to_s,
+                    params[:cd_empresa].to_s,
+                    params[:nm_funcao].to_s).each do |reg|
+        begin      
+          reg.delete
+          #DeletaFuncoes.perform_async(reg.id)
+          Funcao.searchkick_index.remove(reg)
+        rescue StandardError => e
+          Rails.logger.info "##Erro ao deletar params = 3 componente #{params[:id]} empresa #{params[:cd_empresa]}  Função #{params[:nm_funcao]}"
+          Rails.logger.info e
+        end
+        begin
+          #DeletaFuncoes.perform_async(reg.id)
+          Funcao.searchkick_index.remove(reg)
+        rescue StandardError => e
+          Rails.logger.error "##Erro ao deletar params = 3 ElasticSearch"
+          Rails.logger.error e
+        end
+      end
+
+    elsif params[:remover] == '4'
+      Funcao.where("cd_empresa = ? and nm_funcao = ? and tipo = 'include'", 
+                          params[:cd_empresa].to_s,
+                          params[:nm_funcao].to_s).each do |reg|
+        begin
+          reg.delete
+          #DeletaFuncoes.perform_async(reg.id)
+          #Funcao.searchkick_index.remove(reg)
+        rescue StandardError => e
+          Rails.logger.info "##Erro ao deletar params = 4 empresa #{params[:cd_empresa]}  Função #{params[:nm_funcao]}"
+          Rails.logger.info e
+        end
+        begin
+          #DeletaFuncoes.perform_async(reg.id)
+          Funcao.searchkick_index.remove(reg)
+        rescue StandardError => e
+          Rails.logger.error "##Erro ao deletar params = 4 ElasticSearch"
+          Rails.logger.error e
+        end
+      end
     end
+    head :no_content
   end
 
   private

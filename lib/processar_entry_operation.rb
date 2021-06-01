@@ -60,11 +60,11 @@ class ProcessarEntryOperation
     case 
      when v_linha.match(/^entry/i)
        v_tipo_funcao = 'entry'
-     when v_linha.match(/^operation/)
-       v_tipo_funcao = 'operation'
-     when v_linha.match(/^partner operation/)
-       v_tipo_funcao = 'partner-operation'
-     when v_linha.match(/^public operation/)
+    when v_linha.match(/^partner operation/i)
+        v_tipo_funcao = 'partner-operation'
+    when v_linha.match(/^public operation/i)
+        v_tipo_funcao = 'operation'
+    when v_linha.match(/^operation/i)
        v_tipo_funcao = 'operation'
     end
     if v_linha.split(' ').count <= 2
@@ -128,14 +128,14 @@ class ProcessarEntryOperation
         'nm_modelo': nome_modelo(v_componente.downcase)
         }
       }
-      v_delete_string = 
-        {params: 
-        {
-          'nm_funcao': v_nm_funcao, 
-          'cd_empresa': @cd_empresa,
-	        'remover': '3'
+      v_delete_string = {
+        params:
+          {
+            nm_funcao: v_nm_funcao,
+            cd_empresa: @cd_empresa,
+	          remover: '3'
+          }
         }
-       }
       begin
         RestClient.delete "#{@servidor_funcao}/#{v_componente.downcase}", JSON.parse(v_delete_string.to_json)
         RestClient.post "#{@servidor_funcao}", JSON.parse(v_post_string.to_json)
@@ -168,6 +168,12 @@ class ProcessarEntryOperation
         }
       }
       begin
+        #Rails.logger.error "#{v_componente.downcase}  -  #{v_tipo}  -  "
+        #if v_componente.downcase == 'cesto137' && 
+        #   v_tipo == 'operation' && 
+        #   v_nm_funcao.downcase.include?('getrastroproducao')
+        #  byebug
+        #end
         v_post_string = v_post_string.to_json
         RestClient.post "#{@servidor_funcao}", JSON.parse(v_post_string)
       rescue StandardError => e
@@ -265,14 +271,14 @@ class ProcessarEntryOperation
   end
 
   def deletar_local_operations(v_id)
-    RestClient.delete "#{@servidor_http}/#{v_id}", {params: 
+    RestClient.delete "#{@servidor_http}/#{v_id}", {params:
       {
-       nome: v_id, 
+       nome: v_id,
        cd_empresa: @cd_empresa,
        remover: '1'
       }
     }
-    RestClient.delete "#{@servidor_funcao}/#{v_id}", {params: 
+    RestClient.delete "#{@servidor_funcao}/#{v_id}", {params:
       {
        cd_componente: v_id,
        cd_empresa: @cd_empresa,
@@ -281,17 +287,20 @@ class ProcessarEntryOperation
     }
   end
 
-
   def processar
     return nil if tipo_arquivo(@arquivo).nil?
 
     v_arquivo_ler = "#{@diretorio_listener}/#{@arquivo}"
     v_id = nome_arquivo(v_arquivo_ler)
 
+    if v_id.include?("_") && v_id.length > 8 && !v_id.include?("@")
+      return
+    end
+
     begin
       deletar_local_operations(v_id)
     rescue StandardError => e
-      Rails.logger.info '##Erro deletar funcao deletar_dados'
+      Rails.logger.info '##Erro deletar funcao deletar_local_operations'
       Rails.logger.info e
       return nil
     end
@@ -391,6 +400,9 @@ class ProcessarEntryOperation
               v_cmd_funcao << v_linha
               v_cmd_linha_funcao << v_linha_funcao
               if terminou_linha(v_linha)
+                if v_id.downcase == 'pfato084' && dados_funcao[0].downcase == 'operation' && dados_funcao[1].include?('le_propriedade')
+                  byebug
+                end
                 post_entry_operation(v_id, dados_funcao[0], dados_funcao[1], v_cmd_funcao, v_cmd_linha_funcao, v_cmd_docto)
                 v_cmd_funcao = []
                 v_cmd_linha_funcao = []

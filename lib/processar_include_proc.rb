@@ -30,7 +30,7 @@ class ProcessarIncludeProc
     v_conteudo = conteudo.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => '?')
     v_nr_linhas = v_conteudo.count("\n") unless v_conteudo.count("\n").nil?
     v_tipo = 'include'
-    v_post_string = {'funcaos': {'cd_componente': nil, 
+    v_post_string = {'funcaos': {'cd_componente': nil,
               'tipo': v_tipo, 
               'nm_funcao': nm_include,
               'codigo': v_conteudo,
@@ -43,7 +43,6 @@ class ProcessarIncludeProc
   
     begin
     	v_post_string = v_post_string.to_json
-  	
       RestClient.post "#{@servidor_funcao}", JSON.parse(v_post_string)
     rescue StandardError => e
       Rails.logger.info e.inspect

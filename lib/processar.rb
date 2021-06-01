@@ -66,7 +66,7 @@ class Processar
         end
         next if li.split[7].match(/^aps/i)
         if v_nao_ler
-          if v_dia_hora > @data_ultima_alteracao
+          #if v_dia_hora > @data_ultima_alteracao
             #break if v_dia != li.split[5]
             if li.split[7].length == 15 || li.split[7].match(/^arh/i) || li.split[7].match(/^ccn/i) || li.split[7].match(/^cnf/i) 
               ProcessarTrigger.new(@cd_empresa,
@@ -76,6 +76,7 @@ class Processar
                                @ultimo_diretorio, 
                                li.split[7])
             end
+            Rails.logger.info "PROGRAMA #{li.split[7].length}"
             ProcessarEntryOperation.new(@cd_empresa,
                                 @nm_arquivos_importados, 
                                 @servidor_funcao, 
@@ -83,7 +84,7 @@ class Processar
                                 @diretorio_listener,
                                 @ultimo_diretorio, 
                                 li.split[7])
-          end
+          #end
         end
       end
     end
