@@ -13,7 +13,7 @@ if Rails.env == 'production'
     GerarRelatoriosGerenciais.new([4,2])
   end
 else
-  empresas = [4]
+  empresas = [1]
   scheduler.in '1s' do
     GerarRelatoriosGerenciais.new([4])
   end
@@ -28,7 +28,7 @@ empresas.each do |empresa|
   tempresa = dados.map{ |c| [c.parametro.to_sym, c.valor] }.to_h
   tempresa[:cd_empresa] = dados.first.cd_empresa
 
-  scheduler.cron '30 09 * * 1-5 America/Sao_Paulo' do
+  scheduler.cron '51 08 * * 1-5 America/Sao_Paulo' do
     Processar.new(tempresa)
   end
 

@@ -33,12 +33,11 @@ class Processar
     @diretorio_listener = tempresa[:diretorio_listener]
     @ultimo_diretorio = tempresa[:ultimo_diretorio]
     @data_ultima_alteracao = ler_arquivo_ultima_alteracao(tempresa[:ultima_alteracao].split(' '))
-
+    puts "gerar_arquivo" if Rails.env=="development"
     gerar_arquivo
-    puts "PPP"
-
+    puts "processar" if Rails.env=="development"
     processar
-
+    puts "gravar_arquivo_ultima_alteracao" if Rails.env=="development"
     gravar_arquivo_ultima_alteracao
   end
 
@@ -54,9 +53,8 @@ class Processar
   end
 
   def processar
-    v_nao_ler = true
     v_dia = Time.now.strftime("%d%m%Y")
-
+    puts @nm_arquivo  if Rails.env=="development"
     File.open(@nm_arquivo, 'r:UTF-8').each_line.with_index do |li, v_count|
       if v_count.positive?
         begin
@@ -64,19 +62,17 @@ class Processar
         rescue
           raise "#{li.split[5]}       #{li.split[6]}"
         end
-        next if li.split[7].match(/^aps/i)
-        if v_nao_ler
-          #if v_dia_hora > @data_ultima_alteracao
-            #break if v_dia != li.split[5]
+        if !li.split[7].match(/^aps/i)
+          if v_dia_hora > @data_ultima_alteracao 
             if li.split[7].length == 15 || li.split[7].match(/^arh/i) || li.split[7].match(/^ccn/i) || li.split[7].match(/^cnf/i) 
               ProcessarTrigger.new(@cd_empresa,
-                               @servidor_funcao, 
-                               @servidor_http,
-                               @diretorio_listener,
-                               @ultimo_diretorio, 
-                               li.split[7])
+                                @servidor_funcao, 
+                                @servidor_http,
+                                @diretorio_listener,
+                                @ultimo_diretorio, 
+                                li.split[7])
             end
-            Rails.logger.info "PROGRAMA #{li.split[7].length}"
+
             ProcessarEntryOperation.new(@cd_empresa,
                                 @nm_arquivos_importados, 
                                 @servidor_funcao, 
@@ -84,7 +80,7 @@ class Processar
                                 @diretorio_listener,
                                 @ultimo_diretorio, 
                                 li.split[7])
-          #end
+          end
         end
       end
     end

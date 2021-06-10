@@ -142,85 +142,90 @@ class FuncaosController < ApplicationController
 
   def destroy
     if params[:remover] == '1'
-      Funcao.where("cd_componente = ? and cd_empresa = ? and tipo in('entry', 'operation', 'partner-operation')", 
-                        params[:cd_componente].to_s,
-                        params[:cd_empresa].to_s).each do |reg|
-        begin
-          reg.delete
-        rescue StandardError => e
-          Rails.logger.info "##Erro ao deletar params = 1 componente #{params[:cd_componente]} empresa #{params[:cd_empresa]}"
-          Rails.logger.info e
-        end
-        begin
-          #DeletaFuncoes.perform_async(reg.id)
-          Funcao.searchkick_index.remove(reg)
-        rescue StandardError => e
-          Rails.logger.error "##Erro ao deletar params = 1 ElasticSearch"
-          Rails.logger.error e
-        end
-      end
+      ProcessarEntryOperation.deletar_entry_operation1(params[:cd_componente], params[:cd_empresa])
+      #Funcao.where("cd_componente = ? and cd_empresa = ? and tipo in('entry', 'operation', 'partner-operation')", 
+      #                  params[:cd_componente].to_s,
+      #                  params[:cd_empresa].to_s).each do |reg|
+      #  begin
+      #    reg.delete
+      #  rescue StandardError => e
+      #    Rails.logger.info "##Erro ao deletar params = 1 componente #{params[:cd_componente]} empresa #{params[:cd_empresa]}"
+      #    Rails.logger.info e
+      #  end
+      #  begin
+      #    #DeletaFuncoes.perform_async(reg.id)
+      #    Funcao.searchkick_index.remove(reg)
+      #  rescue StandardError => e
+      #    Rails.logger.error "##Erro ao deletar params = 1 ElasticSearch"
+      #    Rails.logger.error e
+      #  end
+      #end
     elsif params[:remover] == '2'
-      Funcao.where("cd_componente = ? and cd_empresa = ? and nm_funcao <> 'LPMX' and tipo in('trigger-form', 'trigger-field', 'trigger-entity')", 
-                    params[:cd_componente].to_s,
-                    params[:cd_empresa].to_s).each do |reg|
-        begin
-          reg.delete
-          #DeletaFuncoes.perform_async(reg.id)
-          Funcao.searchkick_index.remove(reg)
-        rescue StandardError => e
-          Rails.logger.info "##Erro ao deletar params = 2 componente #{params[:cd_componente]} empresa #{params[:cd_empresa]}"
-          Rails.logger.info e
-        end
-        begin
-          #DeletaFuncoes.perform_async(reg.id)
-          Funcao.searchkick_index.remove(reg)
-        rescue StandardError => e
-          Rails.logger.error "##Erro ao deletar params = 2 ElasticSearch"
-          Rails.logger.error e
-        end
-      end
+
+      ProcessarEntryOperation.deletar_triggers_fef2(params[:cd_componente], params[:cd_empresa])
+      #Funcao.where("cd_componente = ? and cd_empresa = ? and nm_funcao <> 'LPMX' and tipo in('trigger-form', 'trigger-field', 'trigger-entity')", 
+      #              params[:cd_componente].to_s,
+      #              params[:cd_empresa].to_s).each do |reg|
+      #  begin
+      #    reg.delete
+      #    #DeletaFuncoes.perform_async(reg.id)
+      #    #Funcao.searchkick_index.remove(reg)
+      #  rescue StandardError => e
+      #    Rails.logger.info "##Erro ao deletar params = 2 componente #{params[:cd_componente]} empresa #{params[:cd_empresa]}"
+      #    Rails.logger.info e
+      #  end
+      #  begin
+      #    #DeletaFuncoes.perform_async(reg.id)
+      #    Funcao.searchkick_index.remove(reg)
+      #  rescue StandardError => e
+      #    Rails.logger.error "##Erro ao deletar params = 2 ElasticSearch"
+      #    Rails.logger.error e
+      #  end
+      #end
     elsif params[:remover] == '3'
-      Funcao.where("cd_componente = ? and cd_empresa = ? and nm_funcao = ? and tipo = 'trigger-form'", 
-                    params[:id].to_s,
-                    params[:cd_empresa].to_s,
-                    params[:nm_funcao].to_s).each do |reg|
-        begin      
-          reg.delete
-          #DeletaFuncoes.perform_async(reg.id)
-          Funcao.searchkick_index.remove(reg)
-        rescue StandardError => e
-          Rails.logger.info "##Erro ao deletar params = 3 componente #{params[:id]} empresa #{params[:cd_empresa]}  Função #{params[:nm_funcao]}"
-          Rails.logger.info e
-        end
-        begin
-          #DeletaFuncoes.perform_async(reg.id)
-          Funcao.searchkick_index.remove(reg)
-        rescue StandardError => e
-          Rails.logger.error "##Erro ao deletar params = 3 ElasticSearch"
-          Rails.logger.error e
-        end
-      end
+      ProcessarEntryOperation.deletar_lpmx3(params[:id].to_s, params[:cd_empresa], params[:nm_funcao])
+      #Funcao.where("cd_componente = ? and cd_empresa = ? and nm_funcao = ? and tipo = 'trigger-form'", 
+      #              params[:id].to_s,
+      #              params[:cd_empresa].to_s,
+      #              params[:nm_funcao].to_s).each do |reg|
+      #  begin      
+      #    reg.delete
+      #    #DeletaFuncoes.perform_async(reg.id)
+      #    #Funcao.searchkick_index.remove(reg)
+      #  rescue StandardError => e
+      #    Rails.logger.info "##Erro ao deletar params = 3 componente #{params[:id]} empresa #{params[:cd_empresa]}  Função #{params[:nm_funcao]}"
+      #    Rails.logger.info e
+      #  end
+      #  begin
+      #    #DeletaFuncoes.perform_async(reg.id)
+      #    Funcao.searchkick_index.remove(reg)
+      #  rescue StandardError => e
+      #    Rails.logger.error "##Erro ao deletar params = 3 ElasticSearch"
+      #    Rails.logger.error e
+      #  end
+      #end
 
     elsif params[:remover] == '4'
-      Funcao.where("cd_empresa = ? and nm_funcao = ? and tipo = 'include'", 
-                          params[:cd_empresa].to_s,
-                          params[:nm_funcao].to_s).each do |reg|
-        begin
-          reg.delete
-          #DeletaFuncoes.perform_async(reg.id)
-          #Funcao.searchkick_index.remove(reg)
-        rescue StandardError => e
-          Rails.logger.info "##Erro ao deletar params = 4 empresa #{params[:cd_empresa]}  Função #{params[:nm_funcao]}"
-          Rails.logger.info e
-        end
-        begin
-          #DeletaFuncoes.perform_async(reg.id)
-          Funcao.searchkick_index.remove(reg)
-        rescue StandardError => e
-          Rails.logger.error "##Erro ao deletar params = 4 ElasticSearch"
-          Rails.logger.error e
-        end
-      end
+      ProcessarEntryOperation.deletar_include4(params[:cd_empresa], params[:nm_funcao])
+      #Funcao.where("cd_empresa = ? and nm_funcao = ? and tipo = 'include'", 
+      #                    params[:cd_empresa].to_s,
+      #                    params[:nm_funcao].to_s).each do |reg|
+      #  begin
+      #    reg.delete
+      #    #DeletaFuncoes.perform_async(reg.id)
+      #    #Funcao.searchkick_index.remove(reg)
+      #  rescue StandardError => e
+      #    Rails.logger.info "##Erro ao deletar params = 4 empresa #{params[:cd_empresa]}  Função #{params[:nm_funcao]}"
+      #    Rails.logger.info e
+      #  end
+      #  begin
+      #    #DeletaFuncoes.perform_async(reg.id)
+      #    Funcao.searchkick_index.remove(reg)
+      #  rescue StandardError => e
+      #    Rails.logger.error "##Erro ao deletar params = 4 ElasticSearch"
+      #    Rails.logger.error e
+      #  end
+      #end
     end
     head :no_content
   end

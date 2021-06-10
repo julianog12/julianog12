@@ -66,23 +66,22 @@ class ProcessarTudo
           raise "#{li.split[5]}       #{li.split[6]}"
         end
         next if li.split[7].match(/^aps/i)
-        if v_nao_ler
-          if li.split[7].length == 15
-            ProcessarTrigger.new(@cd_empresa,
+        if li.split[7].length == 15
+          ProcessarTrigger.new(@cd_empresa,
                              @servidor_funcao, 
                              @servidor_http,
                              @diretorio_listener,
                              @ultimo_diretorio, 
                              li.split[7])
-          end
-          ProcessarEntryOperation.new(@cd_empresa,
+        end
+        puts "PASSOU "
+        ProcessarEntryOperation.new(@cd_empresa,
                               @nm_arquivos_importados, 
                               @servidor_funcao, 
                               @servidor_http,
                               @diretorio_listener,
                               @ultimo_diretorio, 
                               li.split[7])
-        end
       end
     end
     ProcessarIncludeProc.new(@cd_empresa, @servidor_funcao)

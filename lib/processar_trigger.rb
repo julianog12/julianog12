@@ -142,13 +142,23 @@ class ProcessarTrigger
               'nm_modelo': nome_modelo(componente.downcase),
               'nr_linhas': conteudo_trigger.size }
             }
-
+    funcao = Funcao.new
     begin
-      RestClient.post "#{@servidor_funcao}", JSON.parse(v_post_string.to_json)
+      funcao.nm_funcao = nome_trigger.downcase
+      funcao.cd_componente = componente.downcase
+      funcao.tipo = v_tipo
+      funcao.codigo = v_dados_funcao
+      funcao.documentacao = nil
+      funcao.nm_campo = nm_campo
+      funcao.nm_tabela = nm_tabela
+      funcao.cd_empresa = @cd_empresa
+      funcao.nr_linhas = conteudo_trigger.size || 1
+      funcao.nm_modelo = nome_modelo(v_componente.downcase)
+      funcao.save
+      funcao = nil
+      #RestClient.post "#{@servidor_funcao}", JSON.parse(v_post_string.to_json)
     rescue StandardError => e
-      puts e.inspect
-      puts v_post_string
-      Rails.logger.info '##Erro ao fazer post funcao'
+      Rails.logger.info '##Erro ao fazer post funcao em processar_trigger linha 160'
       Rails.logger.info v_post_string
     end
   end
@@ -182,15 +192,15 @@ class ProcessarTrigger
     end
   end
 
-  def deletar_triggers(componente)
-    RestClient.delete "#{@servidor_funcao}/#{componente}", {params: 
-      {
-       cd_componente: componente,
-       cd_empresa: @cd_empresa,
-  	   remover: '2'
-      }
-    }
-  end
+  #def deletar_triggers(componente)
+  #  RestClient.delete "#{@servidor_funcao}/#{componente}", {params: 
+  #    {
+  #     cd_componente: componente,
+  #     cd_empresa: @cd_empresa,
+ # 	   remover: '2'
+ #     }
+ #   }
+ # end
 
 
   
@@ -203,9 +213,9 @@ class ProcessarTrigger
     end
   
     begin
-      deletar_triggers(nm_arquivo)
+      ProcessarEntryOperation.deletar_triggers_fef2(nm_arquivo.downcase, @cd_empresa)
     rescue StandardError => e
-      Rails.logger.info '##Erro deletar funcao deletar_dados para o componeten #{nm_arquivo}'
+      Rails.logger.info "##Erro deletar funcao deletar_dados para o componente #{nm_arquivo}"
       Rails.logger.info e
       return nil
     end
