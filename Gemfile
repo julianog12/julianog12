@@ -35,7 +35,7 @@ group :development do
 end
 
 group :production do
-  #gem 'puma', '~> 4.3.6'
+  gem 'puma', '~> 4.3.6'
 end
 
 gem 'activerecord-tablefree'
