@@ -6,7 +6,7 @@ require "#{Rails.root}/lib/gerar_relatorios_gerenciais.rb"
 
 scheduler = Rufus::Scheduler.new
 
-empresa = []
+empresas = []
 if Rails.env == 'production'
   empresas = [4,3,2,1]
   scheduler.cron '00 21 * * 1-5 America/Sao_Paulo', :job => true do
@@ -20,15 +20,20 @@ else
 end
 
 #scheduler.in '1s' do
-#  ProcessarTudo.new("#{Rails.root}/lib/leitura_coamo_desenv.yml")
+#  empresa = 1
+#  dados = Configuracao.where("cd_empresa = '#{empresa}'")
+#  tempresa = dados.map{ |c| [c.parametro.to_sym, c.valor] }.to_h
+#  tempresa[:cd_empresa] = dados.first.cd_empresa
+#  ProcessarTudo.new(tempresa)
 #end
 
+empresas = []
 empresas.each do |empresa|
   dados = Configuracao.where("cd_empresa = '#{empresa}'")
   tempresa = dados.map{ |c| [c.parametro.to_sym, c.valor] }.to_h
   tempresa[:cd_empresa] = dados.first.cd_empresa
 
-  scheduler.cron '51 08 * * 1-5 America/Sao_Paulo' do
+  scheduler.cron '30 09 * * 1-5 America/Sao_Paulo' do
     Processar.new(tempresa)
   end
 

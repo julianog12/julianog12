@@ -13,6 +13,7 @@ class ProcessarIncludeProc
   end
 
   def deletar_include(nm_include)
+
     begin
       RestClient.delete "#{@servidor_funcao}/#{nm_include}", {params: 
         {
@@ -42,14 +43,21 @@ class ProcessarIncludeProc
             }
   
     begin
-    	v_post_string = v_post_string.to_json
-      RestClient.post "#{@servidor_funcao}", JSON.parse(v_post_string)
+      funcao = Funcao.new
+      funcao.cd_componente = nil
+      funcao.tipo = v_tipo
+      funcao.nm_funcao = nm_include
+      funcao.codigo = v_conteudo
+      funcao.cd_empresa = @cd_empresa
+      funcao.nr_linhas = v_nr_linhas
+      funcao.save
+    	#v_post_string = v_post_string.to_json
+      #RestClient.post "#{@servidor_funcao}", JSON.parse(v_post_string)
     rescue StandardError => e
       Rails.logger.info e.inspect
       Rails.logger.info "Erro Post Includes"
       Rails.logger.info v_post_string
     end
-    
   end
 
   
@@ -59,7 +67,8 @@ class ProcessarIncludeProc
     v_arq_includes.each do |arquivo|
       v_nome = arquivo[(arquivo.rindex(/\//))+1..(arquivo.index(/\./)-1)].to_s.downcase
       v_nome = v_nome[2..(v_nome.index(/\Z/))]
-      deletar_include(v_nome)
+      #deletar_include(v_nome)
+      ProcessarEntryOperation.deletar_include4(@cd_empresa, v_nome)
       post_includes(v_nome, File.read(arquivo))
     end
 

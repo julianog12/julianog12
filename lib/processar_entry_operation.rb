@@ -4,6 +4,7 @@
 # frozen_string_literal: true
 
 class ProcessarEntryOperation
+  require "active_record"
   require "#{Rails.root}/lib/canivete.rb"
   attr_reader :cd_empresa, :nm_arquivo_importado, :servidor_funcao, :servidor_http, :diretorio_listener, :ultimo_diretorio, :arquivo
 
@@ -301,7 +302,7 @@ class ProcessarEntryOperation
                   v_cd_empresa.to_s).each do |reg|
       reg.delete
       begin
-        ProcessarEntryOperation.deletar_funcao_lasticsearch(reg)
+        ProcessarEntryOperation.deletar_funcao_elasticsearch(reg)
       rescue StandardError => e
         Rails.logger.error "##Erro ao deletar Funcao ElasticSearch linha 310"
         Rails.logger.error e
@@ -315,7 +316,7 @@ class ProcessarEntryOperation
                   v_cd_empresa.to_s).each do |reg|
       reg.delete
       begin
-        ProcessarEntryOperation.deletar_funcao_lasticsearch(reg)
+        ProcessarEntryOperation.deletar_funcao_elasticsearch(reg)
       rescue StandardError => e
         Rails.logger.error "##Erro ao deletar params = 2 ElasticSearch"
         Rails.logger.error e
@@ -340,15 +341,15 @@ class ProcessarEntryOperation
   end
 
 
-  def self.deletar_include4(v_id, v_nm_funcao)
+  def self.deletar_include4(v_cd_empresa, v_nm_funcao)
     Funcao.where("cd_empresa = ? and nm_funcao = ? and tipo = 'include'", 
-                          v_id.to_s,
-                          v_nm_funcao.to_s).each do |reg|
+                  v_cd_empresa.to_s,
+                  v_nm_funcao.to_s).each do |reg|
       reg.delete
       begin
         ProcessarEntryOperation.deletar_funcao_elasticsearch(reg)
       rescue StandardError => e
-        Rails.logger.error "##Erro ao deletar params = 4 ElasticSearch"
+        Rails.logger.error "##Erro ao deletar params = 4 ElasticSearch #{v_cd_empresa} #{v_nm_funcao}"
         Rails.logger.error e
       end
     end

@@ -11,16 +11,15 @@ class ProcessarTudo
   require "#{Rails.root}/lib/processar_trigger"
   require "#{Rails.root}/lib/processar_include_proc"
 
-  def initialize(caminho_config)
-    @caminho = caminho_config
-    @arq_yml = YAML.safe_load(File.open(@caminho))
-    @cd_empresa = @arq_yml['ambiente']['empresa']
+  def initialize(tempresa)
 
-    @nm_arquivo = "#{Rails.root}/lib/arquivos_gerados/" + @arq_yml['geral']['nome_arq_result'] + "_#{Time.now.strftime('%d%m%Y%H%M%S')}"
+    @cd_empresa = tempresa[:cd_empresa]
+
+    @nm_arquivo = "#{Rails.root}/lib/arquivos_gerados/" + tempresa[:nome_arq_result] + "_#{Time.now.strftime('%d%m%Y%H%M%S')}"
     @nm_arquivos_importados = "#{Rails.root}/lib/arquivos_gerados/" + "#{@cd_empresa}_importados" + "_#{Time.now.strftime('%d_%m_%Y_%H_%M_%S')}"
     begin
       Dir.glob(["#{Rails.root}/lib/arquivos_gerados/" + "#{@cd_empresa}_importados_*",
-                "#{Rails.root}/lib/arquivos_gerados/" + @arq_yml['geral']['nome_arq_result'] + "_*"] ).each do |arq|
+                "#{Rails.root}/lib/arquivos_gerados/" + tempresa[:nome_arq_result] + "_*"] ).each do |arq|
         File.delete(arq)
       end
     rescue StandardError => e
@@ -29,12 +28,12 @@ class ProcessarTudo
       nil
     end
 
-    @extensao_arquivo = (@arq_yml['ambiente']['extensao_leitura'] == 'all' ? '*' : @arq_yml['ambiente']['extensao_leitura'])
-    @servidor_funcao = @arq_yml['geral']['servidor_http_funcao']
-    @servidor_http = @arq_yml['geral']['servidor_http']
-    @diretorio_listener = @arq_yml['ambiente']['diretorio_listener']
-    @ultimo_diretorio = @arq_yml['geral']['ultimo_diretorio']
-    @data_ultima_alteracao = ler_arquivo_ultima_alteracao(@arq_yml['geral']['ultima_alteracao'].split(' '))
+    @extensao_arquivo = (tempresa[:extensao_leitura] == 'all' ? '*' : tempresa[:extensao_leitura])
+    @servidor_funcao = tempresa[:servidor_http_funcao]
+    @servidor_http = tempresa[:servidor_http]
+    @diretorio_listener = tempresa[:diretorio_listener]
+    @ultimo_diretorio = tempresa[:ultimo_diretorio]
+    @data_ultima_alteracao = ler_arquivo_ultima_alteracao(tempresa[:ultima_alteracao].split(' '))
 
     gerar_arquivo
 
@@ -55,32 +54,32 @@ class ProcessarTudo
   end
 
   def processar_tudo
-    v_nao_ler = true
-    v_dia = Time.now.strftime("%d%m%Y")
-
     File.open(@nm_arquivo, 'r:UTF-8').each_line.with_index do |li, v_count|
+      item = li.split[7]
+      puts item
+      next if item.nil?
+      next if item.match(/^aps/i) || (item[0..(item.index('.')-1)]).size > 8
+
       if v_count.positive?
-        begin
-          v_dia_hora = Time.new(li.split[5][4..7], li.split[5][2..3], li.split[5][0..1], li.split[6][0..1], li.split[6][2..3])
-        rescue
-          raise "#{li.split[5]}       #{li.split[6]}"
-        end
-        next if li.split[7].match(/^aps/i)
-        if li.split[7].length == 15
+        if li.split[7].length == 15 ||
+           li.split[7].match(/^arh/i) ||
+           li.split[7].match(/^ccn/i) ||
+           li.split[7].match(/^cnf/i)
+           puts "##ENTROU #{li.split[7]}  #{li.split[7].length}"
           ProcessarTrigger.new(@cd_empresa,
-                             @servidor_funcao, 
+                             @servidor_funcao,
                              @servidor_http,
                              @diretorio_listener,
-                             @ultimo_diretorio, 
+                             @ultimo_diretorio,
                              li.split[7])
         end
-        puts "PASSOU "
+
         ProcessarEntryOperation.new(@cd_empresa,
-                              @nm_arquivos_importados, 
-                              @servidor_funcao, 
+                              @nm_arquivos_importados,
+                              @servidor_funcao,
                               @servidor_http,
                               @diretorio_listener,
-                              @ultimo_diretorio, 
+                              @ultimo_diretorio,
                               li.split[7])
       end
     end

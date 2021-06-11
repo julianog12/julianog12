@@ -5,6 +5,7 @@
 
 
 class ProcessarTrigger
+  require 'active_record'
   attr_reader :cd_empresa, :servidor_funcao, :servidor_http, :diretorio_listener, :ultimo_diretorio, :arquivo
 
   def initialize(empresa, servidor_funcao, servidor_http, diretorio_listener, ultimo_diretorio, arquivo)
@@ -153,13 +154,14 @@ class ProcessarTrigger
       funcao.nm_tabela = nm_tabela
       funcao.cd_empresa = @cd_empresa
       funcao.nr_linhas = conteudo_trigger.size || 1
-      funcao.nm_modelo = nome_modelo(v_componente.downcase)
+      funcao.nm_modelo = nome_modelo(componente.downcase)
       funcao.save
       funcao = nil
       #RestClient.post "#{@servidor_funcao}", JSON.parse(v_post_string.to_json)
     rescue StandardError => e
       Rails.logger.info '##Erro ao fazer post funcao em processar_trigger linha 160'
       Rails.logger.info v_post_string
+      Rails.logger.info e
     end
   end
 

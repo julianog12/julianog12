@@ -57,31 +57,34 @@ class Processar
     puts @nm_arquivo  if Rails.env=="development"
     File.open(@nm_arquivo, 'r:UTF-8').each_line.with_index do |li, v_count|
       if v_count.positive?
+        item = li.split[7]
         begin
           v_dia_hora = Time.new(li.split[5][4..7], li.split[5][2..3], li.split[5][0..1], li.split[6][0..1], li.split[6][2..3])
         rescue
           raise "#{li.split[5]}       #{li.split[6]}"
         end
-        if !li.split[7].match(/^aps/i)
-          if v_dia_hora > @data_ultima_alteracao 
-            if li.split[7].length == 15 || li.split[7].match(/^arh/i) || li.split[7].match(/^ccn/i) || li.split[7].match(/^cnf/i) 
-              ProcessarTrigger.new(@cd_empresa,
-                                @servidor_funcao, 
-                                @servidor_http,
-                                @diretorio_listener,
-                                @ultimo_diretorio, 
-                                li.split[7])
-            end
+        next if item.match(/^aps/i)
 
-            ProcessarEntryOperation.new(@cd_empresa,
-                                @nm_arquivos_importados, 
-                                @servidor_funcao, 
-                                @servidor_http,
-                                @diretorio_listener,
-                                @ultimo_diretorio, 
-                                li.split[7])
-          end
+        next if v_dia_hora <= @data_ultima_alteracao 
+
+        next if (item[0..(item.index('.')-1)]).size > 8
+
+        if item.length == 15 || item.match(/^arh/i) || item.match(/^ccn/i) ||item.match(/^cnf/i) 
+          ProcessarTrigger.new(@cd_empresa,
+                            @servidor_funcao, 
+                            @servidor_http,
+                            @diretorio_listener,
+                            @ultimo_diretorio, 
+                            li.split[7])
         end
+        puts "##Programa  #{item}     #{item.length}" if Rails.env=="development"
+        ProcessarEntryOperation.new(@cd_empresa,
+                            @nm_arquivos_importados, 
+                            @servidor_funcao, 
+                            @servidor_http,
+                            @diretorio_listener,
+                            @ultimo_diretorio, 
+                            item)
       end
     end
     ProcessarIncludeProc.new(@cd_empresa, @servidor_funcao)
