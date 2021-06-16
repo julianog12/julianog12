@@ -14,9 +14,9 @@ if Rails.env == 'production'
   end
 else
   empresas = [1]
-  scheduler.in '1s' do
-    GerarRelatoriosGerenciais.new([4])
-  end
+  #scheduler.in '1s' do
+  #  GerarRelatoriosGerenciais.new([4])
+  #end
 end
 
 #scheduler.in '1s' do
@@ -27,7 +27,6 @@ end
 #  ProcessarTudo.new(tempresa)
 #end
 
-empresas = []
 empresas.each do |empresa|
   dados = Configuracao.where("cd_empresa = '#{empresa}'")
   tempresa = dados.map{ |c| [c.parametro.to_sym, c.valor] }.to_h

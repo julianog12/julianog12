@@ -115,22 +115,27 @@ class ProcessarTrigger
                nome_trigger == 'OPER' ||
                nome_trigger == 'LPMX'
 
+    nm_modelo = nome_modelo(componente.downcase)
     if dados_objeto.size == 3
       nm_campo = dados_objeto[0].downcase
       nm_tabela = dados_objeto[1].downcase
+      nm_modelo = dados_objeto[3].downcase unless dados_objeto[3].nil?
     elsif dados_objeto.size == 2
       nm_tabela = dados_objeto[0].downcase
+      nm_modelo = dados_objeto[1].downcase
     end
 
     v_tipo = ''
     if tipo_trigger.match(/Form/i)
       v_tipo = 'trigger-form'
+      nm_modelo = nil
     elsif tipo_trigger.match(/Field/i)
       v_tipo = 'trigger-field'
     elsif tipo_trigger.match(/Entity/i)
       v_tipo = 'trigger-entity'
     else
       v_tipo = 'trigger-form'
+      nm_modelo = nil
     end
 
     v_post_string = {'funcaos': {'cd_componente': componente, 
@@ -140,7 +145,7 @@ class ProcessarTrigger
               'cd_empresa': @cd_empresa,
               'nm_campo': nm_campo, 
               'nm_tabela': nm_tabela, 
-              'nm_modelo': nome_modelo(componente.downcase),
+              'nm_modelo': nm_modelo,
               'nr_linhas': conteudo_trigger.size }
             }
     funcao = Funcao.new
@@ -154,7 +159,7 @@ class ProcessarTrigger
       funcao.nm_tabela = nm_tabela
       funcao.cd_empresa = @cd_empresa
       funcao.nr_linhas = conteudo_trigger.size || 1
-      funcao.nm_modelo = nome_modelo(componente.downcase)
+      funcao.nm_modelo = nm_modelo #nome_modelo(componente.downcase)
       funcao.save
       funcao = nil
       #RestClient.post "#{@servidor_funcao}", JSON.parse(v_post_string.to_json)

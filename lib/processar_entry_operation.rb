@@ -15,7 +15,7 @@ class ProcessarEntryOperation
     @diretorio_listener = diretorio_listener
     @ultimo_diretorio = ultimo_diretorio
     @arquivo = arquivo
-    @arq_importados = File.new(nm_arquivo_importado, 'w')
+    @arq_importados = File.new(nm_arquivo_importado, 'w') unless nm_arquivo_importado.nil?
     processar()
   end
 
@@ -418,8 +418,8 @@ class ProcessarEntryOperation
       return nil
     end
 
-    @arq_importados.write v_arquivo_ler
-    @arq_importados.write "\n"
+    @arq_importados.write v_arquivo_ler unless nm_arquivo_importado.nil?
+    @arq_importados.write "\n" unless nm_arquivo_importado.nil?
 
     v_cmd_activate = []
     v_indica = false
@@ -485,7 +485,7 @@ class ProcessarEntryOperation
             conteudo_include = []
             posic_include = 0
           end
-          if !v_linha.nil?
+          if !v_linha.nil? && !v_linha.blank? #Juliano 15/06/2021
             if linhaContemNewInstance(v_linha)
               v_indica_new_inst = true
               dados_new_instance = pegaNomeInstanca(v_linha)
@@ -596,6 +596,6 @@ class ProcessarEntryOperation
       conteudo_include = []
       nome_include = ''
     end
-    @arq_importados.close
+    @arq_importados.close unless nm_arquivo_importado.nil?
   end
 end
