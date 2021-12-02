@@ -342,7 +342,7 @@ class ProcessarEntryOperation
 
 
   def self.deletar_include4(v_cd_empresa, v_nm_funcao)
-    Funcao.where("cd_empresa = ? and nm_funcao = ? and tipo = 'include'", 
+    Funcao.where("cd_empresa = ? and nm_funcao = ? and tipo = 'include'",
                   v_cd_empresa.to_s,
                   v_nm_funcao.to_s).each do |reg|
       reg.delete

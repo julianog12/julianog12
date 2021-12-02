@@ -49,7 +49,7 @@
     </div>
     <div class="col-sm-4">
        <%= select_tag :match_field,
-                  options_for_select([ ['Palava Inteira', 'word'], ['Inicio Palavra', 'word_start'], ['Meio Palavra', 'word_middle'], ['Final Palavra', 'word_end'] ], 
+                  options_for_select([ ['Palava Inteira', 'word'], ['Meio Palavra', 'word_middle'] ], 
                   selected: (params[:match_field].present? ? params[:match_field] : 'word_middle')), 
                   class: "selectpicker form-control" %>
     </div>
