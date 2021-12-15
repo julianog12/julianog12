@@ -8,7 +8,12 @@ class MonitorsController < ApplicationController
       v_data_inicial = formata_data(params[:data_inicial], "+", '%Y-%m-%dT%H:%M')
       v_data_final =  formata_data(params[:data_final], "+", '%Y-%m-%dT%H:%M')
 
-      target_client = Elasticsearch::Client.new url: "http://172.17.82.27:8080/prd-uniface-monitor-#{params[:mes_ano]}", log: true
+      #api-authentication = cnRrZC0za0J4c19jXzljajlLZnE6WF9TRFJUdjlTQ2l3U1FoZE9za2VZUQ==
+
+      target_client = Elasticsearch::Client.new(
+              url: "https://elk.coamo.com.br/prd-uniface-monitor",
+              api_key: "YlJEQnZYMEI0YWl2a0F1c2tmWlE6VUMzTldHYzJUeXVXdkR2a19PYXlyZw==",
+              log: true)
 
       consulta = []
 
