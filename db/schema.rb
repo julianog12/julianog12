@@ -50,7 +50,7 @@ ActiveRecord::Schema.define(version: 2021_03_23_201650) do
     t.string "nm_tabela", limit: 32
     t.string "nm_modelo", limit: 20
     t.integer "nr_linhas"
-    t.index ["cd_componente", "nm_funcao", "nm_campo", "nm_tabela", "cd_empresa"], name: "index_funcao_01", unique: true
+    t.index ["cd_empresa", "cd_componente", "tipo", "nm_funcao", "nm_campo", "nm_tabela", "nm_modelo"], name: "index_funcao_01", unique: true
     t.index ["cd_empresa", "nm_modelo"], name: "index_funcao_02"
   end
 
