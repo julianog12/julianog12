@@ -2,7 +2,7 @@
 lock '~> 3.15.0'
 
 set :application, 'search'
-set :repo_url, 'git@github.com:julianog12/search_omaoc.git'
+set :repo_url, 'https://github.com/julianog12/julianog12.git'
 
 set :user, 'user1'
 set :puma_threads,    [4, 16]

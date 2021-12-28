@@ -54,7 +54,7 @@ GEM
     airbrussh (1.4.0)
       sshkit (>= 1.6.1, != 1.7.0)
     arel (9.0.0)
-    autoprefixer-rails (10.3.3.0)
+    autoprefixer-rails (10.4.0.0)
       execjs (~> 2)
     awesome_print (1.9.2)
     bcrypt_pbkdf (1.1.0-x64-mingw32)
@@ -307,7 +307,6 @@ GEM
 
 PLATFORMS
   x64-mingw32
-  x86_64-linux
 
 DEPENDENCIES
   activerecord-tablefree
