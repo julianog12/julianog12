@@ -79,20 +79,20 @@ class ProcessarTrigger
   
 
   def discartar_trigger4(conteudo)
-    (conteudo.match(/call PG_REMOVE/i) ||
-     conteudo.match(/delete/i) ||
-     conteudo.match(/read/i) ||
-     conteudo.match(/write/i) ||
-     conteudo.match(/call PG_LMKEY/i) ||
-     conteudo.match(/call pg_operador/i) ||
-     conteudo.match(/call PG_ERRENTITY/i) ||
-     conteudo.match(/write/) ||
-     conteudo.match(/call PG_ERRFIELD/i) ||
-     conteudo.match(/call pg_store/i) ||
-     conteudo.match(/call pg_retrieve/i) ||
-     conteudo.match(/call pg_quit/i) ||
-     conteudo.match(/call pg_clear/i) ||
-     conteudo.match(/call PG_MAIORZERO/i))
+    (conteudo.match(/^call PG_REMOVE/i) ||
+     conteudo.match(/^delete/i) ||
+     conteudo.match(/^read/i) ||
+     conteudo.match(/^write/i) ||
+     conteudo.match(/^call PG_LMKEY/i) ||
+     conteudo.match(/^call pg_operador/i) ||
+     conteudo.match(/^call PG_ERRENTITY/i) ||
+     conteudo.match(/^write/) ||
+     conteudo.match(/^call PG_ERRFIELD/i) ||
+     conteudo.match(/^call pg_store/i) ||
+     conteudo.match(/^call pg_retrieve/i) ||
+     conteudo.match(/^call pg_quit/i) ||
+     conteudo.match(/^call pg_clear/i) ||
+     conteudo.match(/^call PG_MAIORZERO/i))
   end
 
 
@@ -104,9 +104,11 @@ class ProcessarTrigger
       Rails.logger.info "##Erro ao montar conteudo da trigger (post_triggers - L103). Componente #{componente}, Trigger #{nome_trigger}"
       return
     end
+
     dados_objeto = objeto.split('.')
     v_dados_funcao = conteudo_trigger.map { |i| i.to_s.gsub("\t", '  ') }.join("\n")
     v_dados_funcao = v_dados_funcao.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")
+
     return if (conteudo_trigger.size == 1 && (discartar_trigger(conteudo_trigger[0]) || discartar_trigger2(conteudo_trigger[0]))) || 
               (conteudo_trigger.size == 2 && conteudo_trigger[1] == "\r" && discartar_trigger(conteudo_trigger[0])) ||
                discartar_trigger2(conteudo_trigger[0]) ||
@@ -181,9 +183,6 @@ class ProcessarTrigger
 
   def nome_include(linha, posic_include)
     nome = linha[(posic_include + 8)..(linha.index(/[\r\n]/)) - 1]
-    if nome == '' || nome.nil?
-      byebug
-    end
     unless nome.index(';').nil?
       nome = nome[0..(nome.index(';') - 1)]
     end
@@ -253,6 +252,12 @@ class ProcessarTrigger
         tipo_trigger = ''
         iniciou_trigger = false
         terminou_trigger = false
+        if conteudo_include.any?
+          grava_arq_include(nm_arquivo, nome_include, conteudo_include)
+          conteudo_include = []
+          posic_include = 0
+        end  
+
       end
       if !linhar.nil?
         dados_ini = inicio_trigger(linha) unless iniciou_trigger
@@ -267,6 +272,10 @@ class ProcessarTrigger
       posic_include = (linha.index("include LIB_COAMO:") || linha.index("include COAMO_LIB:")) || 0  if !linhar.nil? && linha[0..1] == "[ " && !linhar.match(/^;/)
 
       if posic_include.positive?
+        if conteudo_include.any?
+          grava_arq_include(nm_arquivo, nome_include, conteudo_include)
+          conteudo_include = []
+        end  
         nova_include = nome_include(linha, posic_include)
         if nova_include != nome_include && nome_include.empty?
           nome_include = nova_include
