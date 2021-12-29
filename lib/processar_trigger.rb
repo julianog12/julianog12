@@ -63,15 +63,19 @@ class ProcessarTrigger
      conteudo.match(/^exit\(0\)/i) ||
      conteudo.match(/^exit/i) ||
      conteudo.match(/^return \(0\)/i) ||
-     conteudo.match(/^return\(0\)/i))
+     conteudo.match(/^return\(0\)/i) ||
+     conteudo.match(/^macro "\^QUIT"/i) ||
+     conteudo.match(/^macro "\^STORE"/i))
   end
 
   def discartar_trigger3(conteudo)
     conteudo = conteudo.to_s.gsub("\r\n", '').gsub("\n", '').gsub(' ', '').gsub("\r", '')
     conteudo.include?('params$T_CD_OPERADOR$:IN;;incluirapartirdestepontoosparâmetrosreferentesaoseuprograma,estedeverasersempreoprimeiroparametroendparams'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
     conteudo.include?('params$T_CD_OPERADOR$:IN;;incluirapartirdestepontoosparâmetrosreferentesaoseuprograma,estedeverasersempreoprimeiroparametroendparamsedit'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
+    conteudo.include?('variablesnumericv_nr_tam,v_nr_posstringv_nr_cpfcnpj,v_cd_digitoendvariablesif($fieldmod=1)length@$fieldnamev_nr_tam=$resultv_nr_pos=1v_nr_cpfcnpj=""repeatif(@$fieldname[v_nr_pos:1]=\'#\')v_nr_cpfcnpj="%%v_nr_cpfcnpj%%@$fieldname[v_nr_pos:1]"endifv_nr_pos=v_nr_pos+1until(v_nr_pos>v_nr_tam)@$fieldname=v_nr_cpfcnpjlength@$fieldnameif($result>11)activate"GSISO002".DIG_CNPJ(@$fieldname,v_cd_digito,$t_ds_erro$)else;activate"GSISO002".DIG_CPF(@$fieldname,v_cd_digito,$t_ds_erro$)endifif($status<0)if($status=-99);Trataoretornocomerromessage/error"%%$t_ds_erro$"return(-1)else;VerificaoerrodoactivatecallPL_ERRO_COMANDO($procerrorcontext)return(-1)endifendifendif'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
     conteudo.include?('lockif($status=-10)reload'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
     conteudo.include?('findkey$entname,$curkeySelectCase$statusCase0;keynotfoundif($foreign);nonexistingkeyinupentityreturn(-1);onlyifWriteUptriggernotfilledendif;Case1;keyfoundonComponent;if(!$foreign);duplicatekeyindownentity;return(-1);endif;Case2;keyfoundinDBMS;if(!$foreign);duplicatekeyindownentity;return(-1);endifEndSelectCasereturn(0)'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
+    conteudo.include?('if($format!="")length$formatif($result=11)$format="%%$format[1:3].%%$format[4:3].%%$format[7:3]-%%$format[10:2]"elseif($result=14)$format="%%$format[1:2].%%$format[3:3].%%$format[6:3]%\/%%$format[9:4]-%%$format[13:2]"endifendifendif'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
     conteudo.include?('findkey$entname,$curkeySelectCase$statusCase0;keynotfoundif($foreign);nonexistingkeyinupentityreturn(-1);onlyifWriteUptriggernotfilledendifCase1;keyfoundonComponentif(!$foreign);duplicatekeyindownentityreturn(-1)endifCase2;keyfoundinDBMSif(!$foreign);duplicatekeyindownentityreturn(-1)endifEndSelectCasereturn(0)'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
     conteudo.include?('retrieve/oif($status<0)if($status=-15)message$text(2202);Multiplehits:inforeignentityif($status=-14)message$text(2205);Multiplehits:notinforeignentityif($status=-11)message$text(2009);Occurrencecurrentlylockedif($status=-7)message$text(2006);Duplicatekeyif($status=-4)message$text(2003);Cannotopentableorfileif($status=-3)message$text(2002);ExceptionalI/Oerrorif($status=-2)message$text(2200);Keynotfound:inforeignentityelseif($status=1)message$text(2201);Keynotfound:foreignentityw/WRITEUPif($status=2);Oneoccurrencefoundinforeignentityretrieve/eif($status<0)message$text(2002);I/Oerrordetectedendifif($status=3)message$text(2203);Occurrenceun-removedif($status=4)message$text(2204);Keyfound:occurrencerepositionedendifreturn($status)'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
     conteudo.include?('retrieveif($status<0)message"Retrievesequentialdidnotsucceed;seemessageframe"endif)end'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?"))
