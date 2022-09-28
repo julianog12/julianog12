@@ -124,7 +124,6 @@ class ProcessarEntryOperation
 	  comp.linha      = v_comando
 	  comp.cd_empresa = @cd_empresa
 	  comp.tipo       = v_tipo_arquivo
-	  comp.save
     rescue StandardError => e
       Rails.logger.info e.inspect
       Rails.logger.info '##Erro post_componentes'
