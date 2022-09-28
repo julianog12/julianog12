@@ -10,7 +10,7 @@ scheduler = Rufus::Scheduler.new
 
 empresas = []
 if Rails.env == 'production'
-  empresas = [5,4,3,2] #1
+  empresas = [5,4,3,2]  #1
   scheduler.cron '00 21 * * 1-5 America/Sao_Paulo', :job => true do
     GerarRelatoriosGerenciais.new([4,2])
   end
