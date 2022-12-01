@@ -10,7 +10,12 @@ class DiffsController < ApplicationController
   def create
     @diff = Diff.new
     if request.post?
-       @diff.attributes = diffs_params
+      require 'base64'
+      if (diffs_params[:before].match(/^(?:[A-Z0-9+\/]{4})*(?:[A-Z0-9+\/]{2}==|[A-Z0-9+\/]{3}=|[A-Z0-9+\/]{4})$/i))
+        diffs_params[:before] = Base64.decode64(diffs_params[:before])
+        diffs_params[:after]  = Base64.decode64(diffs_params[:after])
+      end
+      @diff.attributes = diffs_params
     end
     render :show
   end
