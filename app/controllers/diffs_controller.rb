@@ -10,32 +10,38 @@ class DiffsController < ApplicationController
   def create
     @diff = Diff.new
     if request.post?
-      v_encode_salvo = Encoding.default_external
-      require 'base64'
-      if (diffs_params[:before].match(/^(?:[A-Z0-9+\/]{4})*(?:[A-Z0-9+\/]{2}==|[A-Z0-9+\/]{3}=|[A-Z0-9+\/]{4})$/i))
-        v_arq_before = Base64.decode64(params[:diff][:before])
-        v_arq_after  = Base64.decode64(params[:diff][:after])
+       vEncodeSalvo = Encoding.default_external
+       require 'base64'
+       if (diffs_params[:before].match(/^(?:[A-Z0-9+\/]{4})*(?:[A-Z0-9+\/]{2}==|[A-Z0-9+\/]{3}=|[A-Z0-9+\/]{4})$/i))
+         vArqBefore = Base64.decode64(params[:diff][:before])
+         vArqBefore = vArqBefore.gsub /\r/, "\n"
 
-        Encoding.default_external = eval("Encoding::#{v_arq_before.encoding.name.gsub('-','_')}")
+         vArqAfter = Base64.decode64(params[:diff][:after])
+         vArqAfter = vArqAfter.gsub /\r/, "\n"
 
-        params = ActionController::Parameters.new({
-                  diff: {
-                     before: v_arq_before,
-                     after: v_arq_after
-                  }
-                })
-        permitted = params.require(:diff).permit(:before, :after)
-        v_dados = permitted
-      else
-        v_dados = diffs_params
-      end
+         Encoding.default_external = eval("Encoding::#{vArqBefore.encoding.name.gsub('-','_')}")
 
-      @diff.attributes = v_dados
+         params = ActionController::Parameters.new({
+                   diff: {
+                      before: vArqBefore,
+                      after: vArqAfter
+                        }
+                  })
+         permitted = params.require(:diff).permit(:before, :after)
+         vDados = permitted
+       else
+         vArqBefore = diffs_params[:before]
+         vDados = diffs_params
+         Encoding.default_external = eval("Encoding::#{vArqBefore.encoding.name.gsub('-','_')}")
+
+       end
+
+       @diff.attributes = vDados
     end
     render :show
-    Encoding.default_external = v_encode_salvo
-
+    Encoding.default_external = vEncodeSalvo
   end
+
 
   def new
     @diff = Diff.new
