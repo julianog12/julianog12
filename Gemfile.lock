@@ -180,7 +180,7 @@ GEM
       nokogiri (~> 1)
       rake
     mini_mime (1.1.2)
-    mini_racer (0.5.0)
+    mini_racer (0.6.3)
       libv8-node (~> 16.10.0.0)
     minitest (5.15.0)
     msgpack (1.4.2)
@@ -201,6 +201,8 @@ GEM
     pry (0.14.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
+    puma (4.3.10)
+      nio4r (~> 2.0)
     raabro (1.4.0)
     racc (1.6.0)
     rack (2.2.3)
@@ -355,6 +357,7 @@ DEPENDENCIES
   oj
   pg (= 1.2.3)
   pry
+  puma (~> 4.3.6)
   rack-timeout
   rails (~> 5.2.2.1)
   rails_layout
