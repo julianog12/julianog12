@@ -34,9 +34,9 @@ group :development do
   gem 'web-console', '>= 3.3.0'
 end
 
-#group :production do
-#  gem 'puma', '~> 4.3.6'
-#end
+group :production do
+  gem 'puma', '~> 4.3.6'
+end
 
 gem 'activerecord-tablefree'
 gem 'chartkick'
@@ -45,7 +45,7 @@ gem 'autoprefixer-rails'
 gem 'bootstrap-sass'
 gem 'bootstrap-select-rails'
 gem 'diffy'
-gem 'elasticsearch'
+gem 'elasticsearch', '7.11.1'
 gem 'i18n'
 gem 'jquery-datatables'
 gem 'jquery-rails'
