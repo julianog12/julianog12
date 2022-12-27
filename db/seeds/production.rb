@@ -1,4 +1,3 @@
-if Rails.env == 'production'
   Configuracao.create(cd_empresa: 1, parametro: 'diretorio_listener', valor: '/var/coamo/unifacedes/r96_coamo_des/proclisting')
   Configuracao.create(cd_empresa: 1, parametro: 'extensao_leitura', valor: 'all')
   Configuracao.create(cd_empresa: 1, parametro: 'ultimo_diretorio', valor: 'proclisting/')
@@ -56,12 +55,3 @@ if Rails.env == 'production'
   Configuracao.create(cd_empresa: 7, parametro: 'nome_arq_result', valor: 'coamo10_producao')
   Configuracao.create(cd_empresa: 7, parametro: 'servidor_http', valor: 'http://localhost:3000/componentes')
   Configuracao.create(cd_empresa: 7, parametro: 'servidor_http_funcao', valor: 'http://localhost:3000/funcaos')
-else
-  Configuracao.create(cd_empresa: 6, parametro: 'diretorio_listener', valor: '/vagrant/dir_proclisting/r10_coamo_des/lst')
-  Configuracao.create(cd_empresa: 6, parametro: 'extensao_leitura', valor: 'all')
-  Configuracao.create(cd_empresa: 6, parametro: 'ultimo_diretorio', valor: 'proclisting/')
-  Configuracao.create(cd_empresa: 6, parametro: 'ultima_alteracao', valor: '2022 12 27 12 22 51')
-  Configuracao.create(cd_empresa: 6, parametro: 'nome_arq_result', valor: 'coamo10_desenv')
-  Configuracao.create(cd_empresa: 6, parametro: 'servidor_http', valor: 'http://localhost:3001/componentes')
-  Configuracao.create(cd_empresa: 6, parametro: 'servidor_http_funcao', valor: 'http://localhost:3001/funcaos')
-end

@@ -38,3 +38,11 @@ Configuracao.create(cd_empresa: 4, parametro: 'ultima_alteracao', valor: '2021 0
 Configuracao.create(cd_empresa: 4, parametro: 'nome_arq_result', valor: 'credi_producao')
 Configuracao.create(cd_empresa: 4, parametro: 'servidor_http', valor: "http://localhost:#{porta}/componentes")
 Configuracao.create(cd_empresa: 4, parametro: 'servidor_http_funcao', valor: "http://localhost:#{porta}/funcaos")
+
+Configuracao.create(cd_empresa: 6, parametro: 'diretorio_listener', valor: '/vagrant/dir_proclisting/r10_coamo_des/lst')
+  Configuracao.create(cd_empresa: 6, parametro: 'extensao_leitura', valor: 'all')
+  Configuracao.create(cd_empresa: 6, parametro: 'ultimo_diretorio', valor: 'proclisting/')
+  Configuracao.create(cd_empresa: 6, parametro: 'ultima_alteracao', valor: '2022 12 27 12 22 51')
+  Configuracao.create(cd_empresa: 6, parametro: 'nome_arq_result', valor: 'coamo10_desenv')
+  Configuracao.create(cd_empresa: 6, parametro: 'servidor_http', valor: 'http://localhost:3001/componentes')
+  Configuracao.create(cd_empresa: 6, parametro: 'servidor_http_funcao', valor: 'http://localhost:3001/funcaos')
