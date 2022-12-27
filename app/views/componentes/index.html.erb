@@ -22,7 +22,7 @@
   </div>
   <div class="row">
     <div class="col-sm-5"> 
-      <%= select_tag "cd_empresa", options_for_select([ ['Coamo Desenv', 1], ['Coamo Prod', 2], ['Credi Desenv', 3], ['Credi Prod', 4], ['Credi Contab Prod', 5]], selected: (params[:cd_empresa].present? ? params[:cd_empresa] : 1)), class: "form-control" %>
+      <%= select_tag "cd_empresa", options_for_select([ ['Coamo10 Desenv', 6], ['Coamo10 Prod', 7], ['Credi Desenv', 3], ['Credi Prod', 4], ['Credi Contab Prod', 5]], selected: (params[:cd_empresa].present? ? params[:cd_empresa] : 6)), class: "form-control" %>
     </div>
     <div class="col-sm-7">
       <%= text_field_tag :keywords, (params[:keywords].present? ? params[:keywords] : nil), class: "form-control" %>
