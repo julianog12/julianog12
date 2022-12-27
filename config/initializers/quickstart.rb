@@ -34,17 +34,17 @@ empresas.each do |empresa|
   tempresa = dados.map{ |c| [c.parametro.to_sym, c.valor] }.to_h
   tempresa[:cd_empresa] = dados.first.cd_empresa
 
-  #scheduler.cron '30 09 * * 1-5 America/Sao_Paulo' do
-  #  Processar.new(tempresa)
-  #end
-
-  scheduler.cron '34 16 * * 1-5 America/Sao_Paulo' do
+  scheduler.cron '30 09 * * 1-5 America/Sao_Paulo' do
     Processar.new(tempresa)
   end
 
-  #scheduler.cron '30 15 * * 1-5 America/Sao_Paulo' do
-  #  Processar.new(tempresa)
-  #end
+  scheduler.cron '10 12 * * 1-5 America/Sao_Paulo' do
+    Processar.new(tempresa)
+  end
+
+  scheduler.cron '30 15 * * 1-5 America/Sao_Paulo' do
+    Processar.new(tempresa)
+  end
 
   scheduler.cron '30 19 * * 1-5 America/Sao_Paulo' do
     Processar.new(tempresa)
