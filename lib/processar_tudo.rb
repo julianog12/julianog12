@@ -56,7 +56,6 @@ class ProcessarTudo
   def processar_tudo
     File.open(@nm_arquivo, 'r:UTF-8').each_line.with_index do |li, v_count|
       item = li.split[7]
-      puts item
       next if item.nil?
       next if item.match(/^aps/i) || (item[0..(item.index('.')-1)]).size > 8
 
