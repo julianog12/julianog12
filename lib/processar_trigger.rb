@@ -18,26 +18,66 @@ class ProcessarTrigger
     processar()
   end
 
-  def inicio_trigger(linha)
+  def trigger_externa(linha, objeto, nome, tipo)
     if linha.include?('Trigger <') && linha[0.0] != '['
+      objeto = linha[(linha.index(':')+2)..(linha.index(/[\r\n]/))-1]
       nome = linha[(linha.index('<'))+1..(linha.index('>'))-1].strip
       tipo = linha[(linha.index('from')+5)..(linha.index(':')-1)]
-      objeto = linha[(linha.index(':')+2)..(linha.index(/[\r\n]/))-1]
-      return {nome: nome, tipo: tipo, objeto: objeto}
+      return {nome_externo: nome, tipo: tipo, objeto: objeto}
     end
   end
 
+
+  def inicio_trigger(linha)
+    if linha.include?('******        trigger ')
+      nome = linha[22..(linha.index(/\Z/))].strip
+      return {nome: nome}
+    end
+  end
+
+
+  def fim_trigger(linha)
+    return (linha.include?('#include LIB_COAMO:G_VALIDA_CONST') ||
+            linha.include?('#include LIB_COAMO:G_TRATA_ERRO') ||
+            linha.include?('#include LIB_COAMO:G_HIST_ALT') ||
+            linha.include?('******        operation ') ||
+            linha.include?("\bend\n") ||
+            linha.include?("Trigger <") ||
+            linha.match(/.*(\bend\n|\bend.*\;)/i) ||
+            linha.include?('******        trigger ') ||
+            linha.match(/\;*.autor*.\:/i))
+  end
+
+  
+  def nome_include(linha, posic_include)
+    nome = linha[(posic_include + 8)..(linha.index(/[\r\n]/)) - 1]
+    unless nome.index(';').nil?
+      nome = nome[0..(nome.index(';') - 1)]
+    end
+    nome.strip
+  end
+
+  def nome_arquivo(arquivo)
+    if arquivo.include?("/")
+      parte_arq = arquivo.rindex(/\//) + 1
+      arquivo[(parte_arq)..(arquivo.index('.') - 1)]
+    else
+      arquivo[0..(arquivo.index('.') - 1)] 
+    end
+  end
+
+
   def discartar_trigger(conteudo)
-    (conteudo.match(/#include LIB_COAMO:G_ONERROR/) ||
-   conteudo.match(/#include LIB_COAMO:G_READ/) ||
-   conteudo.match(/#include LIB_COAMO:G_DELETE/) ||
-   conteudo.match(/#include LIB_COAMO:G_LMKEY/) ||
+    (conteudo.match(/#include LIB_COAMO:G_ONERROR/i) ||
+   conteudo.match(/#include LIB_COAMO:G_READ/i) ||
+   conteudo.match(/#include LIB_COAMO:G_DELETE/i) ||
+   conteudo.match(/#include LIB_COAMO:G_LMKEY/i) ||
    conteudo.match(/#include LIB_COAMO:G_LOCK/) ||
    conteudo.match(/#include LIB_COAMO:G_ERASE/) ||
    conteudo.match(/#include LIB_COAMO:G_REMOVEOCC/) ||
-   conteudo.match(/#include LIB_COAMO:GSEG_VALIDASENHA/) ||
-   conteudo.match(/#include LIB_COAMO:GSEG_VALSENHA_SO/) ||
-   conteudo.match(/#include LIB_COAMO:G_VLDKEY/) ||
+   conteudo.match(/#include LIB_COAMO:GSEG_VALIDASENHA/i) ||
+   conteudo.match(/#include LIB_COAMO:GSEG_VALSENHA_SO/i) ||
+   conteudo.match(/#include LIB_COAMO:G_VLDKEY/i) ||
    conteudo.match(/#include LIB_COAMO:G_MAIORZERO/) ||
    conteudo.match(/#include LIB_COAMO:G_VALC_DIG/) ||
    conteudo.match(/#include LIB_COAMO:G_RETRSEQ/) ||
@@ -49,6 +89,7 @@ class ProcessarTrigger
    conteudo.match(/#include LIB_COAMO:G_CLEAR/) ||
    conteudo.match(/#include LIB_COAMO:G_QUIT/) ||
    conteudo.match(/#include LIB_COAMO:G_RETRSEQ/) ||
+   conteudo.match(/#include LIB_COAMO:G_RETRIEVE/) ||
    conteudo.match(/#include LIB_COAMO:G_HIST_ALT/) ||
    conteudo.match(/#include COAMO_LIB:C_ERRENT_LOCK/i) ||
    conteudo.match(/#include COAMO_LIB:C_LOCK_RB/i))
@@ -56,9 +97,11 @@ class ProcessarTrigger
 
   def discartar_trigger2(conteudo)
     (conteudo.match(/^return\(-1\)/i) ||
+     conteudo.match(/^clear/i) ||
      conteudo.match(/^return \(-1\)/i) ||
      conteudo.match(/^return \(-99\)/i) ||
      conteudo.match(/^return\(-99\)/i) ||
+     conteudo.match(/.*return\(-99\).*/i) ||
   	 conteudo.match(/^return -1/i) ||
      conteudo.match(/^exit\(0\)/i) ||
      conteudo.match(/^exit/i) ||
@@ -70,6 +113,8 @@ class ProcessarTrigger
 
   def discartar_trigger3(conteudo)
     conteudo = conteudo.to_s.gsub("\r\n", '').gsub("\n", '').gsub(' ', '').gsub("\r", '')
+    conteudo.include?('throws;Thistriggerisfiredoneverykeypressdonebytheuser;Yourimplementationhere...') ||
+    conteudo.match(/cd_operador.*.*\=\$t_cd_operador\$dt_transacao.*\=\$datim/i) ||
     conteudo.include?('params$T_CD_OPERADOR$:IN;;incluirapartirdestepontoosparâmetrosreferentesaoseuprograma,estedeverasersempreoprimeiroparametroendparams'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
     conteudo.include?('params$T_CD_OPERADOR$:IN;;incluirapartirdestepontoosparâmetrosreferentesaoseuprograma,estedeverasersempreoprimeiroparametroendparamsedit'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
     conteudo.include?('variablesnumericv_nr_tam,v_nr_posstringv_nr_cpfcnpj,v_cd_digitoendvariablesif($fieldmod=1)length@$fieldnamev_nr_tam=$resultv_nr_pos=1v_nr_cpfcnpj=""repeatif(@$fieldname[v_nr_pos:1]=\'#\')v_nr_cpfcnpj="%%v_nr_cpfcnpj%%@$fieldname[v_nr_pos:1]"endifv_nr_pos=v_nr_pos+1until(v_nr_pos>v_nr_tam)@$fieldname=v_nr_cpfcnpjlength@$fieldnameif($result>11)activate"GSISO002".DIG_CNPJ(@$fieldname,v_cd_digito,$t_ds_erro$)else;activate"GSISO002".DIG_CPF(@$fieldname,v_cd_digito,$t_ds_erro$)endifif($status<0)if($status=-99);Trataoretornocomerromessage/error"%%$t_ds_erro$"return(-1)else;VerificaoerrodoactivatecallPL_ERRO_COMANDO($procerrorcontext)return(-1)endifendifendif'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
@@ -100,7 +145,7 @@ class ProcessarTrigger
   end
 
 
-  def post_triggers(componente, nome_trigger, objeto, tipo_trigger, conteudo_trigger)
+  def post_triggers(componente, nome_externo, nome_trigger, objeto, tipo_trigger, conteudo_trigger)
     begin
       conteudo_trigger = conteudo_trigger.reject { |c| c.empty? unless c.nil? } unless !nome_trigger == 'ERRF'
     rescue StandardError => e
@@ -119,7 +164,8 @@ class ProcessarTrigger
                discartar_trigger3(v_dados_funcao) ||
                discartar_trigger4(v_dados_funcao) ||
                nome_trigger == 'OPER' ||
-               nome_trigger == 'LPMX'
+               nome_trigger == 'LPMX' ||
+               conteudo_trigger.join("").length <=5
 
     nm_modelo = nome_modelo(componente.downcase)
     if dados_objeto.size == 3
@@ -142,6 +188,10 @@ class ProcessarTrigger
     else
       v_tipo = 'trigger-form'
       nm_modelo = nil
+    end
+
+    if nome_trigger.blank?
+      nome_trigger = nome_externo
     end
 
     v_post_string = {'funcaos': {'cd_componente': componente, 
@@ -185,33 +235,6 @@ class ProcessarTrigger
     f.close
   end
 
-  def nome_include(linha, posic_include)
-    nome = linha[(posic_include + 8)..(linha.index(/[\r\n]/)) - 1]
-    unless nome.index(';').nil?
-      nome = nome[0..(nome.index(';') - 1)]
-    end
-    nome.strip
-  end
-
-  def nome_arquivo(arquivo)
-    if arquivo.include?("/")
-      parte_arq = arquivo.rindex(/\//) + 1
-      arquivo[(parte_arq)..(arquivo.index('.') - 1)]
-    else
-      arquivo[0..(arquivo.index('.') - 1)] 
-    end
-  end
-
-  #def deletar_triggers(componente)
-  #  RestClient.delete "#{@servidor_funcao}/#{componente}", {params: 
-  #    {
-  #     cd_componente: componente,
-  #     cd_empresa: @cd_empresa,
- # 	   remover: '2'
- #     }
- #   }
- # end
-
 
   
   def processar
@@ -229,72 +252,52 @@ class ProcessarTrigger
       Rails.logger.info e
       return nil
     end
-
     iniciou_trigger = false
     terminou_trigger = false
-    nome_include = ''
-    posic_include = 0
     nome_trigger = ''
     tipo_trigger = ''
     objeto = ''
+    nome_externo = ''
     conteudo_trigger = []
-    conteudo_include = []
     total = 0
 
     File.read(v_arquivo_ler).each_line do |linha|
       linhar = linha[26...(linha.index(/\Z/))]
       total += 1
-      if conteudo_trigger.any? && terminou_trigger
+      if conteudo_trigger.any? && fim_trigger(linha)
         post_triggers(nm_arquivo,
+                      nome_externo,
                       nome_trigger,
                       objeto,
                       tipo_trigger,
                       conteudo_trigger)
         nome_trigger = ''
         conteudo_trigger = []
-        objeto = ''
-        tipo_trigger = ''
         iniciou_trigger = false
         terminou_trigger = false
-        if conteudo_include.any?
-          grava_arq_include(nm_arquivo, nome_include, conteudo_include)
-          conteudo_include = []
-          posic_include = 0
-        end  
-
       end
       if !linhar.nil?
+        trigger_externa = trigger_externa(linha, objeto, nome_externo, tipo_trigger) unless iniciou_trigger
+	      if !trigger_externa.nil? && trigger_externa[:nome_externo] != 'DEFN' && !iniciou_trigger
+          tipo_trigger = trigger_externa[:tipo]
+		      nome_externo = trigger_externa[:nome_externo]
+          objeto = trigger_externa[:objeto]
+		      if trigger_externa[:nome_externo] == 'DCLC'
+	          iniciou_trigger = true 
+		        dados_ini = {nome: 'DCLC'}
+	        end
+          next
+	      end
         dados_ini = inicio_trigger(linha) unless iniciou_trigger
         if !dados_ini.nil? && dados_ini[:nome] != 'DEFN' && !iniciou_trigger
           iniciou_trigger = true
+          terminou_trigger = false
           nome_trigger = dados_ini[:nome]
-          tipo_trigger = dados_ini[:tipo]
-          objeto = dados_ini[:objeto]
           next
         end
       end
-      posic_include = (linha.index("include LIB_COAMO:") || linha.index("include COAMO_LIB:")) || 0  if !linhar.nil? && linha[0..1] == "[ " && !linhar.match(/^;/)
-
-      if posic_include.positive?
-        if conteudo_include.any?
-          grava_arq_include(nm_arquivo, nome_include, conteudo_include)
-          conteudo_include = []
-        end  
-        nova_include = nome_include(linha, posic_include)
-        if nova_include != nome_include && nome_include.empty?
-          nome_include = nova_include
-        elsif nova_include != nome_include && !nome_include.empty?
-          grava_arq_include(nm_arquivo, nome_include, conteudo_include)
-          nome_include = nova_include
-        end
-        conteudo_include = []
-        posic_include = 0
-      end
-
       if linha[0..0] == "[" and iniciou_trigger
-        if linha[0..1] == "[I"
-          conteudo_include << linha[26...(linha.index(/\Z/))]
-        else
+        if linha[0..1] != "[I"
           conteudo_trigger << linha[26...(linha.index(/\Z/))]
         end
       else
@@ -305,6 +308,7 @@ class ProcessarTrigger
     end
     if conteudo_trigger.any?
       post_triggers(nm_arquivo,
+                    nome_externo,
                     nome_trigger,
                     objeto,
                     tipo_trigger,
@@ -315,11 +319,6 @@ class ProcessarTrigger
       tipo_trigger = ''
       iniciou_trigger = false
       terminou_trigger = true
-    end
-    if conteudo_include.any?
-      grava_arq_include(nm_arquivo, nome_include, conteudo_include)
-      conteudo_include = []
-      nome_include = ''
     end
   end
 

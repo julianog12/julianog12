@@ -69,6 +69,7 @@ class Processar
 
         next if (item[0..(item.index('.')-1)]).size > 8
 
+        #next if !li.split[7].include?("fpagf138")
         if item.length == 15 || item.match(/^arh/i) || item.match(/^ccn/i) ||item.match(/^cnf/i) 
           ProcessarTrigger.new(@cd_empresa,
                             @servidor_funcao, 

@@ -286,15 +286,6 @@ class ProcessarEntryOperation
     [v_linha, v1]
   end
 
-  def comecou_trigger(v_linha)
-    if v_linha.include?('Trigger <') && v_linha[26..26] != ";"
-      nome = v_linha[(v_linha.index('<'))+1..(v_linha.index('>'))-1].strip
-      tipo = v_linha[(v_linha.index('from')+5)..(v_linha.index(':')-1)]
-      objeto = v_linha[(v_linha.index(':')+2)..(v_linha.index(/[\r\n]/))-1]
-      return {nome: nome, tipo: tipo, objeto: objeto}
-    end
-  end
-
   def terminou_linha(v_linha)
     (!v_linha.match(/endw/i) &&
      !v_linha.match(/endf/i) &&
@@ -313,6 +304,7 @@ class ProcessarEntryOperation
      linha.match(/   error:   /) ||
      linha[0..8] == "    info:" ||
      linha.match(/warning:   1000/) ||
+     linha.match(/warning:   1000 - Deprecated/) ||
      linha.match(/   warning: 1000/) ||
      linha.match(/ warning:   1000 - \(Prepro/) ||
      linha.match(/ warning:   1000 - Procs statements/))
@@ -405,21 +397,6 @@ class ProcessarEntryOperation
   def deletar_local_operations(v_id)
     ProcessarEntryOperation.deletar_componente(v_id, @cd_empresa)
     ProcessarEntryOperation.deletar_entry_operation1(v_id, @cd_empresa)
-
-    #RestClient.delete "#{@servidor_http}/#{v_id}", {params:
-    #  {
-    #   nome: v_id,
-    #   cd_empresa: @cd_empresa,
-    #   remover: '1'
-    #  }
-    #}
-    #RestClient.delete "#{@servidor_funcao}/#{v_id}", {params:
-    #  {
-    #   cd_componente: v_id,
-    #   cd_empresa: @cd_empresa,
-    #   remover: '1'
-    #  }
-    #}
   end
 
   def processar
@@ -458,159 +435,128 @@ class ProcessarEntryOperation
     conteudo_include = []
     dados_funcao = []
     dados_ini = []
-    lpmx_includes = []
     iniciou_trigger = false
     terminou_trigger = false
     cont = 0
 
     File.read(v_arquivo_ler).each_line do |linha|
       cont += 1
-      #Rails.logger.info "COMPONENTE #{v_id} - LINHA #{cont}    #{linha}"
-      if lpmx_includes.any? && terminou_trigger
-        post_lpmx(v_id, 'trigger-form', 'LPMX', lpmx_includes) if lpmx_includes.any?
-        lpmx_includes = []
-        iniciou_trigger = false
-        terminou_trigger = false
-      end
+      v_linha, posFinalLinha = inicio_fim_linha(linha)
+      v_linha_funcao = v_linha
+      v_linha = v_linha.lstrip unless v_linha.nil?
 
-      if !iniciou_trigger || linha.include?('Trigger <')
-        iniciou_trigger = false
-        dados_ini = comecou_trigger(linha)
-      end
-
-      if !dados_ini.nil? && dados_ini[:nome] != 'DEFN' && !iniciou_trigger
-        iniciou_trigger = true 
-      else
-        v_linha, posFinalLinha = inicio_fim_linha(linha)
-        v_linha_funcao = v_linha
-        v_linha = v_linha.lstrip unless v_linha.nil?
-        if v_indica && !v_linha.nil?
-          v_indica = v_linha.match(/\%\\/) ? true : false unless v_linha.nil?
-          v_linha = tratar_linha(v_linha)
-          if !v_linha.nil? && v_linha.size > 0
-            v_cmd_activate << v_linha
-          else
-            v_indica = false
-            v_cmd_activate = []
-          end
+      if v_indica && !v_linha.nil?
+        v_indica = v_linha.match(/\%\\/) ? true : false unless v_linha.nil?
+        v_linha = tratar_linha(v_linha)
+        if !v_linha.nil? && v_linha.size > 0
+          v_cmd_activate << v_linha
         else
-  
-          posic_include = (linha.index("include LIB_COAMO:")||linha.index("include COAMO_LIB:")) ||0  if !v_linha.nil? && linha[0..1] == "[ " && !v_linha.match(/^;/) && !dados_ini.nil?
-          if posic_include.positive?
-            lpmx_includes << v_linha_funcao if dados_ini[:nome] == "LPMX"
-            nova_include = nome_include(linha, posic_include)
-            if nova_include != nome_include && nome_include.empty?
-              nome_include = nova_include
-            elsif nova_include != nome_include && !nome_include.empty?
-              grava_arq_include(v_id, nome_include, conteudo_include)
-              nome_include = nova_include
-            end
-            conteudo_include = []
-            posic_include = 0
+          v_indica = false
+          v_cmd_activate = []
+        end
+      else
+        posic_include = (linha.index("include LIB_COAMO:")||linha.index("include COAMO_LIB:")) ||0  if !v_linha.nil? && linha[0..1] == "[ " && !v_linha.match(/^;/) && !dados_ini.nil?
+        if posic_include.positive?
+          nova_include = nome_include(linha, posic_include)
+          if nova_include != nome_include && nome_include.empty?
+            nome_include = nova_include
+          elsif nova_include != nome_include && !nome_include.empty?
+            grava_arq_include(v_id, nome_include, conteudo_include)
+            nome_include = nova_include
           end
-          if !v_linha.nil? && !v_linha.blank? #Juliano 15/06/2021
-            if linhaContemNewInstance(v_linha)
-              v_indica_new_inst = true
-              dados_new_instance = pegaNomeInstanca(v_linha)
-            end
-            if (!v_linha.match(/^;/) && v_linha.match(/^entry/i)) || (v_linha.match(/^operation/i) || v_linha.match(/^partner operation/i) || v_linha.match(/^public operation/i))
-              dados_funcao = dados_funcao(v_linha)
-              v_indica_funcao = true
-              v_cmd_linha_funcao = []
-		          v_cmd_funcao = []
-            end
-            v_indica_docto = true if v_linha.match(/\;\|/)
-            if v_indica_docto
-              if v_linha.match(/\;\|/) || v_linha.match(/\;/)
-                v_linha = trata_linha_comentario(v_linha, posFinalLinha)
-                v_cmd_docto << v_linha unless v_linha.nil?
-              else
-                v_indica_docto = false
-              end
-            end
-            if linha[0..1] == "[I"
-              conteudo_include << v_linha_funcao
+          conteudo_include = []
+          posic_include = 0
+        end
+        if !v_linha.nil? && !v_linha.blank? #Juliano 15/06/2021
+          if linhaContemNewInstance(v_linha)
+            v_indica_new_inst = true
+            dados_new_instance = pegaNomeInstanca(v_linha)
+          end
+          if (!v_linha.match(/^;/) && v_linha.match(/^entry/i)) || (v_linha.match(/^operation/i) || v_linha.match(/^partner operation/i) || v_linha.match(/^public operation/i))
+            dados_funcao = dados_funcao(v_linha)
+            v_indica_funcao = true
+            v_cmd_linha_funcao = []
+	         v_cmd_funcao = []
+          end
+          v_indica_docto = true if v_linha.match(/\;\|/)
+          if v_indica_docto
+            if v_linha.match(/\;\|/) || v_linha.match(/\;/)
+              v_linha = trata_linha_comentario(v_linha, posFinalLinha)
+              v_cmd_docto << v_linha unless v_linha.nil?
             else
-              if v_indica_funcao
-                v_cmd_funcao << v_linha
-                v_cmd_linha_funcao << v_linha_funcao
-                if terminou_linha(v_linha)
-                  #if v_id.downcase == 'pfato084' && dados_funcao[0].downcase == 'operation' && dados_funcao[1].include?('le_propriedade')
-                  #  byebug
-                  #end
-                  post_entry_operation(v_id, dados_funcao[0], dados_funcao[1], v_cmd_funcao, v_cmd_linha_funcao, v_cmd_docto)
-                  v_cmd_funcao = []
-                  v_cmd_linha_funcao = []
-                  v_indica_funcao = false
-                  v_indica_docto = false
-                  v_cmd_docto = []
-                  dados_funcao = []
-                end
+              v_indica_docto = false
+            end
+          end
+          if linha[0..1] == "[I"
+            conteudo_include << v_linha_funcao
+          else
+            if conteudo_include.any? && linha[0..2] != '   ' && linha[0..0] != '('
+              grava_arq_include(v_id, nome_include, conteudo_include)
+              nome_include = ''
+              conteudo_include = []
+              posic_include = 0
+            end
+            if v_indica_funcao
+              v_cmd_funcao << v_linha
+              v_cmd_linha_funcao << v_linha_funcao
+              if terminou_linha(v_linha)
+                post_entry_operation(v_id, dados_funcao[0], dados_funcao[1], v_cmd_funcao, v_cmd_linha_funcao, v_cmd_docto)
+                v_cmd_funcao = []
+                v_cmd_linha_funcao = []
+                v_indica_funcao = false
+                v_indica_docto = false
+                v_cmd_docto = []
+                dados_funcao = []
               end
             end
-            if v_cmd_activate.any?
-              v_comando = v_cmd_activate.map(&:to_s).join('')
-              v_comando = v_comando.encode("UTF-8", :invalid => :replace, :undef => :replace, :replace => "?")
-              v_comando = v_comando.downcase.gsub('$componentname.', "\"#{v_id}\".")
-              v_comando = v_comando.downcase.gsub('"$instancename.', "\"#{v_id}\".")
-              v_comando = v_comando.downcase.gsub('%%$componentname', "#{v_id}")
-              v_comando = v_comando.downcase.gsub('%%$instancename', "#{v_id}")
-			  post_componentes(v_id, v_comando, tipo_arquivo(@arquivo))
+          end
+          if v_cmd_activate.any?
+            v_comando = v_cmd_activate.map(&:to_s).join('')
+            v_comando = v_comando.encode("UTF-8", :invalid => :replace, :undef => :replace, :replace => "?")
+            v_comando = v_comando.downcase.gsub('$componentname.', "\"#{v_id}\".")
+            v_comando = v_comando.downcase.gsub('"$instancename.', "\"#{v_id}\".")
+            v_comando = v_comando.downcase.gsub('%%$componentname', "#{v_id}")
+            v_comando = v_comando.downcase.gsub('%%$instancename', "#{v_id}")
+			      post_componentes(v_id, v_comando, tipo_arquivo(@arquivo))
 			  
-              #v_post_string = {'componentes': {'nome': v_id, 'linha': v_comando, 'cd_empresa': @cd_empresa, 'tipo': tipo_arquivo(@arquivo) }}
-              #v_post_string = v_post_string.to_json
-              #begin
-              #  RestClient.post "#{@servidor_http}", JSON.parse(v_post_string)
-              #rescue
-              #  Rails.logger.info "##Erro ao chamar RestClient.post #{@servidor_http} linha 427 processar_entry_operation"
-              #  nil
-              #end
-              v_cmd_activate = []
-              v_indica = false
-            end
-            if linhaContem(v_linha)
-              if linhaContemActivate(v_linha)
-                if !v_linha.match(/^activate.*/i) && !v_linha.match(/_activate.*/i)
-                  v_linha = v_linha.downcase
-                  v_linha = v_linha[v_linha.index('activate')..-1]  unless v_linha.index('activate')
-                end
-                if v_indica_new_inst
-                  v_nome_instancia = dados_new_instance[2].gsub("\"", "").gsub(",","") unless dados_new_instance[2].nil?
-                  v_variavel_instancia = dados_new_instance[1].gsub("\"", "").gsub(",","") unless dados_new_instance[1].nil?
-                  unless v_nome_instancia.nil?
-                    if v_nome_instancia != v_variavel_instancia and v_linha.include?(v_nome_instancia) and v_variavel_instancia != 'LOAD'
-                      unless dados_new_instance[2].nil?
-                        vTrocar = "\"#{dados_new_instance[2].gsub("\"", "").gsub(",","")}\"" unless dados_new_instance[2].nil?
-                        v_linha = v_linha.gsub(vTrocar, "\"#{dados_new_instance[1].gsub("\"", '').gsub(",",'')}\"")
-                        v_linha = v_linha.gsub("\"\"", "\"")
-                      end
+            v_cmd_activate = []
+            v_indica = false
+          end
+          if linhaContem(v_linha)
+            if linhaContemActivate(v_linha)
+              if !v_linha.match(/^activate.*/i) && !v_linha.match(/_activate.*/i)
+                v_linha = v_linha.downcase
+                v_linha = v_linha[v_linha.index('activate')..-1]  unless v_linha.index('activate')
+              end
+              if v_indica_new_inst
+                v_nome_instancia = dados_new_instance[2].gsub("\"", "").gsub(",","") unless dados_new_instance[2].nil?
+                v_variavel_instancia = dados_new_instance[1].gsub("\"", "").gsub(",","") unless dados_new_instance[1].nil?
+                unless v_nome_instancia.nil?
+                  if v_nome_instancia != v_variavel_instancia and v_linha.include?(v_nome_instancia) and v_variavel_instancia != 'LOAD'
+                    unless dados_new_instance[2].nil?
+                      vTrocar = "\"#{dados_new_instance[2].gsub("\"", "").gsub(",","")}\"" unless dados_new_instance[2].nil?
+                      v_linha = v_linha.gsub(vTrocar, "\"#{dados_new_instance[1].gsub("\"", '').gsub(",",'')}\"")
+                      v_linha = v_linha.gsub("\"\"", "\"")
                     end
                   end
                 end
               end
-              v_indica = v_linha.match(/\%\\/) ? true : false
-              unless v_indica
-                if !v_linha[-1, 1].empty? && v_linha[-1, 1] != ')' && v_linha.length >= 248
-                  v_indica = true
-                end
-              end
-              v_linha = tratar_linha(v_linha)
-              if !v_linha.nil? &&
-                  v_linha.size.positive? &&
-                  v_linha.start_with?(/^[a-z].*/i) &&
-                  !v_linha.start_with?('else')
-                v_cmd_activate << v_linha
-              else
-                v_indica = false
-                v_cmd_activate = []
+            end
+            v_indica = v_linha.match(/\%\\/) ? true : false
+            unless v_indica
+              if !v_linha[-1, 1].empty? && v_linha[-1, 1] != ')' && v_linha.length >= 248
+                v_indica = true
               end
             end
-          end
-          if nao_finalizou_leitura(linha) && iniciou_trigger
-            #continuar leitura
-          else
-            if iniciou_trigger && lpmx_includes.any?
-              terminou_trigger = true
+            v_linha = tratar_linha(v_linha)
+            if !v_linha.nil? &&
+                v_linha.size.positive? &&
+                v_linha.start_with?(/^[a-z].*/i) &&
+                !v_linha.start_with?('else')
+              v_cmd_activate << v_linha
+            else
+              v_indica = false
+              v_cmd_activate = []
             end
           end
         end
