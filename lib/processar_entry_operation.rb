@@ -315,11 +315,11 @@ class ProcessarEntryOperation
     Funcao.where("cd_componente = ? and cd_empresa = ? and tipo in('entry', 'operation', 'partner-operation')", 
                   v_id.to_s,
                   v_cd_empresa.to_s).each do |reg|
-      reg.delete
       begin
+        reg.delete
         ProcessarEntryOperation.deletar_funcao_elasticsearch(reg)
       rescue StandardError => e
-        Rails.logger.error "##Erro ao deletar Funcao ElasticSearch linha 310"
+        Rails.logger.error "##Erro ao deletar Funcao ElasticSearch linha 322"
         Rails.logger.error e
       end
     end
@@ -329,11 +329,11 @@ class ProcessarEntryOperation
     Funcao.where("cd_componente = ? and cd_empresa = ? and nm_funcao <> 'LPMX' and tipo in('trigger-form', 'trigger-field', 'trigger-entity')", 
                   v_id.to_s,
                   v_cd_empresa.to_s).each do |reg|
-      reg.delete
       begin
+        reg.delete
         ProcessarEntryOperation.deletar_funcao_elasticsearch(reg)
       rescue StandardError => e
-        Rails.logger.error "##Erro ao deletar params = 2 ElasticSearch"
+        Rails.logger.error "##Erro ao deletar params = 2 ElasticSearch linha 336"
         Rails.logger.error e
       end
     end
@@ -345,11 +345,11 @@ class ProcessarEntryOperation
                     v_id.to_s,
                     v_cd_empresa.to_s,
                     v_nm_funcao.to_s).each do |reg|      
-      reg.delete
       begin
+        reg.delete
         ProcessarEntryOperation.deletar_funcao_elasticsearch(reg)
       rescue StandardError => e
-        Rails.logger.error "##Erro ao deletar params = 3 ElasticSearch"
+        Rails.logger.error "##Erro ao deletar params = 3 ElasticSearch linha 352"
         Rails.logger.error e
       end
     end
@@ -360,11 +360,11 @@ class ProcessarEntryOperation
     Funcao.where("cd_empresa = ? and nm_funcao = ? and tipo = 'include'",
                   v_cd_empresa.to_s,
                   v_nm_funcao.to_s).each do |reg|
-      reg.delete
       begin
+        reg.delete
         ProcessarEntryOperation.deletar_funcao_elasticsearch(reg)
       rescue StandardError => e
-        Rails.logger.error "##Erro ao deletar params = 4 ElasticSearch #{v_cd_empresa} #{v_nm_funcao}"
+        Rails.logger.error "##Erro ao deletar params = 4 ElasticSearch linha 367 #{v_cd_empresa} #{v_nm_funcao}"
         Rails.logger.error e
       end
     end
