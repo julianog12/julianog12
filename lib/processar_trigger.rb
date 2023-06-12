@@ -5,7 +5,7 @@
 
 
 class ProcessarTrigger
-  require 'active_record'
+  #require 'active_record'
   attr_reader :cd_empresa, :servidor_funcao, :servidor_http, :diretorio_listener, :ultimo_diretorio, :arquivo
 
   def initialize(empresa, servidor_funcao, servidor_http, diretorio_listener, ultimo_diretorio, arquivo)

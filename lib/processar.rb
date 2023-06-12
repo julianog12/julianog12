@@ -12,7 +12,7 @@ class Processar
 
   def initialize(tempresa)
     
-    ActiveRecord::Base.establish_connection(YAML.load_file("#{Rails.root}/config/database.yml")[rails_env])
+    ActiveRecord::Base.establish_connection(YAML.load_file("#{Rails.root}/config/database.yml")['production'])
 
     @cd_empresa = tempresa[:cd_empresa]
 
