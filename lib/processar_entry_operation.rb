@@ -4,7 +4,7 @@
 # frozen_string_literal: true
 
 class ProcessarEntryOperation
-  require "active_record"
+  #require "active_record"
   require "#{Rails.root}/lib/canivete.rb"
   attr_reader :cd_empresa, :nm_arquivo_importado, :servidor_funcao, :servidor_http, :diretorio_listener, :ultimo_diretorio, :arquivo
 

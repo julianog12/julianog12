@@ -11,6 +11,8 @@ class Processar
   require "#{Rails.root}/lib/processar_include_proc"
 
   def initialize(tempresa)
+    
+    ActiveRecord::Base.establish_connection(YAML.load_file("#{app_dir}/config/database.yml")[rails_env])
 
     @cd_empresa = tempresa[:cd_empresa]
 
