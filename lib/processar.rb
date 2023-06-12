@@ -38,9 +38,16 @@ class Processar
     puts "gerar_arquivo" if Rails.env=="development"
     gerar_arquivo
     puts "processar" if Rails.env=="development"
-    processar
-    puts "gravar_arquivo_ultima_alteracao" if Rails.env=="development"
-    gravar_arquivo_ultima_alteracao
+    begin
+      processar
+
+      puts "gravar_arquivo_ultima_alteracao" if Rails.env=="development"
+      gravar_arquivo_ultima_alteracao
+  
+    rescue StandardError => e
+      Rails.logger.info "Erro processar em processar.rb"
+      Rails.logger.info e.inspect
+    end
   end
 
 
