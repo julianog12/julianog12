@@ -44,7 +44,7 @@ empresas.each do |empresa|
     Processar.new(tempresa)
   end
 
-  scheduler.cron '30 15 * * 1-5 America/Sao_Paulo' do
+  scheduler.cron '20 16 * * 1-5 America/Sao_Paulo' do
     Processar.new(tempresa)
   end
 
