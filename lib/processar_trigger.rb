@@ -41,11 +41,11 @@ class ProcessarTrigger
             linha.include?('#include LIB_COAMO:G_TRATA_ERRO') ||
             linha.include?('#include LIB_COAMO:G_HIST_ALT') ||
             linha.include?('******        operation ') ||
-            linha.include?("\bend\n") ||
-            linha.include?("Trigger <") ||
-            linha.match(/.*(\bend\n|\bend.*\;)/i) ||
-            linha.include?('******        trigger ') ||
-            linha.match(/\;*.autor*.\:/i))
+        linha.include?("\bend\n") ||
+        linha.include?('Trigger <') ||
+        linha.match(/.*(\bend\n|\bend.*\;)/i) ||
+        linha.include?('******        trigger ') ||
+        linha.match(/\;*.autor*.\:/i))
   end
 
   
@@ -158,14 +158,15 @@ class ProcessarTrigger
     v_dados_funcao = conteudo_trigger.map { |i| i.to_s.gsub("\t", '  ') }.join("\n")
     v_dados_funcao = v_dados_funcao.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")
 
-    return if (conteudo_trigger.size == 1 && (discartar_trigger(conteudo_trigger[0]) || discartar_trigger2(conteudo_trigger[0]))) || 
+    return  if conteudo_trigger.empty? ||
+              (conteudo_trigger.size == 1 && (discartar_trigger(conteudo_trigger[0]) || discartar_trigger2(conteudo_trigger[0]))) || 
               (conteudo_trigger.size == 2 && conteudo_trigger[1] == "\r" && discartar_trigger(conteudo_trigger[0])) ||
                discartar_trigger2(conteudo_trigger[0]) ||
                discartar_trigger3(v_dados_funcao) ||
                discartar_trigger4(v_dados_funcao) ||
                nome_trigger == 'OPER' ||
                nome_trigger == 'LPMX' ||
-               conteudo_trigger.join("").length <=5
+               conteudo_trigger.join('').length <= 5
 
     nm_modelo = nome_modelo(componente.downcase)
     if dados_objeto.size == 3
@@ -276,18 +277,18 @@ class ProcessarTrigger
         iniciou_trigger = false
         terminou_trigger = false
       end
-      if !linhar.nil?
+      unless linhar.nil?
         trigger_externa = trigger_externa(linha, objeto, nome_externo, tipo_trigger) unless iniciou_trigger
-	      if !trigger_externa.nil? && trigger_externa[:nome_externo] != 'DEFN' && !iniciou_trigger
+        if !trigger_externa.nil? && trigger_externa[:nome_externo] != 'DEFN' && !iniciou_trigger
           tipo_trigger = trigger_externa[:tipo]
-		      nome_externo = trigger_externa[:nome_externo]
+          nome_externo = trigger_externa[:nome_externo]
           objeto = trigger_externa[:objeto]
-		      if trigger_externa[:nome_externo] == 'DCLC'
-	          iniciou_trigger = true 
-		        dados_ini = {nome: 'DCLC'}
-	        end
+          if trigger_externa[:nome_externo] == 'DCLC'
+            iniciou_trigger = true 
+            dados_ini = {nome: 'DCLC'}
+          end
           next
-	      end
+        end
         dados_ini = inicio_trigger(linha) unless iniciou_trigger
         if !dados_ini.nil? && dados_ini[:nome] != 'DEFN' && !iniciou_trigger
           iniciou_trigger = true
@@ -296,8 +297,8 @@ class ProcessarTrigger
           next
         end
       end
-      if linha[0..0] == "[" and iniciou_trigger
-        if linha[0..1] != "[I"
+      if linha[0..0] == '[' and iniciou_trigger
+        if linha[0..1] != '[I'
           conteudo_trigger << linha[26...(linha.index(/\Z/))]
         end
       else

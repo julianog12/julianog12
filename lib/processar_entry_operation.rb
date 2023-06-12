@@ -411,10 +411,18 @@ class ProcessarEntryOperation
 
     begin
       ProcessarEntryOperation.deletar_componente(v_id, @cd_empresa)
+    rescue StandardError => e
+      Rails.logger.info '##Erro deletar componente dados linha 415'
+      Rails.logger.info e.inspect
+      return nil
+    end
+
+
+    begin
       ProcessarEntryOperation.deletar_entry_operation1(v_id, @cd_empresa)
     rescue StandardError => e
-      Rails.logger.info '##Erro deletar dados linha 371/372'
-      Rails.logger.info e
+      Rails.logger.info '##Erro deletar entry_operation dados linha 425'
+      Rails.logger.info e.inspect
       return nil
     end
 
