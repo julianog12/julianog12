@@ -377,7 +377,7 @@ DEPENDENCIES
   oj
   pg (= 1.2.3)
   pry
-  puma (~> 4.3.6)
+  puma (~> 4.3.12)
   rack-timeout
   rails (~> 5.2.2.1)
   rails_layout
