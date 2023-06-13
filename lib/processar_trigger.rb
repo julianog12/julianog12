@@ -247,7 +247,7 @@ class ProcessarTrigger
     end
   
     begin
-      Rails.logger.info "##debugg Vai entrar ProcessarEntryOperation.deletar_triggers_fef2 #{nm_arquivo}"
+      Rails.logger.info "##debugg Vai entrar ProcessarEntryOperation.deletar_triggers_fef2 #{nm_arquivo} da empresa #{@cd_empresa}"
       ProcessarEntryOperation.deletar_triggers_fef2(nm_arquivo.downcase, @cd_empresa)
     rescue StandardError => e
       Rails.logger.info "##Erro deletar funcao deletar_dados para o componente #{nm_arquivo}"

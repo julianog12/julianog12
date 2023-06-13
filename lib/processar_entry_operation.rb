@@ -332,6 +332,13 @@ class ProcessarEntryOperation
       begin
         reg.delete
         ProcessarEntryOperation.deletar_funcao_elasticsearch(reg)
+        #a = Funcao.where("cd_componente = ? and cd_empresa = ? and nm_funcao <> 'LPMX' and tipo in('trigger-form', 'trigger-field', 'trigger-entity')", 
+        #v_id.to_s,
+        #v_cd_empresa.to_s).first
+        
+        #Rails.logger.info "##debug"
+        #Rails.logger.info a.inspect
+
       rescue StandardError => e
         Rails.logger.error "##Erro ao deletar params = 2 ElasticSearch linha 336"
         Rails.logger.error e
