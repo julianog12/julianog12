@@ -35,9 +35,9 @@ group :development do
   gem 'web-console', '>= 3.3.0'
 end
 
-group :production do
-  gem 'puma', '~> 4.3.12'
-end
+#group :production do
+#  gem 'puma', '~> 4.3.12'
+#end
 
 gem 'activerecord-tablefree'
 gem 'chartkick'
@@ -57,6 +57,6 @@ gem 'responders'
 gem 'rest-client'
 gem 'rufus-scheduler'
 gem 'searchkick', '~> 4.4.2'
-gem 'sidekiq'
+#gem 'sidekiq'
 gem 'typhoeus'
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]

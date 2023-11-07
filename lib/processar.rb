@@ -11,14 +11,6 @@ class Processar
   require "#{Rails.root}/lib/processar_include_proc"
 
   def initialize(tempresa)
-    
-    #begin
-    #  ActiveRecord::Base.establish_connection(YAML.load_file("#{Rails.root}/config/database.yml")['production'])
-    #rescue StandardError => e
-    #  Rails.logger.info e.inspect
-    #  puts 'Erro ao tentar se conectar ao banco'
-    #end
-
     @cd_empresa = tempresa[:cd_empresa]
 
     @nm_arquivo = "#{Rails.root}/lib/arquivos_gerados/" + tempresa[:nome_arq_result] + "_#{Time.now.strftime('%d%m%Y%H%M%S')}"

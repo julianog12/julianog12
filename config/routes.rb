@@ -1,12 +1,12 @@
-require 'sidekiq/web'
+#require 'sidekiq/web'
 
 Rails.application.routes.draw do    
 
   resources :painel, only: [:index, :show]
 
-  mount Sidekiq::Web => '/sidekiq'
+  #mount Sidekiq::Web => '/sidekiq'
 
-  get '/monitors/index', to: 'monitors#index'
+  #get '/monitors/index', to: 'monitors#index'
 
   get 'heartbeat', to: 'heartbeats#index'    
 
@@ -35,5 +35,5 @@ Rails.application.routes.draw do
 
   resources :diffs, only: [:show, :create, :new, :index]    
 
-  root 'componentes#index' 
+  root 'funcaos#index' 
 end 

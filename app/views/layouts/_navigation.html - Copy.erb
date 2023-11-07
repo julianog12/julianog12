@@ -1,0 +1,17 @@
+<style>
+  .navbar-nav {
+    width: 900px;
+  }
+</style>
+<nav class="navbar navbar-black" style="margin-top: 10px">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#"><%= image_tag "search.png", size: "30x30" %></a>
+      </div>
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+          <%= render 'layouts/navigation_links' %> 
+        </ul>
+      </div>
+  </div>
+</nav>

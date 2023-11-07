@@ -119,12 +119,12 @@ class ProcessarEntryOperation
   
     v_post_string = {'componentes': {'nome': v_id, 'linha': v_comando, 'cd_empresa': @cd_empresa, 'tipo': v_tipo_arquivo }}
     begin
-	  comp            = Componente.new
-	  comp.nome       = v_id.downcase
-	  comp.linha      = v_comando
-	  comp.cd_empresa = @cd_empresa
-	  comp.tipo       = v_tipo_arquivo
-	  comp.save
+	    comp            = Componente.new
+	    comp.nome       = v_id.downcase
+	    comp.linha      = v_comando
+	    comp.cd_empresa = @cd_empresa
+	    comp.tipo       = v_tipo_arquivo
+	    comp.save
     rescue StandardError => e
       Rails.logger.info e.inspect
       Rails.logger.info '##Erro post_componentes'
