@@ -389,7 +389,9 @@ class ProcessarEntryOperation
 
   def self.deletar_componente(v_id, v_cd_empresa)
     Componente.where("nome = ? and cd_empresa = ?", v_id.to_s, v_cd_empresa.to_s).each do |reg|
+      Rails.logger.info "##Erro ao deletar ElasticSearch Componente #{v_id} linha 415-1"
       reg.delete
+      Rails.logger.info "##Erro ao deletar ElasticSearch Componente #{v_id} linha 415-2"
 
       begin
         ProcessarEntryOperation.deletar_componente_elasticsearch(reg)
