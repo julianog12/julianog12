@@ -28,7 +28,6 @@ class ComponentesController < ApplicationController
                                         where: v_where, #{ cd_empresa: params[:cd_empresa]},
                                         match: params[:match_field].to_sym,
                                         misspellings: false)
-                                        #order: {"id" => "desc"},
       else
         if !params[:nome].nil?
           v_where = {nome: params[:nome], cd_empresa: params[:cd_empresa]}
@@ -42,7 +41,6 @@ class ComponentesController < ApplicationController
                                         where: v_where, #{cd_empresa: params[:cd_empresa]}, 
                                         misspellings: false,
                                         match: params[:match_field].to_sym)
-                                        #order: {"id" => "desc"},
       end
       respond_with(@componentes)
     end
