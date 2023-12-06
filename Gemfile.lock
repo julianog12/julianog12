@@ -216,8 +216,6 @@ GEM
     pry (0.14.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
-    puma (4.3.12)
-      nio4r (~> 2.0)
     raabro (1.4.0)
     racc (1.7.3)
     rack (2.2.8)
@@ -293,10 +291,6 @@ GEM
       activemodel (>= 5)
       elasticsearch (>= 6)
       hashie
-    spring (2.1.1)
-    spring-watcher-listen (2.0.1)
-      listen (>= 2.7, < 4.0)
-      spring (>= 1.2, < 3.0)
     sprockets (3.7.2)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
@@ -367,7 +361,6 @@ DEPENDENCIES
   oj
   pg (= 1.4.0)
   pry
-  puma (~> 4.3.12)
   rack-timeout
   rails (~> 5.2.2.1)
   rails_layout
@@ -376,8 +369,6 @@ DEPENDENCIES
   rufus-scheduler
   sass-rails (~> 5.0)
   searchkick (~> 4.4.2)
-  spring (= 2.1.1)
-  spring-watcher-listen (= 2.0.1)
   turbolinks (~> 5)
   typhoeus
   tzinfo-data

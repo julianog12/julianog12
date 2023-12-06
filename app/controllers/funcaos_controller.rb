@@ -31,7 +31,7 @@ class FuncaosController < ApplicationController
                                   operator: params[:operator_field],
                                   order: {sort_column => sort_direction},
                                   match: params[:match_field].to_sym,
-                                  misspellings: eval(@erro_ortografia))
+                                  misspellings: @erro_ortografia)
        else
          if params[:operator_field] == "like"
            if @campos.size > 1
@@ -51,7 +51,7 @@ class FuncaosController < ApplicationController
                                     operator: params[:operator_field],
                                     match: params[:match_field].to_sym,
                                     order: {sort_column => sort_direction},
-                                    misspellings: eval(@erro_ortografia))
+                                    misspellings: @erro_ortografia)
          end
        end
     end
