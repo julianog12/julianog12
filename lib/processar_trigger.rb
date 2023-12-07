@@ -115,9 +115,9 @@ class ProcessarTrigger
     conteudo = conteudo.to_s.gsub("\r\n", '').gsub("\n", '').gsub(' ', '').gsub("\r", '')
     conteudo.include?('throws;Thistriggerisfiredoneverykeypressdonebytheuser;Yourimplementationhere...') ||
     conteudo.match(/cd_operador.*.*\=\$t_cd_operador\$dt_transacao.*\=\$datim/i) ||
-    conteudo.include?('paramsstringfieldName:innumericshiftKey:inendparams').encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?") ||
-    conteudo.include?('paramsnumericshiftKey:inendparams').encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?") ||
-    conteudo.include?('paramsstringcolumnName:innumericviewportWidthPx:instringcolumnWidthsPx:inendparams').encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?") ||
+    conteudo.include?('paramsstringfieldName:innumericshiftKey:inendparams') ||
+    conteudo.include?('paramsnumericshiftKey:inendparams') ||
+    conteudo.include?('paramsstringcolumnName:innumericviewportWidthPx:instringcolumnWidthsPx:inendparams') ||
     conteudo.include?('params$T_CD_OPERADOR$:IN;;incluirapartirdestepontoosparâmetrosreferentesaoseuprograma,estedeverasersempreoprimeiroparametroendparams').encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?") ||
     conteudo.include?(';Includean"else"blockliketheoneshownbelowattheendofany;Procwritteninthistrigger.;...;else;message$text("%%$error");return(-1);endif').encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?") ||
     conteudo.include?('params$T_CD_OPERADOR$:IN;;incluirapartirdestepontoosparâmetrosreferentesaoseuprograma,estedeverasersempreoprimeiroparametroendparamsedit'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
