@@ -57,30 +57,24 @@ class ProcessarTudo
     File.open(@nm_arquivo, 'r:UTF-8').each_line.with_index do |li, v_count|
       item = li.split[7]
       next if item.nil?
-      next if item.match(/^aps/i) || (item[0..(item.index('.')-1)]).size > 8
-
-      if v_count.positive?
-        if li.split[7].length == 15 ||
-           li.split[7].match(/^arh/i) ||
-           li.split[7].match(/^ccn/i) ||
-           li.split[7].match(/^cnf/i)
-           puts "##ENTROU #{li.split[7]}  #{li.split[7].length}"
+      next if item.match(/^aps/i) || (item[0..(item.index('.')-1)]).size <= 8
+      if item.length == 15 || item.match(/^arh/i) || item.match(/^ccn/i) || item.match(/^cnf/i)
+        if v_count.positive?
           ProcessarTrigger.new(@cd_empresa,
-                             @servidor_funcao,
-                             @servidor_http,
-                             @diretorio_listener,
-                             @ultimo_diretorio,
-                             li.split[7])
+                            @servidor_funcao,
+                            @servidor_http,
+                            @diretorio_listener,
+                            @ultimo_diretorio,
+                            item)
         end
-
-        ProcessarEntryOperation.new(@cd_empresa,
+      end
+      ProcessarEntryOperation.new(@cd_empresa,
                               @nm_arquivos_importados,
                               @servidor_funcao,
                               @servidor_http,
                               @diretorio_listener,
                               @ultimo_diretorio,
-                              li.split[7])
-      end
+                              item)
     end
     ProcessarIncludeProc.new(@cd_empresa, @servidor_funcao)
   end
@@ -89,8 +83,10 @@ class ProcessarTudo
     f = nil
     if @extensao_arquivo == '*'
       f = open("| ls -lt --time-style='+%d%m%Y %H%M' #{@diretorio_listener}")
+      #f = open("| ls -lt --time-style='+%d%m%Y %H%M' #{@diretorio_listener}/aalmf*.*")
     else
       f = open("| ls -lt --time-style='+%d%m%Y %H%M' #{@diretorio_listener}/*.#{@extensao_arquivo}")
+      #f = open("| ls -lt --time-style='+%d%m%Y %H%M' #{@diretorio_listener}/*.aalmf*.#{@extensao_arquivo}")
     end
     a = File.new(@nm_arquivo, 'w')
     a.write f.read.force_encoding('UTF-8')
