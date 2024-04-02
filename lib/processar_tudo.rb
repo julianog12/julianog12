@@ -62,6 +62,7 @@ class ProcessarTudo
       rescue
         next
       end
+      Rails.logger.info "##Componente #{item}"
       if item.length == 15 || item.match(/^arh/i) || item.match(/^ccn/i) || item.match(/^cnf/i)
         if v_count.positive?
           ProcessarTrigger.new(@cd_empresa,
