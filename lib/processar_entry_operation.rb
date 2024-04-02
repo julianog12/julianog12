@@ -438,8 +438,7 @@ class ProcessarEntryOperation
   def processar
     return nil if tipo_arquivo(@arquivo).nil?
 
-    v_arquivo_ler = @arquivo
-    #v_arquivo_ler = "#{@diretorio_listener}/#{@arquivo}"  Alterado 01/04/2024
+    v_arquivo_ler = "#{@diretorio_listener}/#{@arquivo}"  #Alterado 01/04/2024
     v_id = nome_arquivo(v_arquivo_ler)
 
     if (v_id.include?("_") || (v_id.length > 8)) && v_arquivo_ler.include?(".cptlst")

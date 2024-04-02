@@ -56,8 +56,12 @@ class ProcessarTudo
   def processar_tudo
     File.open(@nm_arquivo, 'r:UTF-8').each_line.with_index do |li, v_count|
       item = li.split[7]
-      next if item.nil?
-      next if item.match(/^aps/i) || (item[0..(item.index('.')-1)]).size <= 8
+      begin
+        next if item.nil?
+        next if item.match(/^aps/i) || (item[0..(item.index('.')-1)]).size > 8
+      rescue
+        next
+      end
       if item.length == 15 || item.match(/^arh/i) || item.match(/^ccn/i) || item.match(/^cnf/i)
         if v_count.positive?
           ProcessarTrigger.new(@cd_empresa,

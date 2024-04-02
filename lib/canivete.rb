@@ -80,7 +80,6 @@
     v_nome = ''
     s1 = v_arquivo.index(@ultimo_diretorio)+(@ultimo_diretorio.length)   #@ultimo_diretorio
     if v_arquivo.include?('.menlst')
-      puts "Entrando aqui"
       s2 = v_arquivo.index('@')-1
       v_nome = v_arquivo[s1..s2]
     else
