@@ -22,7 +22,7 @@ unless defined?(Rails::Console) || File.split($0).last == 'rake'
   
   #Quando quiser processar tudo apenas reiniciar aqui
   scheduler.in '1s' do
-    empresa = 9
+    empresa = 6
     dados = Configuracao.where("cd_empresa = '#{empresa}'")
     tempresa = dados.map{ |c| [c.parametro.to_sym, c.valor] }.to_h
     tempresa[:cd_empresa] = dados.first.cd_empresa
