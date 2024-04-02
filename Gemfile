@@ -35,9 +35,9 @@ group :development do
   gem 'web-console', '>= 3.3.0'
 end
 
-group :production do
-  gem 'puma', '~> 4.3.12'
-end
+#group :production do
+#  gem 'puma', '~> 4.3.12'
+#end
 
 gem 'activerecord-tablefree'
 gem 'chartkick'
