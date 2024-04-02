@@ -77,7 +77,7 @@
   
   
   def nome_arquivo(v_arquivo)
-    v_nome = ''
+    v_nome = '' 
     s1 = v_arquivo.index(@ultimo_diretorio)+(@ultimo_diretorio.length)   #@ultimo_diretorio
     if v_arquivo.include?('.menlst')
       s2 = v_arquivo.index('@')-1

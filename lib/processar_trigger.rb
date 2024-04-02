@@ -279,11 +279,10 @@ class ProcessarTrigger
     return if nm_arquivo.include?("_") && nm_arquivo.length > 8 && !nm_arquivo.include?("@")
   
     begin
-      Rails.logger.info "##debugg Vai entrar ProcessarEntryOperation.deletar_triggers_fef2 #{nm_arquivo} da empresa #{@cd_empresa}"
       ProcessarEntryOperation.deletar_triggers_fef2(nm_arquivo.downcase, @cd_empresa)
     rescue StandardError => e
-      Rails.logger.info "##Erro deletar funcao deletar_dados para o componente #{nm_arquivo}"
-      Rails.logger.info e
+      Rails.logger.error "##Erro deletar funcao deletar_dados para o componente #{nm_arquivo}"
+      Rails.logger.error e
       return nil
     end
 
