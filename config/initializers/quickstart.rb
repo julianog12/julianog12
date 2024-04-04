@@ -21,29 +21,28 @@ unless defined?(Rails::Console) || File.split($0).last == 'rake'
   end
   
   #Quando quiser processar tudo apenas reiniciar aqui
-  scheduler.in '1s' do
-    empresa = 6
-    dados = Configuracao.where("cd_empresa = '#{empresa}'")
-    tempresa = dados.map{ |c| [c.parametro.to_sym, c.valor] }.to_h
-    tempresa[:cd_empresa] = dados.first.cd_empresa
-    ProcessarTudo.new(tempresa)
-  end
-  return(0)
+  #scheduler.in '1s' do
+  #  empresa = 6
+  #  dados = Configuracao.where("cd_empresa = '#{empresa}'")
+  #  tempresa = dados.map{ |c| [c.parametro.to_sym, c.valor] }.to_h
+  #  tempresa[:cd_empresa] = dados.first.cd_empresa
+  #  ProcessarTudo.new(tempresa)
+  #end
   
   empresas.each do |empresa|
     dados = Configuracao.where("cd_empresa = '#{empresa}'")
     tempresa = dados.map{ |c| [c.parametro.to_sym, c.valor] }.to_h
     tempresa[:cd_empresa] = dados.first.cd_empresa
   
-    scheduler.cron '30 09 * * 1-5 America/Sao_Paulo' do
+    scheduler.cron '00 10 * * 1-5 America/Sao_Paulo' do
       Processar.new(tempresa)
     end
   
-    scheduler.cron '15 12 * * 1-5 America/Sao_Paulo' do
-      Processar.new(tempresa)
-    end
+    #scheduler.cron '15 12 * * 1-5 America/Sao_Paulo' do
+    #  Processar.new(tempresa)
+    #end
   
-    scheduler.cron '30 15 * * 1-5 America/Sao_Paulo' do
+    scheduler.cron '00 15 * * 1-5 America/Sao_Paulo' do
       Processar.new(tempresa)
     end
   
