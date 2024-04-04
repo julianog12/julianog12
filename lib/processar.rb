@@ -98,12 +98,12 @@ class Processar
                             @ultimo_diretorio, 
                             item)
           end
-          Rails.logger.info "##Programa  #{item}     #{item.length}" if Rails.env=="production"
         rescue Exception => e
           Rails.logger.error "Erro ao processar componente #{item}"
           Rails.logger.error e
         end
         threads.each(&:join)
+        Rails.logger.info "##Programa  #{item}     #{item.length}" if Rails.env=="production"
       end
     end
     ProcessarIncludeProc.new(@cd_empresa, @servidor_funcao)
