@@ -130,10 +130,10 @@ class ProcessarTrigger
     conteudo.include?(';#includeLIB_COAMO:G_STOREreturn(-1)') ||
     conteudo.include?('remocc$entname,0') ||
     conteudo.include?(';callPG_ERRENTITY') ||
-    conteudo.include?(';callPG_REMOVEreturn-1') ||
-    conteudo.include?(';erase;if($status<0);message"Eraseerror;seemessageframe";rollback;else;if($status=1);message"Eraseisnotallowed";else;message"Erasewassuccessful";commit;endif;endif').encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
-    conteudo.include?('eraseif($status<0)message$text(1763);errorrollbackelseif($status=1)message$text(1634);notallowedelsemessage$text(1806);Okcommitendifendif').encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
-    conteudo.include?('eraseif($status<0)message"Eraseerror;seemessageframe"rollbackelseif($status=1)message"Eraseisnotallowed"elsemessage"Erasewassuccessful"commitendifendif').encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
+    conteudo.include?(';callPG_REMOVEreturn-1'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
+    conteudo.include?(';erase;if($status<0);message"Eraseerror;seemessageframe";rollback;else;if($status=1);message"Eraseisnotallowed";else;message"Erasewassuccessful";commit;endif;endif'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
+    conteudo.include?('eraseif($status<0)message$text(1763);errorrollbackelseif($status=1)message$text(1634);notallowedelsemessage$text(1806);Okcommitendifendif'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
+    conteudo.include?('eraseif($status<0)message"Eraseerror;seemessageframe"rollbackelseif($status=1)message"Eraseisnotallowed"elsemessage"Erasewassuccessful"commitendifendif'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
     conteudo.include?(';Includean"else"blockliketheoneshownbelowattheendofany;Procwritteninthistrigger.;...;else;message$text("%%$error");return(-1);endif'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
     conteudo.include?('params$T_CD_OPERADOR$:IN;;incluirapartirdestepontoosparâmetrosreferentesaoseuprograma,estedeverasersempreoprimeiroparametroendparams'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
     conteudo.include?('params$T_CD_OPERADOR$:IN;;incluirapartirdestepontoosparâmetrosreferentesaoseuprograma,estedeverasersempreoprimeiroparametroendparamsedit'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
