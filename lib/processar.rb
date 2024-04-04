@@ -61,40 +61,42 @@ class Processar
   def processar
     v_dia = Time.now.strftime("%d%m%Y")
     puts @nm_arquivo  if Rails.env=="development"
-    Rails.logger.infos @nm_arquivo  if Rails.env=="production"
     File.open(@nm_arquivo, 'r:UTF-8').each_line.with_index do |li, v_count|
       if v_count.positive?
-        item = li.split[7]
-        Rails.logger.infos "##Componente #{item}  -   Size #{(item[0..(item.index('.')-1)]).size}"  if Rails.env=="production"
         begin
-          v_dia_hora = Time.new(li.split[5][4..7], li.split[5][2..3], li.split[5][0..1], li.split[6][0..1], li.split[6][2..3])
-        rescue
-          Rails.logger.info "##Erro v_dia_hora Processar.rb"
-          raise "#{li.split[5]}       #{li.split[6]}"
-        end
-        next if item.match(/^aps/i)
+          item = li.split[7]
+          begin
+            v_dia_hora = Time.new(li.split[5][4..7], li.split[5][2..3], li.split[5][0..1], li.split[6][0..1], li.split[6][2..3])
+          rescue
+            Rails.logger.info "##Erro v_dia_hora Processar.rb"
+            raise "#{li.split[5]}       #{li.split[6]}"
+          end
+          next if item.match(/^aps/i)
 
-        next if v_dia_hora <= @data_ultima_alteracao 
+          next if v_dia_hora <= @data_ultima_alteracao 
 
-        next if (item[0..(item.index('.')-1)]).size > 8
+          next if (item[0..(item.index('.')-1)]).size > 8
 
-        #next if !li.split[7].include?("fpagf138")
-        if item.length == 15 || item.match(/^arh/i) || item.match(/^ccn/i) ||item.match(/^cnf/i) 
-          ProcessarTrigger.new(@cd_empresa,
+          if item.length == 15 || item.match(/^arh/i) || item.match(/^ccn/i) ||item.match(/^cnf/i) 
+            ProcessarTrigger.new(@cd_empresa,
                             @servidor_funcao, 
                             @servidor_http,
                             @diretorio_listener,
                             @ultimo_diretorio, 
                             li.split[7])
-        end
-        puts "##Programa  #{item}     #{item.length}" if Rails.env=="development"
-        ProcessarEntryOperation.new(@cd_empresa,
+          end
+          puts "##Programa  #{item}     #{item.length}" if Rails.env=="development"
+          ProcessarEntryOperation.new(@cd_empresa,
                             @nm_arquivos_importados, 
                             @servidor_funcao, 
                             @servidor_http,
                             @diretorio_listener,
                             @ultimo_diretorio, 
                             item)
+        rescue Exception => e
+          Rails.logger.error "Erro ao processar componente #{item}"
+          Rails.logger.error e
+        end
       end
     end
     ProcessarIncludeProc.new(@cd_empresa, @servidor_funcao)
