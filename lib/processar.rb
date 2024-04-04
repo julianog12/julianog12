@@ -61,6 +61,7 @@ class Processar
   def processar
     v_dia = Time.now.strftime("%d%m%Y")
     puts @nm_arquivo  if Rails.env=="development"
+    threads = []
     File.open(@nm_arquivo, 'r:UTF-8').each_line.with_index do |li, v_count|
       if v_count.positive?
         begin
@@ -78,28 +79,34 @@ class Processar
           next if (item[0..(item.index('.')-1)]).size > 8
 
           if item.length == 15 || item.match(/^arh/i) || item.match(/^ccn/i) ||item.match(/^cnf/i) 
-            ProcessarTrigger.new(@cd_empresa,
+            threads << Thread.new do
+              ProcessarTrigger.new(@cd_empresa,
                             @servidor_funcao, 
                             @servidor_http,
                             @diretorio_listener,
                             @ultimo_diretorio, 
                             li.split[7])
+            end
           end
           puts "##Programa  #{item}     #{item.length}" if Rails.env=="development"
-          ProcessarEntryOperation.new(@cd_empresa,
+          threads << Thread.new do
+            ProcessarEntryOperation.new(@cd_empresa,
                             @nm_arquivos_importados, 
                             @servidor_funcao, 
                             @servidor_http,
                             @diretorio_listener,
                             @ultimo_diretorio, 
                             item)
+          end
         rescue Exception => e
           Rails.logger.error "Erro ao processar componente #{item}"
           Rails.logger.error e
         end
+        threads.each(&:join)
       end
     end
     ProcessarIncludeProc.new(@cd_empresa, @servidor_funcao)
+
   end
 
   def gerar_arquivo

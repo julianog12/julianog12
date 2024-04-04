@@ -34,7 +34,7 @@ unless defined?(Rails::Console) || File.split($0).last == 'rake'
     tempresa = dados.map{ |c| [c.parametro.to_sym, c.valor] }.to_h
     tempresa[:cd_empresa] = dados.first.cd_empresa
   
-    scheduler.cron '44 10 * * 1-5 America/Sao_Paulo' do
+    scheduler.cron '00 10 * * 1-5 America/Sao_Paulo' do
       Processar.new(tempresa)
     end
   
