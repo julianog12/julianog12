@@ -239,11 +239,11 @@ class ProcessarEntryOperation
             linha.include?('#include LIB_COAMO:G_TRATA_ERRO') ||
             linha.include?('#include LIB_COAMO:G_HIST_ALT') ||
             linha.include?('******        operation ') ||
-        linha.include?("\bend\n") ||
-        linha.include?("Trigger <") ||
-        linha.match(/.*(\bend\n|\bend.*\;)/i) ||
-        linha.include?('******        trigger ') ||
-        ((linha.match(/\;*.autor*.\:/i) && others[1])))
+            (linha.include?("\bend\n") && !(linha.include?("endwhi") | linha.include?("endfor"))) ||
+            linha.include?("Trigger <") ||
+            (linha.match(/.*(\bend\n|\bend.*\;)/i) && !(linha.include?("endwhi") | linha.include?("endfor"))) ||
+            linha.include?('******        trigger ') ||
+            ((linha.match(/\;*.autor*.\:/i) && others[1])))
   end
  
   def inicio_trigger(linha)
