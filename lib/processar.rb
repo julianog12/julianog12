@@ -104,7 +104,7 @@ class Processar
         end
         begin
           threads.each(&:join)
-        rescue
+        rescue Exception => e
           Rails.logger.error "Erro ao processar threads"
           Rails.logger.error e
         end
