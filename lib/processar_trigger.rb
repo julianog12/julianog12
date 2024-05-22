@@ -264,7 +264,7 @@ class ProcessarTrigger
   end
 
 
-l  def processar
+  def processar
     v_arquivo_ler = "#{@diretorio_listener}/#{@arquivo}"
     nm_arquivo = nome_arquivo(v_arquivo_ler)
 
@@ -280,7 +280,7 @@ l  def processar
       Rails.logger.info e
       return nil
     end
-	v_in_include = false
+	  v_in_include = false
     iniciou_trigger = false
     terminou_trigger = false
     nome_trigger = ''
@@ -325,7 +325,7 @@ l  def processar
         end
       end
 
-      v_in_include  = possui_include?(linha, v_linha)
+      v_in_include  = possui_include?(linha, linhar)
 
       if linha[0] == '[' && iniciou_trigger && !v_in_include
         conteudo_trigger << linha[26...(linha.index(/\Z/))]
@@ -333,7 +333,7 @@ l  def processar
          terminou_trigger = true
       end
 	  
-	  v_in_include = false if v_in_include && linha[0..2] != '   ' && linha[0] != '(' && !v_linha.include?('defparam')
+	  v_in_include = false if v_in_include && linha[0..2] != '   ' && linha[0] != '(' && !linhar.include?('defparam')
 
     end
     if conteudo_trigger.any?
