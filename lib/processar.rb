@@ -102,7 +102,12 @@ class Processar
           Rails.logger.error "Erro ao processar componente #{item}"
           Rails.logger.error e
         end
-        threads.each(&:join)
+        begin
+          threads.each(&:join)
+        rescue
+          Rails.logger.error "Erro ao processar threads"
+          Rails.logger.error e
+        end
         Rails.logger.info "##Programa  #{item}     #{item.length}" if Rails.env=="production"
       end
     end
