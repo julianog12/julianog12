@@ -503,10 +503,9 @@ class ProcessarEntryOperation
         end
       else
         next if v_linha.nil? || v_linha.blank?
-
         if v_in_funcao
           if (terminou_linha(v_linha) | fim_trigger_proc_oper(linha, v_in_docto)) 
-            grava_funcao(v_id, dados_funcao[0], dados_funcao[1], v_cmd_funcao, v_cmd_linha_funcao, v_cmd_docto)
+            post_entry_operation(v_id, dados_funcao[0], dados_funcao[1], v_cmd_funcao, v_cmd_linha_funcao, v_cmd_docto)
             v_cmd_funcao = []
             dados_funcao = ''
             v_cmd_linha_funcao = []
@@ -519,7 +518,21 @@ class ProcessarEntryOperation
             v_cmd_linha_funcao << v_linha_funcao
           end
         end
-   
+
+        #if v_in_funcao
+        #  v_cmd_funcao << v_linha
+        #  v_cmd_linha_funcao << v_linha_funcao
+        #  if terminou_linha(v_linha)
+        #    post_entry_operation(v_id, dados_funcao[0], dados_funcao[1], v_cmd_funcao, v_cmd_linha_funcao, v_cmd_docto)
+        #    v_cmd_funcao = []
+        #    v_cmd_linha_funcao = []
+        #    v_in_funcao = false
+        ##    v_in_docto = false
+         #   v_cmd_docto = []
+        #    dados_funcao = []
+        #  end
+        #end
+
         if fim_trigger_proc_oper(linha, v_in_docto)
           iniciou_trigger  = false
           terminou_trigger = true
