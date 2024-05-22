@@ -30,7 +30,7 @@ class ProcessarTrigger
 
   def inicio_trigger(linha)
     if linha.include?('******        trigger ')
-      nome = linha[33..(linha.index(/\Z/))].strip
+      nome = linha[22..(linha.index(/\Z/))].strip
       return {nome: nome}
     end
   end
@@ -41,23 +41,13 @@ class ProcessarTrigger
             linha.include?('#include LIB_COAMO:G_TRATA_ERRO') ||
             linha.include?('#include LIB_COAMO:G_HIST_ALT') ||
             linha.include?('******        operation ') ||
-            linha.include?("\bend\n") ||
-            linha.include?('Trigger <') ||
-            linha.match(/.*(\bend\n|\bend.*\;)/i) ||
-            linha.include?('******        trigger ') ||
-            linha.match(/\;*.autor*.\:/i))
+        linha.include?("\bend\n") ||
+        linha.include?('Trigger <') ||
+        linha.match(/.*(\bend\n|\bend.*\;)/i) ||
+        linha.include?('******        trigger ') ||
+        linha.match(/\;*.autor*.\:/i))
   end
 
-  def inicio_fim_linha(linha)
-    v1 = linha.index("\n")
-    if v1.nil?
-      vLinha = linha[26..300]
-    else
-      v1 -= 1
-      vLinha= linha[26..v1]
-    end
-    [vLinha, v1]
-  end
   
   def nome_include(linha, posic_include)
     nome = linha[(posic_include + 8)..(linha.index(/[\r\n]/)) - 1]
@@ -79,37 +69,35 @@ class ProcessarTrigger
 
   def discartar_trigger(conteudo)
     (conteudo.match(/#include LIB_COAMO:G_ONERROR/i) ||
-     conteudo.match(/#include LIB_COAMO:G_READ/i) ||
-     conteudo.match(/#include LIB_COAMO:G_DELETE/i) ||
-     conteudo.match(/#include LIB_COAMO:G_LMKEY/i) ||
-     conteudo.match(/#include LIB_COAMO:G_LOCK/) ||
-     conteudo.match(/#include LIB_COAMO:G_ERASE/) ||
-     conteudo.match(/#include LIB_COAMO:G_REMOVEOCC/) ||
-     conteudo.match(/#include LIB_COAMO:GSEG_VALIDASENHA/i) ||
-     conteudo.match(/#include LIB_COAMO:GSEG_VALSENHA_SO/i) ||
-     conteudo.match(/#include LIB_COAMO:G_VLDKEY/i) ||
-     conteudo.match(/#include LIB_COAMO:G_MAIORZERO/) ||
-     conteudo.match(/#include LIB_COAMO:G_VALC_DIG/) ||
-     conteudo.match(/#include LIB_COAMO:G_RETRSEQ/) ||
-     conteudo.match(/#include LIB_COAMO:G_FORMAT_DIG/) ||
-     conteudo.match(/#include LIB_COAMO:G_ONERROR/) ||
-     conteudo.match(/#include COAMO_LIB:G_ONERROR/) ||
-     conteudo.match(/#include LIB_COAMO:G_WRITE/) ||
-     conteudo.match(/#include LIB_COAMO:G_STORE/) ||
-     conteudo.match(/#include LIB_COAMO:G_CLEAR/) ||
-     conteudo.match(/#include LIB_COAMO:G_QUIT/) ||
-     conteudo.match(/#include LIB_COAMO:G_RETRSEQ/) ||
-     conteudo.match(/#include LIB_COAMO:G_RETRIEVE/) ||
-     conteudo.match(/#include LIB_COAMO:G_HIST_ALT/) ||
-     conteudo.match(/#include COAMO_LIB:C_ERRENT_LOCK/i) ||
-     conteudo.match(/#include COAMO_LIB:C_LOCK_RB/i))
+   conteudo.match(/#include LIB_COAMO:G_READ/i) ||
+   conteudo.match(/#include LIB_COAMO:G_DELETE/i) ||
+   conteudo.match(/#include LIB_COAMO:G_LMKEY/i) ||
+   conteudo.match(/#include LIB_COAMO:G_LOCK/) ||
+   conteudo.match(/#include LIB_COAMO:G_ERASE/) ||
+   conteudo.match(/#include LIB_COAMO:G_REMOVEOCC/) ||
+   conteudo.match(/#include LIB_COAMO:GSEG_VALIDASENHA/i) ||
+   conteudo.match(/#include LIB_COAMO:GSEG_VALSENHA_SO/i) ||
+   conteudo.match(/#include LIB_COAMO:G_VLDKEY/i) ||
+   conteudo.match(/#include LIB_COAMO:G_MAIORZERO/) ||
+   conteudo.match(/#include LIB_COAMO:G_VALC_DIG/) ||
+   conteudo.match(/#include LIB_COAMO:G_RETRSEQ/) ||
+   conteudo.match(/#include LIB_COAMO:G_FORMAT_DIG/) ||
+   conteudo.match(/#include LIB_COAMO:G_ONERROR/) ||
+   conteudo.match(/#include COAMO_LIB:G_ONERROR/) ||
+   conteudo.match(/#include LIB_COAMO:G_WRITE/) ||
+   conteudo.match(/#include LIB_COAMO:G_STORE/) ||
+   conteudo.match(/#include LIB_COAMO:G_CLEAR/) ||
+   conteudo.match(/#include LIB_COAMO:G_QUIT/) ||
+   conteudo.match(/#include LIB_COAMO:G_RETRSEQ/) ||
+   conteudo.match(/#include LIB_COAMO:G_RETRIEVE/) ||
+   conteudo.match(/#include LIB_COAMO:G_HIST_ALT/) ||
+   conteudo.match(/#include COAMO_LIB:C_ERRENT_LOCK/i) ||
+   conteudo.match(/#include COAMO_LIB:C_LOCK_RB/i))
   end
 
   def discartar_trigger2(conteudo)
     (conteudo.match(/^return\(-1\)/i) ||
      conteudo.match(/^clear/i) ||
-     conteudo.match(/^return\(-1\)/i) ||
-     conteudo.match(/\treturn\(-1\)/i) ||
      conteudo.match(/^return \(-1\)/i) ||
      conteudo.match(/^return \(-99\)/i) ||
      conteudo.match(/^return\(-99\)/i) ||
@@ -129,12 +117,10 @@ class ProcessarTrigger
     conteudo.include?('throws;Thistriggerisfiredoneverykeypressdonebytheuser;Yourimplementationhere...') ||
     conteudo.include?(';#includeLIB_COAMO:G_STOREreturn(-1)') ||
     conteudo.include?('remocc$entname,0') ||
-    conteudo.include?(';callPG_ERRENTITY') ||
-    conteudo.include?(';callPG_REMOVEreturn-1'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
-    conteudo.include?(';erase;if($status<0);message"Eraseerror;seemessageframe";rollback;else;if($status=1);message"Eraseisnotallowed";else;message"Erasewassuccessful";commit;endif;endif'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
-    conteudo.include?('eraseif($status<0)message$text(1763);errorrollbackelseif($status=1)message$text(1634);notallowedelsemessage$text(1806);Okcommitendifendif'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
-    conteudo.include?('eraseif($status<0)message"Eraseerror;seemessageframe"rollbackelseif($status=1)message"Eraseisnotallowed"elsemessage"Erasewassuccessful"commitendifendif'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
-    conteudo.include?(';Includean"else"blockliketheoneshownbelowattheendofany;Procwritteninthistrigger.;...;else;message$text("%%$error");return(-1);endif'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
+    conteudo.include?('#includeLIB_COAMO:G_ONERROR_SERV$t_ls_datacon$=$dataerrorcontextputitem/id$t_ls_datacon$,"DS_ERRO",$text("ERR%%$error%%%")'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
+    conteudo.include?('if($editmode=0&$instancemod!=0)askmess/question$text(MSG0001),"Não,Sim"if($status=2)rollbackclearendifelseclearendif'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
+    conteudo.include?('variablesstringv_ls_occendvariablesputlistitems/occv_ls_occ,$entnameactivate"GPRAO001".GERA_HISTORICO($entname,$componentname,2,$t_cd_operador$,$datim,v_ls_occ,$t_ds_erro$,$t_ls_contexto$)if($status<0)if($status!=-99)callPL_ERRO_CMDMSG($procerrorcontext)endifreturn(-99)endifdeleteif($status<0)$t_ls_proccon$=$procerrorcontext$t_nm_entidade$=$entnameendif'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
+    conteudo.include?('variablesstringv_ls_occendvariablesputlistitems/occv_ls_occ,$entnameactivate"GCADO011".GERA_HISTORICO($entname,$componentname,2,$t_cd_operador$,$datim,v_ls_occ,$t_ds_erro$,$t_ls_contexto$)if($status<0)if($status=-99);Trataoretornocomerromessage/error"%%$t_ds_erro$"return(-1)else;VerificaoerrodoactivatecallPL_ERRO_COMANDO($procerrorcontext)return(-1)endifendifdeleteif($status<0)$t_ls_proccon$=$procerrorcontext$t_nm_entidade$=$entnameendif'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
     conteudo.include?('params$T_CD_OPERADOR$:IN;;incluirapartirdestepontoosparâmetrosreferentesaoseuprograma,estedeverasersempreoprimeiroparametroendparams'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
     conteudo.include?('params$T_CD_OPERADOR$:IN;;incluirapartirdestepontoosparâmetrosreferentesaoseuprograma,estedeverasersempreoprimeiroparametroendparamsedit'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
     conteudo.include?('variablesnumericv_nr_tam,v_nr_posstringv_nr_cpfcnpj,v_cd_digitoendvariablesif($fieldmod=1)length@$fieldnamev_nr_tam=$resultv_nr_pos=1v_nr_cpfcnpj=""repeatif(@$fieldname[v_nr_pos:1]=\'#\')v_nr_cpfcnpj="%%v_nr_cpfcnpj%%@$fieldname[v_nr_pos:1]"endifv_nr_pos=v_nr_pos+1until(v_nr_pos>v_nr_tam)@$fieldname=v_nr_cpfcnpjlength@$fieldnameif($result>11)activate"GSISO002".DIG_CNPJ(@$fieldname,v_cd_digito,$t_ds_erro$)else;activate"GSISO002".DIG_CPF(@$fieldname,v_cd_digito,$t_ds_erro$)endifif($status<0)if($status=-99);Trataoretornocomerromessage/error"%%$t_ds_erro$"return(-1)else;VerificaoerrodoactivatecallPL_ERRO_COMANDO($procerrorcontext)return(-1)endifendifendif'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
@@ -278,22 +264,23 @@ class ProcessarTrigger
   end
 
 
-  def processar
+l  def processar
     v_arquivo_ler = "#{@diretorio_listener}/#{@arquivo}"
     nm_arquivo = nome_arquivo(v_arquivo_ler)
 
-    return if nm_arquivo.include?("_") && nm_arquivo.length > 8 && !nm_arquivo.include?("@")
+    if nm_arquivo.include?("_") && nm_arquivo.length > 8 && !nm_arquivo.include?("@")
+      return
+    end
   
     begin
+      Rails.logger.info "##debugg Vai entrar ProcessarEntryOperation.deletar_triggers_fef2 #{nm_arquivo} da empresa #{@cd_empresa}"
       ProcessarEntryOperation.deletar_triggers_fef2(nm_arquivo.downcase, @cd_empresa)
     rescue StandardError => e
-      Rails.logger.error "##Erro deletar funcao deletar_dados para o componente #{nm_arquivo}"
-      Rails.logger.error e
+      Rails.logger.info "##Erro deletar funcao deletar_dados para o componente #{nm_arquivo}"
+      Rails.logger.info e
       return nil
     end
-
-	  v_in_include = false
-    conteudo_include = []
+	v_in_include = false
     iniciou_trigger = false
     terminou_trigger = false
     nome_trigger = ''
@@ -307,17 +294,14 @@ class ProcessarTrigger
       linhar = linha[26...(linha.index(/\Z/))]
       total += 1
 
-      v_linha, v_pos_final_linha = inicio_fim_linha(linha)
-      v_linha = v_linha.lstrip unless v_linha.nil?
-
-      if conteudo_trigger.any? && fim_trigger(linha)
-        post_triggers(nm_arquivo, nome_externo, nome_trigger, objeto, tipo_trigger, conteudo_trigger)
+      if fim_trigger(linha)
+        if conteudo_trigger.any?
+          post_triggers(nm_arquivo, nome_externo, nome_trigger, objeto, tipo_trigger, conteudo_trigger)
+        end
         nome_trigger = ''
         conteudo_trigger = []
         iniciou_trigger = false
         terminou_trigger = false
-        v_in_include = false
-        conteudo_include = []
       end
 
       unless linhar.nil?
@@ -332,7 +316,6 @@ class ProcessarTrigger
           end
           next
         end
-
         dados_ini = inicio_trigger(linha) unless iniciou_trigger
         if !dados_ini.nil? && dados_ini[:nome] != 'DEFN' && !iniciou_trigger
           iniciou_trigger = true
@@ -340,29 +323,19 @@ class ProcessarTrigger
           nome_trigger = dados_ini[:nome]
           next
         end
-        
-        if linha[0..0] == '[' and iniciou_trigger && !v_in_include
-          conteudo_trigger << linha[26...(linha.index(/\Z/))]
-        else
-          if (iniciou_trigger && conteudo_trigger.any?)
-            terminou_trigger = true
-          end
-        end
-
-        if possui_include?(linha, v_linha)
-          v_in_include = true
-          next
-        else
-          if linha[0..1] == "[I"
-            conteudo_include << v_linha
-          elsif conteudo_include.any? && linha[0..2] != '   ' && linha[0..0] != '(' && !v_linha.include?('defparam')
-            v_in_include = false
-            conteudo_include = []
-          end
-        end
       end
-    end
 
+      v_in_include  = possui_include?(linha, v_linha)
+
+      if linha[0] == '[' && iniciou_trigger && !v_in_include
+        conteudo_trigger << linha[26...(linha.index(/\Z/))]
+      elsif iniciou_trigger && conteudo_trigger.any? && linha[0] != '['
+         terminou_trigger = true
+      end
+	  
+	  v_in_include = false if v_in_include && linha[0..2] != '   ' && linha[0] != '(' && !v_linha.include?('defparam')
+
+    end
     if conteudo_trigger.any?
       post_triggers(nm_arquivo,
                     nome_externo,
