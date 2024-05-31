@@ -78,7 +78,7 @@ class Processar
 
           next if (item[0..(item.index('.')-1)]).size > 8
 
-          if item.length == 15 || item.match(/^arh/i) || item.match(/^ccn/i) ||item.match(/^cnf/i) 
+          if item.length == 15 || item.match(/^arh/i) || item.match(/^ccn/i) ||item.match(/^cnf/i) ||item.match(/^lbf/i)
             threads << Thread.new do
               ProcessarTrigger.new(@cd_empresa,
                             @servidor_funcao, 

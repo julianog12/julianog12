@@ -256,7 +256,7 @@ class ProcessarTrigger
 
   def possui_include?(linha, v_linha)
     posic_include = 0
-    posic_include = ((linha.index("include LIB_COAMO:")||0)+(linha.index("include COAMO_LIB:")||0))  if !v_linha.nil? && linha[0..1] == '[ ' && !v_linha.include?('^\;') && !v_linha.include?('defparam')
+    posic_include = ((linha.index("include LIB_COAMO:")||0)+(linha.index("include COAMO_LIB:")||0))  if !v_linha.nil? && linha[0..1] == '[ ' && !v_linha[0..0]==';' && !v_linha.include?('defparam')
     if posic_include.positive?
       return true
     end
