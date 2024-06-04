@@ -294,16 +294,6 @@ class ProcessarEntryOperation
     v_linha2[0..endPosLine]
   end
 
-  def inicio_fim_linha(linha)
-    v1 = linha.index("\n")
-    if v1.nil?
-      v_linha = linha[26..300]
-    else
-      v1 -= 1
-      v_linha= linha[26..v1]
-    end
-    [v_linha, v1]
-  end
 
   def terminou_linha(v_linha)
     (!v_linha.match(/endw/i) &&

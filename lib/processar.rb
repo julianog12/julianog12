@@ -79,22 +79,32 @@ class Processar
           next if (item[0..(item.index('.')-1)]).size > 8
 
           if item.length == 15 || item.match(/^arh/i) || item.match(/^ccn/i) ||item.match(/^cnf/i) ||item.match(/^lbf/i)
+            begin
               ProcessarTrigger.new(@cd_empresa,
                             @servidor_funcao, 
                             @servidor_http,
                             @diretorio_listener,
                             @ultimo_diretorio, 
                             li.split[7])
+            rescue Exception => e
+              Rails.logger.error "Erro em ProcessarTrigger #{item}"
+              Rails.logger.error e
+            end
 
           end
-            puts "##Programa  #{item}     #{item.length}" if Rails.env=="development"
-            ProcessarEntryOperation.new(@cd_empresa,
+            begin
+              puts "##Programa  #{item}     #{item.length}" if Rails.env=="development"
+              ProcessarEntryOperation.new(@cd_empresa,
                             @nm_arquivos_importados, 
                             @servidor_funcao, 
                             @servidor_http,
                             @diretorio_listener,
                             @ultimo_diretorio, 
                             item)
+            rescue Exception => e
+              Rails.logger.error "Erro em ProcessarEntryOperation #{item}"
+              Rails.logger.error e
+            end
 
         rescue Exception => e
           Rails.logger.error "Erro ao processar componente #{item}"

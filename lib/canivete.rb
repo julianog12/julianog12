@@ -38,12 +38,26 @@
     true
   end
   
+
   
   def valida_modelo(v_modelo)
     @modelos.include?(v_modelo.upcase)
   end
   
-  
+
+  def inicio_fim_linha(linha)
+    v1 = linha.index("\n")
+    if v1.nil?
+      vLinha = linha[26..300]
+    else
+      v1 -= 1
+      vLinha= linha[26..v1]
+    end
+    [vLinha, v1]
+  end
+
+
+
   def tratar_linha(v_linha)
     return if v_linha.nil?
     v_linha = v_linha.strip
