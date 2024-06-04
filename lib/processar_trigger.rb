@@ -280,7 +280,8 @@ class ProcessarTrigger
       Rails.logger.info e
       return nil
     end
-	  v_in_include = false
+    v_in_include = false
+    conteudo_include = []
     iniciou_trigger = false
     terminou_trigger = false
     nome_trigger = ''
@@ -294,14 +295,14 @@ class ProcessarTrigger
       linhar = linha[26...(linha.index(/\Z/))]
       total += 1
 
-      if fim_trigger(linha)
-        if conteudo_trigger.any?
-          post_triggers(nm_arquivo, nome_externo, nome_trigger, objeto, tipo_trigger, conteudo_trigger)
-        end
+      if conteudo_trigger.any? && fim_trigger(linha)
+        post_triggers(nm_arquivo, nome_externo, nome_trigger, objeto, tipo_trigger, conteudo_trigger)
         nome_trigger = ''
         conteudo_trigger = []
         iniciou_trigger = false
         terminou_trigger = false
+        v_in_include = false
+        conteudo_include = []
       end
 
       unless linhar.nil?
@@ -325,15 +326,26 @@ class ProcessarTrigger
         end
       end
 
-      v_in_include  = possui_include?(linha, linhar)
-
       if linha[0] == '[' && iniciou_trigger && !v_in_include
         conteudo_trigger << linha[26...(linha.index(/\Z/))]
       elsif iniciou_trigger && conteudo_trigger.any? && linha[0] != '['
          terminou_trigger = true
       end
-	  
-	  v_in_include = false if v_in_include && linha[0..2] != '   ' && linha[0] != '(' && !linhar.include?('defparam')
+	   
+      if possui_include?(linha, v_linha)
+        v_in_include = true
+        next
+      else
+        if linha[0..1] == "[I"
+          conteudo_include << v_linha
+	      else 
+	        if conteudo_include.any? && linha[0..2] != '   ' && linha[0..0] != '(' && !v_linha.include?('defparam')
+	          v_in_include = false
+            conteudo_include = []
+	        end
+	      end
+	    end
+      #v_in_include = false if v_in_include && linha[0..2] != '   ' && linha[0] != '(' && !linhar.include?('defparam')
 
     end
     if conteudo_trigger.any?
