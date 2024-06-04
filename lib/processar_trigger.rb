@@ -294,11 +294,8 @@ class ProcessarTrigger
       linhar = linha[26...(linha.index(/\Z/))]
       total += 1
 
-      Rails.logger.info "##Entrou 1 #{nm_arquivo}"
       v_linha, v_pos_final_linha = inicio_fim_linha(linha)
       v_linha = v_linha.lstrip unless v_linha.nil?
-
-
 
       if conteudo_trigger.any? && fim_trigger(linha)
         post_triggers(nm_arquivo, nome_externo, nome_trigger, objeto, tipo_trigger, conteudo_trigger)
@@ -309,8 +306,6 @@ class ProcessarTrigger
         v_in_include = false
         conteudo_include = []
       end
-
-      Rails.logger.info "##Entrou 2 #{nm_arquivo}"
 
       unless linhar.nil?
         trigger_externa = trigger_externa(linha, objeto, nome_externo, tipo_trigger) unless iniciou_trigger
@@ -333,16 +328,12 @@ class ProcessarTrigger
         end
       end
 
-      Rails.logger.info "##Entrou 3 #{nm_arquivo}"
-
       if linha[0..0] == '[' and iniciou_trigger && !v_in_include
         conteudo_trigger << linha[26...(linha.index(/\Z/))]
       elsif iniciou_trigger && conteudo_trigger.any? && linha[0] != '['
          terminou_trigger = true
       end
 
-      Rails.logger.info "##Entrou 4 #{nm_arquivo}"
-	   
       if possui_include?(linha, v_linha)
         v_in_include = true
         next
@@ -350,12 +341,10 @@ class ProcessarTrigger
         if linha[0..1] == "[I"
           conteudo_include << v_linha
 	      else 
-          Rails.logger.info "##Entrou 5 #{nm_arquivo}"
-	        if conteudo_include.any? && linha[0..2] != '   ' && linha[0..0] != '(' && !linhar.include?('defparam')
+	        if conteudo_include.any? && linha[0..2] != '   ' && linha[0..0] != '(' && !linha.include?('defparam')
 	          v_in_include = false
             conteudo_include = []
 	        end
-          Rails.logger.info "##Entrou 6 #{nm_arquivo}"
 	      end
 	    end
 
