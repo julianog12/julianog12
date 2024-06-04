@@ -28,6 +28,19 @@ class ProcessarTrigger
   end
 
 
+
+  def inicio_fim_linha(linha)
+    v1 = linha.index("\n")
+    if v1.nil?
+      vLinha = linha[26..300]
+    else
+      v1 -= 1
+      vLinha= linha[26..v1]
+    end
+    [vLinha, v1]
+  end
+
+
   def inicio_trigger(linha)
     if linha.include?('******        trigger ')
       nome = linha[22..(linha.index(/\Z/))].strip
