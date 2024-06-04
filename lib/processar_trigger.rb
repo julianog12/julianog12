@@ -341,12 +341,10 @@ class ProcessarTrigger
         if linha[0..1] == "[I"
           conteudo_include << v_linha
 	      else 
-          Rails.logger.info "##Entrou 5 #{nm_arquivo}"
 	        if conteudo_include.any? && linha[0..2] != '   ' && linha[0..0] != '(' && !linha.include?('defparam')
 	          v_in_include = false
             conteudo_include = []
 	        end
-          Rails.logger.info "##Entrou 6 #{nm_arquivo}"
 	      end
 	    end
 
