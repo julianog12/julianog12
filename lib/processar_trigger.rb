@@ -328,7 +328,7 @@ class ProcessarTrigger
         end
       end
 
-      if linha[0] == '[' && iniciou_trigger && !v_in_include
+      if linha[0..0] == '[' and iniciou_trigger && !v_in_include
         conteudo_trigger << linha[26...(linha.index(/\Z/))]
       elsif iniciou_trigger && conteudo_trigger.any? && linha[0] != '['
          terminou_trigger = true
