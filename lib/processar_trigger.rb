@@ -295,6 +295,9 @@ class ProcessarTrigger
       linhar = linha[26...(linha.index(/\Z/))]
       total += 1
 
+      v_linha, v_pos_final_linha = inicio_fim_linha(linha)
+      v_linha = v_linha.lstrip unless v_linha.nil?
+
       if conteudo_trigger.any? && fim_trigger(linha)
         post_triggers(nm_arquivo, nome_externo, nome_trigger, objeto, tipo_trigger, conteudo_trigger)
         nome_trigger = ''
