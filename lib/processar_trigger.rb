@@ -163,7 +163,7 @@ class ProcessarTrigger
 
   def post_triggers(componente, nome_externo, nome_trigger, objeto, tipo_trigger, conteudo_trigger)
     begin
-      conteudo_trigger = conteudo_trigger.reject { |c| c.empty? unless c.nil? } unless !nome_trigger == 'ERRF'
+      conteudo_trigger = conteudo_trigger.reject { |c| c.nil? } unless !nome_trigger == 'ERRF'
     rescue StandardError => e
       Rails.logger.info e
       Rails.logger.info "##Erro ao montar conteudo da trigger (post_triggers - L103). Componente #{componente}, Trigger #{nome_trigger}"
@@ -174,15 +174,26 @@ class ProcessarTrigger
     v_dados_funcao = conteudo_trigger.map { |i| i.to_s.gsub("\t", '  ') }.join("\n")
     v_dados_funcao = v_dados_funcao.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")
 
-    return  if conteudo_trigger.empty? ||
-              (conteudo_trigger.size == 1 && (discartar_trigger(conteudo_trigger[0]) || discartar_trigger2(conteudo_trigger[0]))) || 
-              (conteudo_trigger.size == 2 && conteudo_trigger[1] == "\r" && discartar_trigger(conteudo_trigger[0])) ||
-               discartar_trigger2(conteudo_trigger[0]) ||
-               discartar_trigger3(v_dados_funcao) ||
-               discartar_trigger4(v_dados_funcao) ||
-               nome_trigger == 'OPER' ||
-               nome_trigger == 'LPMX' ||
-               conteudo_trigger.join('').length <= 5
+    #Alterado 04/06/2024 Juliano
+    #return  if conteudo_trigger.empty? ||
+    #          (conteudo_trigger.size == 1 && (discartar_trigger(conteudo_trigger[0]) || discartar_trigger2(conteudo_trigger[0]))) || 
+    #          (conteudo_trigger.size == 2 && conteudo_trigger[1] == "\r" && discartar_trigger(conteudo_trigger[0])) ||
+    #           discartar_trigger2(conteudo_trigger[0]) ||
+    #           discartar_trigger3(v_dados_funcao) ||
+    #           discartar_trigger4(v_dados_funcao) ||
+    #           nome_trigger == 'OPER' ||
+    #           nome_trigger == 'LPMX' ||
+    #           conteudo_trigger.join('').length <= 5
+    return if conteudo_trigger.empty? ||
+            (conteudo_trigger.size == 1 && (discartar_trigger(conteudo_trigger[0]) || discartar_trigger2(conteudo_trigger[0]))) || 
+            (conteudo_trigger.size == 2 && conteudo_trigger[1] == "\r" && discartar_trigger(conteudo_trigger[0])) ||
+		         conteudo_trigger.nil? ||
+             !discartar_trigger2(conteudo_trigger[0]).nil? ||
+             discartar_trigger3(v_dados_funcao) ||
+			       !discartar_trigger4(conteudo_trigger[0]).nil? ||
+             nome_trigger == 'OPER' ||
+             nome_trigger == 'LPMX' ||
+			       conteudo_trigger.join("").length <=5
 
     nm_modelo = nome_modelo(componente.downcase)
     if dados_objeto.size == 3
@@ -296,21 +307,8 @@ class ProcessarTrigger
 
       v_linha, v_pos_final_linha = inicio_fim_linha(linha)
       v_linha = v_linha.lstrip unless v_linha.nil?
-      if total >= 13150 && total <= 13258 && nome_trigger.include?('read') && nm_arquivo.include?('cpemf617')
-      
-        Rails.logger.info '*************************************'
-        Rails.logger.info nome_trigger
-        Rails.logger.info conteudo_trigger
-        Rails.logger.info '*************************************'
-      end
 
       if conteudo_trigger.any? && fim_trigger(linha)
-        if total >= 13150 && total <= 13258 && nome_trigger.include?('read') && nm_arquivo.include?('cpemf617')
-          Rails.logger.info '*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$*'
-          Rails.logger.info nome_trigger
-          Rails.logger.info conteudo_trigger
-          Rails.logger.info '*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$*'
-        end
         post_triggers(nm_arquivo, nome_externo, nome_trigger, objeto, tipo_trigger, conteudo_trigger)
         nome_trigger = ''
         conteudo_trigger = []
