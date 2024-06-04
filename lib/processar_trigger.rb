@@ -297,7 +297,7 @@ class ProcessarTrigger
       v_linha, v_pos_final_linha = inicio_fim_linha(linha)
       v_linha = v_linha.lstrip unless v_linha.nil?
 
-      if nome_trigger.include?('read') && @arquivo.include?('cpemf617')
+      if nome_trigger.include?('read') && @nm_arquivo.include?('cpemf617')
         Rails.logger.info '*************************************'
         Rails.logger.info nome_trigger
         Rails.logger.info conteudo_trigger
