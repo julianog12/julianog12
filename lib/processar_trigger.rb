@@ -326,6 +326,7 @@ class ProcessarTrigger
           terminou_trigger = false
           nome_trigger = dados_ini[:nome]
           next
+        end
       end
 
       if linha[0..0] == '[' and iniciou_trigger && !v_in_include
