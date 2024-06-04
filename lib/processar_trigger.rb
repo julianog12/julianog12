@@ -114,6 +114,7 @@ class ProcessarTrigger
     conteudo = conteudo.to_s.gsub("\r\n", '').gsub("\n", '').gsub(' ', '').gsub("\r", '')
     conteudo.match(/cd_operador.*.*\=\$t_cd_operador\$dt_transacao.*\=\$datim/i) ||
     conteudo.include?('throws;Thistriggerisfiredoneverykeypressdonebytheuser;Yourimplementationhere...') ||
+    conteudo.include?('#includeLIB_COAMO:G_READreadif($status<0&$procerror!=-8)$t_ls_proccon$=$procerrorcontext$t_nm_entidade$=$entnameendif') ||
     conteudo.include?(';#includeLIB_COAMO:G_STOREreturn(-1)') ||
     conteudo.include?('remocc$entname,0') ||
     conteudo.include?('#includeLIB_COAMO:G_ONERROR_SERV$t_ls_datacon$=$dataerrorcontextputitem/id$t_ls_datacon$,"DS_ERRO",$text("ERR%%$error%%%")'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
