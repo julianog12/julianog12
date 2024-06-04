@@ -341,13 +341,12 @@ class ProcessarTrigger
         if linha[0..1] == "[I"
           conteudo_include << v_linha
 	      else 
-	        if conteudo_include.any? && linha[0..2] != '   ' && linha[0..0] != '(' && !v_linha.include?('defparam')
+	        if conteudo_include.any? && linha[0..2] != '   ' && linha[0..0] != '(' && !linhar.include?('defparam')
 	          v_in_include = false
             conteudo_include = []
 	        end
 	      end
 	    end
-      #v_in_include = false if v_in_include && linha[0..2] != '   ' && linha[0] != '(' && !linhar.include?('defparam')
 
     end
     if conteudo_trigger.any?
