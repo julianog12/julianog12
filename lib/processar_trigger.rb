@@ -29,7 +29,7 @@ class ProcessarTrigger
 
   def inicio_trigger(linha)
     if linha.include?('******        trigger ')
-      nome = linha[22..(linha.index(/\Z/))].strip
+      nome = linha[34..(linha.index(/\Z/))].strip
       return {nome: nome}
     end
   end
