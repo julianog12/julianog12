@@ -114,6 +114,7 @@ class ProcessarTrigger
     conteudo = conteudo.to_s.gsub("\r\n", '').gsub("\n", '').gsub(' ', '').gsub("\r", '')
     conteudo.match(/cd_operador.*.*\=\$t_cd_operador\$dt_transacao.*\=\$datim/i) ||
     conteudo.include?('throws;Thistriggerisfiredoneverykeypressdonebytheuser;Yourimplementationhere...') ||
+    conteudo.include?('#includeLIB_COAMO:G_DELETEdeleteif($status<0)$t_ls_proccon$=$procerrorcontext$t_nm_entidade$=$entnameendif'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
     conteudo.include?('#includeLIB_COAMO:G_READreadif($status<0&$procerror!=-8)$t_ls_proccon$=$procerrorcontext$t_nm_entidade$=$entnameendif') ||
     conteudo.include?(';#includeLIB_COAMO:G_STOREreturn(-1)') ||
     conteudo.include?('remocc$entname,0') ||
@@ -164,6 +165,7 @@ class ProcessarTrigger
 
   def post_triggers(componente, nome_externo, nome_trigger, objeto, tipo_trigger, conteudo_trigger)
     begin
+      return if (conteudo_trigger.count) == (conteudo_trigger.grep(/^;/).count)
       conteudo_trigger = conteudo_trigger.reject { |c| c.nil? } unless !nome_trigger == 'ERRF'
     rescue StandardError => e
       Rails.logger.info e
@@ -175,16 +177,6 @@ class ProcessarTrigger
     v_dados_funcao = conteudo_trigger.map { |i| i.to_s.gsub("\t", '  ') }.join("\n")
     v_dados_funcao = v_dados_funcao.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")
 
-    #Alterado 04/06/2024 Juliano
-    #return  if conteudo_trigger.empty? ||
-    #          (conteudo_trigger.size == 1 && (discartar_trigger(conteudo_trigger[0]) || discartar_trigger2(conteudo_trigger[0]))) || 
-    #          (conteudo_trigger.size == 2 && conteudo_trigger[1] == "\r" && discartar_trigger(conteudo_trigger[0])) ||
-    #           discartar_trigger2(conteudo_trigger[0]) ||
-    #           discartar_trigger3(v_dados_funcao) ||
-    #           discartar_trigger4(v_dados_funcao) ||
-    #           nome_trigger == 'OPER' ||
-    #           nome_trigger == 'LPMX' ||
-    #           conteudo_trigger.join('').length <= 5
     return if conteudo_trigger.empty? ||
             (conteudo_trigger.size == 1 && (discartar_trigger(conteudo_trigger[0]) || discartar_trigger2(conteudo_trigger[0]))) || 
             (conteudo_trigger.size == 2 && conteudo_trigger[1] == "\r" && discartar_trigger(conteudo_trigger[0])) ||
