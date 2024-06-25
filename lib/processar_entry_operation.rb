@@ -185,6 +185,9 @@ class ProcessarEntryOperation
   end
 
   def post_entry_operation(v_componente, v_tipo, v_nm_funcao, v_cmd, v_cmd_real, v_cmd_docto)
+    v_nm_funcao = v_nm_funcao.downcase
+    return if v_nm_funcao.match('^(pl_ctx_erro|pl_erro_cmdmsg|pl_erro_comando|pl_erro_store|pl_msg_erro|pl_ident_pkey|pl_erro_trgmsg|pl_erro_trigger|pl_hist_alt|pl_errtrig_store|pl_excecao_msg|pl_valida_const)$')
+
     v_comando_real = v_cmd_real.map { |i| i.to_s.gsub("\t", '  ') }.join("\n")
     v_comando_real = v_comando_real.encode("UTF-8", :invalid => :replace, :undef => :replace, :replace => "?")
     v_comando_docto = v_cmd_docto.map { |i| i.to_s.gsub("\t", '  ') }.join("\n") unless v_cmd_docto.nil? || v_cmd_docto.blank?
@@ -192,7 +195,7 @@ class ProcessarEntryOperation
 
     if !v_tipo.nil? && !v_tipo.empty?
       v_post_string = { 'funcaos': {
-        'nm_funcao': v_nm_funcao.downcase,
+        'nm_funcao': v_nm_funcao,
         'cd_componente': v_componente.downcase,
         'tipo': v_tipo,
         'codigo': v_comando_real,
