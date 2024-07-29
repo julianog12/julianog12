@@ -184,7 +184,7 @@ class ProcessarTrigger
         (conteudo_trigger.size == 2 && conteudo_trigger[1] == "\r" && discartar_trigger(conteudo_trigger[0])) ||
         conteudo_trigger.nil? ||
         !discartar_trigger2(conteudo_trigger[0]).nil? ||
-        discartar_trigger3(v_dados_funcao) ||
+        discartar_trigger3(conteudo_trigger) ||
         !discartar_trigger4(conteudo_trigger[0]).nil? ||
         nome_trigger == 'OPER' ||
         nome_trigger == 'LPMX' ||
