@@ -114,6 +114,15 @@ class ProcessarTrigger
     conteudo = conteudo.to_s.gsub("\r\n", '').gsub("\n", '').gsub(' ', '').gsub("\r", '')
   conteudo.match(/cd_operador.*.*\=\$t_cd_operador\$dt_transacao.*\=\$datim/i) ||
   conteudo.include?('throws;Thistriggerisfiredoneverykeypressdonebytheuser;Yourimplementationhere...') ||
+  conteudo.include?('paramsstringcontrol:in;TREE|LIST|KEYBOARDstringitem:inendparamsmessage"%%itemCollapse"') ||
+  conteudo.include?('paramsnumericcolumnId:instringsortingOrder:in;ASC|DESCendparamsmessage"%%columnIdcolumnSorted"') ||
+  conteudo.include?(';Includean"else"blockliketheoneshownbelowattheendofany;Procwritteninthistrigger.;...;else;message$text("%%$error");return(-1);endif') ||
+  conteudo.include?('paramsstringdragvalue:instringdropformat:instringitemvalue:innumericnumberofobjects:innumericindex:inendparams') ||
+  conteudo.include?('paramsnumericshiftKey:inendparams') ||
+  conteudo.include?('paramsstringdragvalue:instringdropformat:instringitemvalue:innumericnumberofobjects:innumericindex:inendparams') ||
+  conteudo.include?('paramsstringfieldName:innumericshiftKey:inendparams') ||
+  conteudo.include?('paramsstringcolumnName:innumericviewportWidthPx:instringcolumnWidthsPx:inendparams') ||
+  conteudo.include?('throws;Thistriggerisfiredoneverykeypressdonebytheuser;Yourimplementationhere...end') ||
   conteudo.include?(';#include LIB_COAMO:G_ERASEreturn(-1)'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
   conteudo.include?('#includeLIB_COAMO:G_WRITEwriteif($status<0)$t_ls_proccon$=$procerrorcontext$t_nm_entidade$=$entnameendif'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
   conteudo.include?('#includeLIB_COAMO:G_ONERROR#includeLIB_COAMO:G_ONERROR_SERV$t_ls_datacon$=$dataerrorcontextputitem/id$t_ls_datacon$,"DS_ERRO",$text("ERR%%$error%%%")'.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => "?")) ||
