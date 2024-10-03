@@ -42,7 +42,7 @@ class ProcessarTrigger
             linha.include?('******        operation ') ||
         linha.include?("\bend\n") ||
         linha.include?('Trigger <') ||
-        linha.match(/.*(\bend\n|\bend\z.*\;)/i ||
+        linha.match(/.*(\bend\n|\bend\z.*\;)/i) ||
         linha.include?('******        trigger ') ||
         linha.match(/\;*.autor*.\:/i))
   end
