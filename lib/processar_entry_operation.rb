@@ -244,7 +244,7 @@ class ProcessarEntryOperation
             linha.include?('******        operation ') ||
             (linha.include?("\bend\n") && !(linha.include?("endwhi") | linha.include?("endfor") | linha.include?('endtry'))) ||
             linha.include?("Trigger <") ||
-            (linha.match(/.*(\bend\n|\bend.*\;)/i) && !(linha.include?("endwhi") | linha.include?("endfor"))) ||
+            (linha.match(/.*(\bend\n|\bend\z.*\;)/i && !(linha.include?("endwhi") | linha.include?("endfor"))) ||
             linha.include?('******        trigger ') ||
             ((linha.match(/\;*.autor*.\:/i) && others[1])))
   end
